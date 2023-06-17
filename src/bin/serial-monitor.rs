@@ -9,6 +9,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut buf = [0u8; 32];
     loop {
         let count = receiver.read(&mut buf).await?;
-        println!("<<< {:?}", &buf[count..]);
+        if count == 0 {
+            continue;
+        }
+        println!("<<< {:?}", &buf[..count]);
     }
 }
