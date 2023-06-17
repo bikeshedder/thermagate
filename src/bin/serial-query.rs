@@ -8,6 +8,7 @@ use clap::Parser;
 #[command(author, version, about, long_about = None)]
 struct Cli {
     registry_id: u8,
+    response_length: usize,
 }
 
 #[tokio::main]
@@ -23,7 +24,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let request = reg_query(cli.registry_id);
     println!(">>> {:?}", request);
     stream.write_all(&request).await?;
-    let mut response = [0u8; 18];
+    let mut response = vec![0u8; cli.response_length];
     stream.read_exact(&mut response).await?;
     println!("<<< {:?}", response);
     Ok(())
