@@ -1,14 +1,10 @@
 use std::path::Path;
 
 use futures_util::stream::StreamExt;
-use model::State;
 use socketcan::{tokio::CanSocket, EmbeddedFrame, Frame};
 
-pub mod model;
-pub mod rotex;
-
-use model::Parameter;
-use rotex::RotexData;
+use altherma_gateway::model::{Address, Parameter, State};
+use altherma_gateway::rotex::RotexData;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -23,7 +19,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         if let socketcan::CanFrame::Data(data_frame) = frame {
             match data_frame.data() {
                 [a0, a1, a2, p0, p1, v0, v1] => {
-                    let a = model::Address(frame.id_word(), *a0, *a1, *a2);
+                    let a = Address(frame.id_word(), *a0, *a1, *a2);
                     let Some((d_name, op)) = state.device_by_address.get(&a) else {
                         println!("Unsupported address: {:?}", a);
                         continue;
