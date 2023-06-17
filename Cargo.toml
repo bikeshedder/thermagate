@@ -1,5 +1,5 @@
 [package]
-name = "rocon-g1-rs"
+name = "altherma-gateway"
 version = "0.1.0"
 edition = "2021"
 
