@@ -26,6 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     };
                     let p = ((*p0 as u16) << 8) + (*p1 as u16);
                     let v = ((*v0 as u16) << 8) + (*v1 as u16);
+                    let v = v as i16;
                     let Some(p_name) = state.parameter_by_address.get(&p) else {
                         println!("Unknown parameter: {}", p);
                         continue;
@@ -33,7 +34,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let param = &state.parameters[p_name];
                     match param {
                         Parameter::Float { factor, .. } => {
-                            println!("{:?} {}.{} = {}", op, d_name, p_name, v as f32 / factor);
+                            let value = if v == i16::MAX {
+                                None
+                            } else {
+                                Some(v as f32 / factor)
+                            };
+                            println!(
+                                "{:?} {}.{} = {}",
+                                op,
+                                d_name,
+                                p_name,
+                                value.map(|v| v.to_string()).unwrap_or("null".into())
+                            );
                         }
                     }
                 }
