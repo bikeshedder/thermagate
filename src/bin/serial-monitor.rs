@@ -4,7 +4,11 @@ use tokio_serial::SerialPortBuilderExt;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dev = "/dev/ttyUSB0";
-    let mut receiver = tokio_serial::new(dev, 9600).open_native_async()?;
+    let mut receiver = tokio_serial::new(dev, 9600)
+        .data_bits(tokio_serial::DataBits::Eight)
+        .parity(tokio_serial::Parity::Even)
+        .stop_bits(tokio_serial::StopBits::One)
+        .open_native_async()?;
     println!("Receiving from {} ...", dev);
     let mut buf = [0u8; 32];
     loop {
