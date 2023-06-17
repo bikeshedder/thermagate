@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let param = &state.parameters[p_name];
                     match param {
                         Parameter::Float { factor, .. } => {
-                            let value = if v == i16::MAX {
+                            let value = if v == i16::MIN {
                                 None
                             } else {
                                 Some(v as f32 / factor)
