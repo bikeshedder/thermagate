@@ -1,4 +1,3 @@
-use std::collections::{HashMap, BTreeMap};
 use std::fmt;
 use std::marker::PhantomData;
 use std::num::ParseIntError;
@@ -142,7 +141,7 @@ pub struct Address(HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>);
 
 impl From<Address> for model::Address {
     fn from(val: Address) -> Self {
-        model::Address(val.0.0, val.1.0, val.2.0, val.3.0)
+        model::Address(val.0 .0, val.1 .0, val.2 .0, val.3 .0)
     }
 }
 
@@ -283,12 +282,17 @@ impl From<RotexData> for model::Data {
                     .iter()
                     .map(|d| (d, model::DeviceType::HeatingCircuit)),
             )
-            .map(|(d, device_type)| (d.name.clone(), model::Device {
-                device_type,
-                get: d.get.into(),
-                set: d.set.into(),
-                answer: d.answer.into(),
-            }))
+            .map(|(d, device_type)| {
+                (
+                    d.name.clone(),
+                    model::Device {
+                        device_type,
+                        get: d.get.into(),
+                        set: d.set.into(),
+                        answer: d.answer.into(),
+                    },
+                )
+            })
             .collect::<IndexMap<_, _>>();
         let parameters = val
             .parameters
@@ -346,6 +350,9 @@ impl From<RotexData> for model::Data {
                 )
             })
             .collect::<IndexMap<_, _>>();
-        model::Data { devices, parameters }
+        model::Data {
+            devices,
+            parameters,
+        }
     }
 }

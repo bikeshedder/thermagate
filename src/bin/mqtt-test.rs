@@ -1,8 +1,6 @@
 use altherma_gateway::hass::{DeviceClass, Sensor};
-use rumqttc::{AsyncClient, MqttOptions, QoS};
-use std::error::Error;
+use rumqttc::{AsyncClient, MqttOptions};
 use std::time::Duration;
-use tokio::{task, time};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

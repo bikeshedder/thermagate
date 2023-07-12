@@ -19,6 +19,8 @@ serde_yaml = "0.9.22"
 socketcan = { git = "https://github.com/socketcan-rs/socketcan-rs", version = "2.0.0", features = ["tokio"] }
 thiserror = "1.0.40"
 time = { version = "0.3.23", features = ["serde", "parsing", "macros", "serde-human-readable"] }
-tokio = { version = "1.28.2", features = ["macros", "rt-multi-thread", "io-util"] }
+tokio = { version = "1.28.2", features = ["macros", "rt-multi-thread", "io-util", "sync"] }
 tokio-serial = "5.4.4"
 toml = "0.7.6"
+tracing = { version = "0.1.37", features = ["async-await"] }
+tracing-subscriber = "0.3.17"

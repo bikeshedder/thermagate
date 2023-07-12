@@ -1,3 +1,4 @@
+pub mod can;
 pub mod hass;
 pub mod model;
 pub mod rotex;
