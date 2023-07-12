@@ -1,9 +1,10 @@
 use std::{sync::Arc, time::Duration};
 
+use serde::Serialize;
 use futures_util::StreamExt;
 use socketcan::{tokio::CanSocket, CanError, EmbeddedFrame, Frame};
 use tokio::{
-    sync::mpsc::{channel, Receiver, Sender},
+    sync::{mpsc::{channel, Receiver, Sender}, watch},
     time::sleep,
 };
 use tracing::{debug, warn};
@@ -14,6 +15,9 @@ static CHANNEL_BUFFER: usize = 100;
 
 pub struct BusDriver {
     rx: Receiver<BusFrame>,
+    // FIXME add accessor for this status so that borrowing
+    // the driver mutable doesn't render this inaccessable.
+    status: Arc<BusStatusInternal>,
 }
 
 #[derive(Debug)]
@@ -30,28 +34,56 @@ pub enum Value {
     Invalid(u16),
 }
 
+pub struct BusStatusInternal {
+    state: watch::Receiver<BusState>,
+}
+
+#[derive(Debug, Serialize)]
+pub struct BusStatus {
+    state: BusState,
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub enum BusState {
+    Connecting,
+    Connected,
+    Error(String),
+    Disconnected,
+}
+
 impl BusDriver {
     pub fn new(device: &str, state: Arc<State>) -> Self {
         let (tx, rx) = channel(CHANNEL_BUFFER);
+        let (state_tx, state_rx) = watch::channel(BusState::Connecting);
+        let status = Arc::new(BusStatusInternal {
+            state: state_rx,
+        });
         let internal = Internal {
             device: device.to_owned(),
-            state: state,
+            state,
             keep_running: true,
             tx,
+            bus_state: state_tx,
         };
         tokio::spawn(internal.start());
-        Self { rx }
+        Self { rx, status }
     }
     pub async fn recv(&mut self) -> Option<BusFrame> {
         self.rx.recv().await
+    }
+    pub fn status(&self) -> BusStatus {
+        BusStatus {
+            state: self.status.state.borrow().clone()
+        }
     }
 }
 
 struct Internal {
     device: String,
-    keep_running: bool,
     state: Arc<State>,
+    keep_running: bool,
     tx: Sender<BusFrame>,
+    bus_state: watch::Sender<BusState>,
 }
 
 impl Internal {
@@ -59,13 +91,16 @@ impl Internal {
         while self.keep_running {
             match CanSocket::open(&self.device) {
                 Ok(socket) => {
+                    self.bus_state.send_replace(BusState::Connected);
                     if let Err(e) = self.receiver(socket).await {
                         warn!("CAN bus error: {e:?}");
                     }
                 }
                 Err(e) => {
                     if self.keep_running {
-                        warn!("Could not open CAN bus device {}: {}", self.device, e);
+                        let message = format!("Could not open CAN bus device {}: {}", self.device, e);
+                        warn!("{message}");
+                        self.bus_state.send_replace(BusState::Error(message));
                         sleep(Duration::from_secs(5)).await;
                     } else {
                         return;
@@ -73,6 +108,7 @@ impl Internal {
                 }
             }
         }
+        self.bus_state.send_replace(BusState::Disconnected);
     }
     pub async fn receiver(&self, mut socket: CanSocket) -> Result<(), CanError> {
         while let Some(Ok(frame)) = socket.next().await {
