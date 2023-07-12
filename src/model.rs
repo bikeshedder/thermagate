@@ -1,53 +1,46 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, BTreeMap};
 
+use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
+use serde_hex::{SerHex, StrictPfx};
+use time::macros::format_description;
 
 use crate::rotex::{self, HexStr, RotexData};
+
+time::serde::format_description!(hhmm_format, Time, "[hour]:[minute]");
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Data {
+    pub devices: IndexMap<String, Device>,
+    pub parameters: IndexMap<String, Parameter>,
+}
 
 #[derive(Debug)]
 pub struct State {
     pub devices: HashMap<String, Device>,
     pub device_by_address: HashMap<Address, (String, Op)>,
-    pub parameters: HashMap<String, Parameter>,
+    pub parameters: HashMap<String, ParameterType>,
     pub parameter_by_address: HashMap<u16, String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Device {
-    pub name: String,
     pub device_type: DeviceType,
     pub get: Address,
     pub set: Address,
     pub answer: Address,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum DeviceType {
     HeatGeneator,
     HeatingCircuit,
     HeatingCircuitModule,
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct Address(pub u32, pub u8, pub u8, pub u8);
-
-impl Address {
-    pub fn from_rotex_data(data: &(HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>)) -> Self {
-        Self(data.0 .0, data.1 .0, data.2 .0, data.3 .0)
-    }
-}
-
-impl Device {
-    pub fn from_rotex_data(data: &rotex::Device, device_type: DeviceType) -> Self {
-        Self {
-            name: data.name.clone(),
-            device_type,
-            get: Address::from_rotex_data(&data.get),
-            set: Address::from_rotex_data(&data.set),
-            answer: Address::from_rotex_data(&data.answer),
-        }
-    }
-}
 
 #[derive(Debug)]
 pub enum Op {
@@ -56,6 +49,7 @@ pub enum Op {
     Answer,
 }
 
+/*
 impl State {
     pub fn from_rotex_data(data: &RotexData) -> Self {
         let devices = data
@@ -85,31 +79,6 @@ impl State {
             })
             .map(|(name, x)| (name, x))
             .collect::<HashMap<_, _>>();
-        let parameters = data
-            .parameters
-            .iter()
-            .map(|p| {
-                (
-                    p.name.clone(),
-                    match &p.r#type {
-                        crate::rotex::ParameterType::Float { factor, .. } => Parameter::Float {
-                            meta: ParameterMeta {
-                                name: p.name.clone(),
-                            },
-                            factor: factor.0,
-                            value: None,
-                        },
-                        _ => Parameter::Float {
-                            meta: ParameterMeta {
-                                name: p.name.clone(),
-                            },
-                            factor: 1.0,
-                            value: None,
-                        },
-                    },
-                )
-            })
-            .collect::<HashMap<_, _>>();
         let parameter_by_address = data
             .parameters
             .iter()
@@ -123,18 +92,81 @@ impl State {
         }
     }
 }
+ */
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ParameterMeta {
     name: String,
 }
 
+pub enum CanPayloadError {}
+
 #[derive(Debug, Serialize, Deserialize)]
-pub enum Parameter {
-    Float {
-        #[serde(flatten)]
-        meta: ParameterMeta,
-        value: Option<f32>,
-        factor: f32,
-    },
+pub struct BoolParameter {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default: Option<bool>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct IntParameter {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default: Option<u16>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FloatParameter {
+    pub factor: f32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max: Option<f32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default: Option<f32>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct EnumParameter {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub r#in: Option<Vec<u16>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TimeRange {
+    #[serde(with = "hhmm_format")]
+    pub start: time::Time,
+    #[serde(with = "hhmm_format")]
+    pub end: time::Time,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TimeRangeParameter {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default: Option<TimeRange>,
+}
+
+fn is_false(v: &bool) -> bool {
+    !v
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Parameter {
+    pub info_number: u16,
+    #[serde(skip_serializing_if = "is_false")]
+    pub big_endian: bool,
+    #[serde(flatten)]
+    pub r#type: ParameterType,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum ParameterType {
+    Bool(BoolParameter),
+    Int(IntParameter),
+    Float(FloatParameter),
+    Enum(EnumParameter),
+    TimeRange(TimeRangeParameter),
 }

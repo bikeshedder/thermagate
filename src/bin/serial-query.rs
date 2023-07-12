@@ -1,5 +1,5 @@
 use altherma_gateway::serial::reg_query;
-use tokio::io::{AsyncWriteExt, AsyncReadExt};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_serial::SerialPortBuilderExt;
 
 use clap::Parser;

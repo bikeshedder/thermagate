@@ -1,13 +1,17 @@
+use std::collections::{HashMap, BTreeMap};
 use std::fmt;
-use std::io::BufReader;
 use std::marker::PhantomData;
 use std::num::ParseIntError;
-use std::path::Path;
-use std::{fs::File, io};
 
+use indexmap::IndexMap;
+use lazy_static::lazy_static;
+use regex::Regex;
 use serde::de::Unexpected;
 use serde::{Deserialize, Deserializer};
-use thiserror::Error;
+use time::macros::format_description;
+use time::Time;
+
+use crate::model;
 
 pub trait FromHexStr
 where
@@ -28,7 +32,7 @@ impl FromHexStr for u32 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct HexStr<T: FromHexStr>(pub T);
 
 impl<'de, T: FromHexStr> Deserialize<'de> for HexStr<T> {
@@ -124,14 +128,6 @@ impl BoolStr {
     }
 }
 
-#[derive(Error, Debug)]
-pub enum LoadError {
-    #[error("input output error")]
-    IO(#[from] io::Error),
-    #[error("deserialization error")]
-    Deserialize(#[from] serde_json::Error),
-}
-
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RotexData {
@@ -141,12 +137,12 @@ pub struct RotexData {
     pub heating_circuit_modules: Vec<Device>,
 }
 
-impl RotexData {
-    pub fn read(filename: &Path) -> Result<Self, LoadError> {
-        let file = File::open(filename)?;
-        let reader = BufReader::new(file);
-        let data = serde_json::from_reader(reader)?;
-        Ok(data)
+#[derive(Debug, Copy, Clone, Deserialize)]
+pub struct Address(HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>);
+
+impl From<Address> for model::Address {
+    fn from(val: Address) -> Self {
+        model::Address(val.0.0, val.1.0, val.2.0, val.3.0)
     }
 }
 
@@ -154,9 +150,9 @@ impl RotexData {
 #[serde(rename_all = "camelCase")]
 pub struct Device {
     pub name: String,
-    pub get: (HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>),
-    pub set: (HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>),
-    pub answer: (HexStr<u32>, HexStr<u8>, HexStr<u8>, HexStr<u8>),
+    pub get: Address,
+    pub set: Address,
+    pub answer: Address,
 }
 
 #[derive(Debug, Deserialize)]
@@ -172,6 +168,8 @@ pub struct Parameter {
     pub display: BoolStr,
     #[serde(default = "BoolStr::false_value")]
     pub water_circuit: BoolStr,
+    #[serde(default = "BoolStr::false_value")]
+    big_endian: BoolStr,
 }
 
 #[derive(Debug, Deserialize)]
@@ -187,18 +185,65 @@ impl InfoNumber {
     }
 }
 
+#[derive(Debug)]
+pub struct TimeRange {
+    pub start: Time,
+    pub end: Time,
+}
+
+lazy_static! {
+    static ref TIME_RANGE_REGEX: Regex =
+        Regex::new(r"^((?:[01]\d|2[0-3]):(?:00|15|30|45))-((?:[01]\d|2[0-3]):(?:00|15|30|45))$")
+            .unwrap();
+}
+
+impl<'de> Deserialize<'de> for TimeRange {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct TimeRangeVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for TimeRangeVisitor {
+            type Value = TimeRange;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("a string containing a time range in the format HH:MM-HH:MM")
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                let Some(captures) = TIME_RANGE_REGEX.captures(v) else {
+                    return Err(E::invalid_value(Unexpected::Str(v), &self));
+                };
+                let (Some(start), Some(end)) = (captures.get(1), captures.get(2)) else {
+                    return Err(E::invalid_value(Unexpected::Str(v), &self));
+                };
+                let time_format = format_description!("[hour]:[minute]");
+                let start = Time::parse(start.as_str(), time_format)
+                    .map_err(|_| E::invalid_value(Unexpected::Str(v), &self))?;
+                let end = Time::parse(end.as_str(), time_format)
+                    .map_err(|_| E::invalid_value(Unexpected::Str(v), &self))?;
+                Ok(TimeRange { start, end })
+            }
+        }
+
+        let visitor = TimeRangeVisitor;
+
+        deserializer.deserialize_str(visitor)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
 #[serde(rename_all = "camelCase")]
 pub enum ParameterType {
-    #[serde(alias = "bool")]
     Bool {
         default: Option<BoolStr>,
     },
-    #[serde(alias = "int")]
     Int {
-        #[serde(default = "BoolStr::false_value")]
-        big_endian: BoolStr,
         min: Option<U16Str>,
         max: Option<U16Str>,
         default: Option<U16Str>,
@@ -207,23 +252,100 @@ pub enum ParameterType {
         #[serde(alias = "delayedByValue")]
         delayed_by_value: Option<Vec<U16Str>>,
     },
-    #[serde(alias = "float")]
     Float {
-        #[serde(default = "BoolStr::false_value")]
-        big_endian: BoolStr,
         transfer_threshold: Option<F32Str>,
         factor: F32Str,
         min: Option<F32Str>,
         max: Option<F32Str>,
         default: Option<F32Str>,
     },
-    #[serde(alias = "enum")]
     Enum {
-        #[serde(default = "BoolStr::false_value")]
-        big_endian: BoolStr,
         r#in: Option<Vec<U16Str>>,
     },
     TimeRange {
-        default: Option<String>,
+        default: Option<TimeRange>,
     },
+}
+
+impl From<RotexData> for model::Data {
+    fn from(val: RotexData) -> Self {
+        let devices = val
+            .heat_generators
+            .iter()
+            .map(|d| (d, model::DeviceType::HeatGeneator))
+            .chain(
+                val.heating_circuits
+                    .iter()
+                    .map(|d| (d, model::DeviceType::HeatingCircuit)),
+            )
+            .chain(
+                val.heating_circuit_modules
+                    .iter()
+                    .map(|d| (d, model::DeviceType::HeatingCircuit)),
+            )
+            .map(|(d, device_type)| (d.name.clone(), model::Device {
+                device_type,
+                get: d.get.into(),
+                set: d.set.into(),
+                answer: d.answer.into(),
+            }))
+            .collect::<IndexMap<_, _>>();
+        let parameters = val
+            .parameters
+            .iter()
+            .map(|p| {
+                (
+                    p.name.clone(),
+                    model::Parameter {
+                        info_number: p.info_number.as_u16(),
+                        big_endian: p.big_endian.0,
+                        r#type: match &p.r#type {
+                            ParameterType::Bool { default } => {
+                                model::ParameterType::Bool(model::BoolParameter {
+                                    default: default.as_ref().map(|v| v.0),
+                                })
+                            }
+                            ParameterType::Int {
+                                min,
+                                max,
+                                default,
+                                transfer_delay: _,
+                                delayed_by_value: _,
+                            } => model::ParameterType::Int(model::IntParameter {
+                                min: min.as_ref().map(|v| v.0),
+                                max: max.as_ref().map(|v| v.0),
+                                default: default.as_ref().map(|v| v.0),
+                            }),
+                            ParameterType::Float {
+                                transfer_threshold: _,
+                                factor,
+                                min,
+                                max,
+                                default,
+                            } => model::ParameterType::Float(model::FloatParameter {
+                                factor: factor.0,
+                                min: min.as_ref().map(|v| v.0),
+                                max: max.as_ref().map(|v| v.0),
+                                default: default.as_ref().map(|v| v.0),
+                            }),
+                            ParameterType::Enum { r#in } => {
+                                model::ParameterType::Enum(model::EnumParameter {
+                                    r#in: r#in.as_ref().map(|v| v.iter().map(|w| w.0).collect()),
+                                })
+                            }
+                            ParameterType::TimeRange { default } => {
+                                model::ParameterType::TimeRange(model::TimeRangeParameter {
+                                    default: default.as_ref().map(|v| model::TimeRange {
+                                        start: v.start,
+                                        end: v.end,
+                                    }),
+                                })
+                            }
+                        },
+                    },
+                )
+            })
+            .collect::<IndexMap<_, _>>();
+        model::Data { devices, parameters }
+    }
 }

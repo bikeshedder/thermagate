@@ -1,9 +1,7 @@
-use std::future::Future;
 use std::num::NonZeroU32;
 
 use rumqttc::AsyncClient;
 use serde::Serialize;
-
 
 ///
 #[derive(Serialize)]
@@ -249,12 +247,14 @@ impl Sensor {
         device_prefix: &str,
     ) -> Result<(), rumqttc::ClientError> {
         let json = serde_json::to_string(&self).unwrap();
-        client.publish(
-            format!("{hass_discovery_prefix}/sensor/{device_prefix}/HCM2_cAUSSENTEMP/config"),
-            rumqttc::QoS::AtLeastOnce,
-            true,
-            json,
-        ).await
+        client
+            .publish(
+                format!("{hass_discovery_prefix}/sensor/{device_prefix}/HCM2_cAUSSENTEMP/config"),
+                rumqttc::QoS::AtLeastOnce,
+                true,
+                json,
+            )
+            .await
     }
 
     pub async fn value(
@@ -263,11 +263,7 @@ impl Sensor {
         payload: &str,
     ) -> Result<(), rumqttc::ClientError> {
         client
-        .publish(
-            &self.state_topic,
-            rumqttc::QoS::AtLeastOnce,
-            true,
-            payload,
-        ).await
+            .publish(&self.state_topic, rumqttc::QoS::AtLeastOnce, true, payload)
+            .await
     }
 }
