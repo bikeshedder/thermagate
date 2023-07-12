@@ -1,0 +1,239 @@
+[HG1]
+device_type = "heat_geneator"
+get = [1693, 49, 0, 250]
+set = [1693, 48, 0, 250]
+answer = [384, 210, 29, 250]
+
+[HG2]
+device_type = "heat_geneator"
+get = [1693, 49, 1, 250]
+set = [1693, 48, 1, 250]
+answer = [385, 210, 29, 250]
+
+[HG3]
+device_type = "heat_geneator"
+get = [1693, 49, 2, 250]
+set = [1693, 48, 2, 250]
+answer = [386, 210, 29, 250]
+
+[HG4]
+device_type = "heat_geneator"
+get = [1693, 49, 3, 250]
+set = [1693, 48, 3, 250]
+answer = [387, 210, 29, 250]
+
+[HG5]
+device_type = "heat_geneator"
+get = [1693, 49, 4, 250]
+set = [1693, 48, 4, 250]
+answer = [388, 210, 29, 250]
+
+[HG6]
+device_type = "heat_geneator"
+get = [1693, 49, 5, 250]
+set = [1693, 48, 5, 250]
+answer = [389, 210, 29, 250]
+
+[HG7]
+device_type = "heat_geneator"
+get = [1693, 49, 6, 250]
+set = [1693, 48, 6, 250]
+answer = [390, 210, 29, 250]
+
+[HG8]
+device_type = "heat_geneator"
+get = [1693, 49, 7, 250]
+set = [1693, 48, 7, 250]
+answer = [391, 210, 29, 250]
+
+[HC1]
+device_type = "heating_circuit"
+get = [1693, 97, 0, 250]
+set = [1693, 96, 0, 250]
+answer = [768, 210, 29, 250]
+
+[HC2]
+device_type = "heating_circuit"
+get = [1693, 97, 1, 250]
+set = [1693, 96, 1, 250]
+answer = [769, 210, 29, 250]
+
+[HC3]
+device_type = "heating_circuit"
+get = [1693, 97, 2, 250]
+set = [1693, 96, 2, 250]
+answer = [770, 210, 29, 250]
+
+[HC4]
+device_type = "heating_circuit"
+get = [1693, 97, 3, 250]
+set = [1693, 96, 3, 250]
+answer = [771, 210, 29, 250]
+
+[HC5]
+device_type = "heating_circuit"
+get = [1693, 97, 4, 250]
+set = [1693, 96, 4, 250]
+answer = [772, 210, 29, 250]
+
+[HC6]
+device_type = "heating_circuit"
+get = [1693, 97, 5, 250]
+set = [1693, 96, 5, 250]
+answer = [773, 210, 29, 250]
+
+[HC7]
+device_type = "heating_circuit"
+get = [1693, 97, 6, 250]
+set = [1693, 96, 6, 250]
+answer = [774, 210, 29, 250]
+
+[HC8]
+device_type = "heating_circuit"
+get = [1693, 97, 7, 250]
+set = [1693, 96, 7, 250]
+answer = [775, 210, 29, 250]
+
+[HC9]
+device_type = "heating_circuit"
+get = [1693, 97, 8, 250]
+set = [1693, 96, 8, 250]
+answer = [776, 210, 29, 250]
+
+[HC10]
+device_type = "heating_circuit"
+get = [1693, 97, 9, 250]
+set = [1693, 96, 9, 250]
+answer = [777, 210, 29, 250]
+
+[HC11]
+device_type = "heating_circuit"
+get = [1693, 97, 10, 250]
+set = [1693, 96, 10, 250]
+answer = [778, 210, 29, 250]
+
+[HC12]
+device_type = "heating_circuit"
+get = [1693, 97, 11, 250]
+set = [1693, 96, 11, 250]
+answer = [779, 210, 29, 250]
+
+[HC13]
+device_type = "heating_circuit"
+get = [1693, 97, 12, 250]
+set = [1693, 96, 12, 250]
+answer = [780, 210, 29, 250]
+
+[HC14]
+device_type = "heating_circuit"
+get = [1693, 97, 13, 250]
+set = [1693, 96, 13, 250]
+answer = [781, 210, 29, 250]
+
+[HC15]
+device_type = "heating_circuit"
+get = [1693, 97, 14, 250]
+set = [1693, 96, 14, 250]
+answer = [782, 210, 29, 250]
+
+[HC16]
+device_type = "heating_circuit"
+get = [1693, 97, 15, 250]
+set = [1693, 96, 15, 250]
+answer = [783, 210, 29, 250]
+
+[HCM1]
+device_type = "heating_circuit"
+get = [1693, 193, 0, 250]
+set = [1693, 192, 0, 250]
+answer = [1536, 210, 29, 250]
+
+[HCM2]
+device_type = "heating_circuit"
+get = [1693, 193, 1, 250]
+set = [1693, 192, 1, 250]
+answer = [1537, 210, 29, 250]
+
+[HCM3]
+device_type = "heating_circuit"
+get = [1693, 193, 2, 250]
+set = [1693, 192, 2, 250]
+answer = [1538, 210, 29, 250]
+
+[HCM4]
+device_type = "heating_circuit"
+get = [1693, 193, 3, 250]
+set = [1693, 192, 3, 250]
+answer = [1539, 210, 29, 250]
+
+[HCM5]
+device_type = "heating_circuit"
+get = [1693, 193, 4, 250]
+set = [1693, 192, 4, 250]
+answer = [1540, 210, 29, 250]
+
+[HCM6]
+device_type = "heating_circuit"
+get = [1693, 193, 5, 250]
+set = [1693, 192, 5, 250]
+answer = [1541, 210, 29, 250]
+
+[HCM7]
+device_type = "heating_circuit"
+get = [1693, 193, 6, 250]
+set = [1693, 192, 6, 250]
+answer = [1542, 210, 29, 250]
+
+[HCM8]
+device_type = "heating_circuit"
+get = [1693, 193, 7, 250]
+set = [1693, 192, 7, 250]
+answer = [1543, 210, 29, 250]
+
+[HCM9]
+device_type = "heating_circuit"
+get = [1693, 193, 8, 250]
+set = [1693, 192, 8, 250]
+answer = [1544, 210, 29, 250]
+
+[HCM10]
+device_type = "heating_circuit"
+get = [1693, 193, 9, 250]
+set = [1693, 192, 9, 250]
+answer = [1545, 210, 29, 250]
+
+[HCM11]
+device_type = "heating_circuit"
+get = [1693, 193, 10, 250]
+set = [1693, 192, 10, 250]
+answer = [1546, 210, 29, 250]
+
+[HCM12]
+device_type = "heating_circuit"
+get = [1693, 193, 11, 250]
+set = [1693, 192, 11, 250]
+answer = [1547, 210, 29, 250]
+
+[HCM13]
+device_type = "heating_circuit"
+get = [1693, 193, 12, 250]
+set = [1693, 192, 12, 250]
+answer = [1548, 210, 29, 250]
+
+[HCM14]
+device_type = "heating_circuit"
+get = [1693, 193, 13, 250]
+set = [1693, 192, 13, 250]
+answer = [1549, 210, 29, 250]
+
+[HCM15]
+device_type = "heating_circuit"
+get = [1693, 193, 14, 250]
+set = [1693, 192, 14, 250]
+answer = [1550, 210, 29, 250]
+
+[HCM16]
+device_type = "heating_circuit"
+get = [1693, 193, 15, 250]
+set = [1693, 192, 15, 250]
+answer = [1551, 210, 29, 250]

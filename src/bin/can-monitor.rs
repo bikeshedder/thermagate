@@ -3,12 +3,13 @@ use std::path::Path;
 use futures_util::stream::StreamExt;
 use socketcan::{tokio::CanSocket, EmbeddedFrame, Frame};
 
-use altherma_gateway::model::{Address, Parameter, State};
+use altherma_gateway::model::{Address, Parameter, State, ParameterType, FloatParameter, Data};
 use altherma_gateway::rotex::RotexData;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let rotex_data = RotexData::read(Path::new("rotex-data.json"))?;
+
+    let rotex_data = RotexData::read(Path::new("data.toml"))?;
 
     let state = State::from_rotex_data(&rotex_data);
     println!("{:?}", state);
@@ -25,15 +26,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     };
                     let p = ((*p0 as u16) << 8) + (*p1 as u16);
-                    let v = ((*v0 as u16) << 8) + (*v1 as u16);
-                    let v = v as i16;
                     let Some(p_name) = state.parameter_by_address.get(&p) else {
                         println!("Unknown parameter: {}", p);
                         continue;
                     };
+                    let v = ((*v0 as u16) << 8) + (*v1 as u16);
+                    let v = v as i16;
                     let param = &state.parameters[p_name];
-                    match param {
-                        Parameter::Float { factor, .. } => {
+                    match param.r#type {
+                        ParameterType::Float(FloatParameter { factor, .. }) => {
                             let value = if v == i16::MIN {
                                 None
                             } else {
@@ -46,6 +47,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 p_name,
                                 value.map(|v| v.to_string()).unwrap_or("null".into())
                             );
+                        }
+                        _ => {
+
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 fn crc(buf: &[u8]) -> u8 {
-    !buf.iter().fold(0u8, |s, &b| { s.wrapping_add(b) })
+    !buf.iter().fold(0u8, |s, &b| s.wrapping_add(b))
 }
 
 pub fn reg_query(reg_id: u8) -> Vec<u8> {

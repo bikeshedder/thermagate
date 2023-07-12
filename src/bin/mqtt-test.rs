@@ -27,7 +27,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ..Default::default()
     };
 
-    sensor.register(&client, hass_discovery_prefix, device_prefix).await?;
+    sensor
+        .register(&client, hass_discovery_prefix, device_prefix)
+        .await?;
     sensor.value(&client, "30.8").await?;
 
     while let Ok(notification) = eventloop.poll().await {

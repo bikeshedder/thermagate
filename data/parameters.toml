@@ -1,0 +1,1446 @@
+[cGERAETE_KENNUNG]
+info_number = 328
+type = "enum"
+
+[cAUSSENTEMP]
+info_number = 12
+type = "float"
+factor = 10.0
+
+[cAUSSENTEMP_WAERMEPUMPE]
+info_number = 2572
+type = "float"
+factor = 10.0
+
+[cTAG]
+info_number = 290
+big_endian = true
+type = "int"
+
+[cMONAT]
+info_number = 291
+big_endian = true
+type = "int"
+
+[cJAHR]
+info_number = 292
+big_endian = true
+type = "int"
+
+[cSTUNDE]
+info_number = 293
+big_endian = true
+type = "int"
+
+[cMINUTE]
+info_number = 294
+big_endian = true
+type = "int"
+
+[cPROGRAMMSCHALTER]
+info_number = 274
+big_endian = true
+type = "enum"
+in = [1, 3, 4, 5, 11, 12, 17]
+
+[cSPEICHERISTTEMP]
+info_number = 14
+type = "float"
+factor = 10.0
+
+[cVERSTELLTE_SPEICHERSOLLTEMP]
+info_number = 3
+type = "float"
+factor = 10.0
+min = 10.0
+max = 70.0
+default = 48.0
+
+[cEINSTELL_SPEICHERSOLLTEMP]
+info_number = 19
+type = "float"
+factor = 10.0
+min = 10.0
+max = 70.0
+default = 48.0
+
+[cEINSTELL_SPEICHERSOLLTEMP2]
+info_number = 2566
+type = "float"
+factor = 10.0
+min = 10.0
+max = 70.0
+default = 48.0
+
+[cEINSTELL_SPEICHERSOLLTEMP3]
+info_number = 318
+type = "float"
+factor = 10.0
+min = 10.0
+max = 70.0
+default = 48.0
+
+[cW_WASSERPROG_1]
+info_number = 5888
+type = "time_range"
+
+[cW_WASSERPROG_1_MO]
+info_number = 5904
+type = "time_range"
+
+[cW_WASSERPROG_1_MO.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_MO_SCHALT_2]
+info_number = 5905
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_MO_SCHALT_3]
+info_number = 5906
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_DI]
+info_number = 5920
+type = "time_range"
+
+[cW_WASSERPROG_1_DI.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_DI_SCHALT_2]
+info_number = 5921
+type = "time_range"
+
+[cW_WASSERPROG_1_DI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_DI_SCHALT_3]
+info_number = 5922
+type = "time_range"
+
+[cW_WASSERPROG_1_DI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_MI]
+info_number = 5936
+type = "time_range"
+
+[cW_WASSERPROG_1_MI.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_MI_SCHALT_2]
+info_number = 5937
+type = "time_range"
+
+[cW_WASSERPROG_1_MI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_MI_SCHALT_3]
+info_number = 5938
+type = "time_range"
+
+[cW_WASSERPROG_1_MI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_DO]
+info_number = 5952
+type = "time_range"
+
+[cW_WASSERPROG_1_DO.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_DO_SCHALT_2]
+info_number = 5953
+type = "time_range"
+
+[cW_WASSERPROG_1_DO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_DO_SCHALT_3]
+info_number = 5954
+type = "time_range"
+
+[cW_WASSERPROG_1_DO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_FR]
+info_number = 5968
+type = "time_range"
+
+[cW_WASSERPROG_1_FR.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_FR_SCHALT_2]
+info_number = 5969
+type = "time_range"
+
+[cW_WASSERPROG_1_FR_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_FR_SCHALT_3]
+info_number = 5970
+type = "time_range"
+
+[cW_WASSERPROG_1_FR_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_SA]
+info_number = 5984
+type = "time_range"
+
+[cW_WASSERPROG_1_SA.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_SA_SCHALT_2]
+info_number = 5985
+type = "time_range"
+
+[cW_WASSERPROG_1_SA_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_SA_SCHALT_3]
+info_number = 5986
+type = "time_range"
+
+[cW_WASSERPROG_1_SA_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_SO]
+info_number = 6000
+type = "time_range"
+
+[cW_WASSERPROG_1_SO.default]
+start = "00:00"
+end = "23:45"
+
+[cW_WASSERPROG_1_SO_SCHALT_2]
+info_number = 6001
+type = "time_range"
+
+[cW_WASSERPROG_1_SO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_SO_SCHALT_3]
+info_number = 6002
+type = "time_range"
+
+[cW_WASSERPROG_1_SO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_1_MO_FR]
+info_number = 6016
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_FR_SCHALT_2]
+info_number = 6017
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_FR_SCHALT_3]
+info_number = 6018
+type = "time_range"
+
+[cW_WASSERPROG_1_SA_SO]
+info_number = 6032
+type = "time_range"
+
+[cW_WASSERPROG_1_SA_SO_SCHALT_2]
+info_number = 6033
+type = "time_range"
+
+[cW_WASSERPROG_1_SA_SO_SCHALT_3]
+info_number = 6034
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_SO]
+info_number = 6048
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_SO_SCHALT_2]
+info_number = 6049
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_SO_SCHALT_3]
+info_number = 6050
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_DO]
+info_number = 6064
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_DO_SCHALT_2]
+info_number = 6065
+type = "time_range"
+
+[cW_WASSERPROG_1_MO_DO_SCHALT_3]
+info_number = 6066
+type = "time_range"
+
+[cW_WASSERPROG_2]
+info_number = 6144
+type = "time_range"
+
+[cW_WASSERPROG_2_MO]
+info_number = 6160
+type = "time_range"
+
+[cW_WASSERPROG_2_MO.default]
+start = "05:00"
+end = "21:00"
+
+[cW_WASSERPROG_2_MO_SCHALT_2]
+info_number = 6161
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_MO_SCHALT_3]
+info_number = 6162
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_DI]
+info_number = 6176
+type = "time_range"
+
+[cW_WASSERPROG_2_DI.default]
+start = "05:00"
+end = "21:00"
+
+[cW_WASSERPROG_2_DI_SCHALT_2]
+info_number = 6177
+type = "time_range"
+
+[cW_WASSERPROG_2_DI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_DI_SCHALT_3]
+info_number = 6178
+type = "time_range"
+
+[cW_WASSERPROG_2_DI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_MI]
+info_number = 6192
+type = "time_range"
+
+[cW_WASSERPROG_2_MI.default]
+start = "05:00"
+end = "21:00"
+
+[cW_WASSERPROG_2_MI_SCHALT_2]
+info_number = 6193
+type = "time_range"
+
+[cW_WASSERPROG_2_MI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_MI_SCHALT_3]
+info_number = 6194
+type = "time_range"
+
+[cW_WASSERPROG_2_MI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_DO]
+info_number = 6208
+type = "time_range"
+
+[cW_WASSERPROG_2_DO.default]
+start = "05:00"
+end = "21:00"
+
+[cW_WASSERPROG_2_DO_SCHALT_2]
+info_number = 6209
+type = "time_range"
+
+[cW_WASSERPROG_2_DO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_DO_SCHALT_3]
+info_number = 6210
+type = "time_range"
+
+[cW_WASSERPROG_2_DO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_FR]
+info_number = 6224
+type = "time_range"
+
+[cW_WASSERPROG_2_FR.default]
+start = "05:00"
+end = "21:00"
+
+[cW_WASSERPROG_2_FR_SCHALT_2]
+info_number = 6225
+type = "time_range"
+
+[cW_WASSERPROG_2_FR_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_FR_SCHALT_3]
+info_number = 6226
+type = "time_range"
+
+[cW_WASSERPROG_2_FR_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_SA]
+info_number = 6240
+type = "time_range"
+
+[cW_WASSERPROG_2_SA.default]
+start = "06:00"
+end = "22:00"
+
+[cW_WASSERPROG_2_SA_SCHALT_2]
+info_number = 6241
+type = "time_range"
+
+[cW_WASSERPROG_2_SA_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_SA_SCHALT_3]
+info_number = 6242
+type = "time_range"
+
+[cW_WASSERPROG_2_SA_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_SO]
+info_number = 6256
+type = "time_range"
+
+[cW_WASSERPROG_2_SO.default]
+start = "06:00"
+end = "22:00"
+
+[cW_WASSERPROG_2_SO_SCHALT_2]
+info_number = 6257
+type = "time_range"
+
+[cW_WASSERPROG_2_SO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_SO_SCHALT_3]
+info_number = 6258
+type = "time_range"
+
+[cW_WASSERPROG_2_SO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cW_WASSERPROG_2_MO_FR]
+info_number = 6272
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_FR_SCHALT_2]
+info_number = 6273
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_FR_SCHALT_3]
+info_number = 6274
+type = "time_range"
+
+[cW_WASSERPROG_2_SA_SO]
+info_number = 6288
+type = "time_range"
+
+[cW_WASSERPROG_2_SA_SO_SCHALT_2]
+info_number = 6289
+type = "time_range"
+
+[cW_WASSERPROG_2_SA_SO_SCHALT_3]
+info_number = 6290
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_SO]
+info_number = 6304
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_SO_SCHALT_2]
+info_number = 6305
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_SO_SCHALT_3]
+info_number = 6306
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_DO]
+info_number = 6320
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_DO_SCHALT_2]
+info_number = 6321
+type = "time_range"
+
+[cW_WASSERPROG_2_MO_DO_SCHALT_3]
+info_number = 6322
+type = "time_range"
+
+[cEINMAL_WW_AKTIV]
+info_number = 324
+type = "bool"
+default = false
+
+[cWW_AKTIV]
+info_number = 94
+type = "int"
+
+[cRAUMISTTEMP]
+info_number = 17
+type = "float"
+factor = 10.0
+
+[cVERSTELLTE_RAUMSOLLTEMP]
+info_number = 18
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+
+[cRAUMSOLLTEMP_I]
+info_number = 5
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+default = 20.0
+
+[cRAUMSOLLTEMP_II]
+info_number = 6
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+default = 20.0
+
+[cRAUMSOLLTEMP_III]
+info_number = 7
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+default = 20.0
+
+[eNACHTRAUMSOLLTEMP]
+info_number = 8
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+default = 15.0
+
+[cHEIZPROG_1]
+info_number = 5120
+type = "time_range"
+
+[cHEIZPROG_1_MO]
+info_number = 5136
+type = "time_range"
+
+[cHEIZPROG_1_MO.default]
+start = "06:00"
+end = "22:00"
+
+[cHEIZPROG_1_MO_SCHALT_2]
+info_number = 5137
+type = "time_range"
+
+[cHEIZPROG_1_MO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_MO_SCHALT_3]
+info_number = 5138
+type = "time_range"
+
+[cHEIZPROG_1_MO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_DI]
+info_number = 5152
+type = "time_range"
+
+[cHEIZPROG_1_DI.default]
+start = "06:00"
+end = "22:00"
+
+[cHEIZPROG_1_DI_SCHALT_2]
+info_number = 5153
+type = "time_range"
+
+[cHEIZPROG_1_DI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_DI_SCHALT_3]
+info_number = 5154
+type = "time_range"
+
+[cHEIZPROG_1_DI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_MI]
+info_number = 5168
+type = "time_range"
+
+[cHEIZPROG_1_MI.default]
+start = "06:00"
+end = "22:00"
+
+[cHEIZPROG_1_MI_SCHALT_2]
+info_number = 5169
+type = "time_range"
+
+[cHEIZPROG_1_MI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_MI_SCHALT_3]
+info_number = 5170
+type = "time_range"
+
+[cHEIZPROG_1_MI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_DO]
+info_number = 5184
+type = "time_range"
+
+[cHEIZPROG_1_DO.default]
+start = "06:00"
+end = "22:00"
+
+[cHEIZPROG_1_DO_SCHALT_2]
+info_number = 5185
+type = "time_range"
+
+[cHEIZPROG_1_DO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_DO_SCHALT_3]
+info_number = 5186
+type = "time_range"
+
+[cHEIZPROG_1_DO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_FR]
+info_number = 5200
+type = "time_range"
+
+[cHEIZPROG_1_FR.default]
+start = "06:00"
+end = "22:00"
+
+[cHEIZPROG_1_FR_SCHALT_2]
+info_number = 5201
+type = "time_range"
+
+[cHEIZPROG_1_FR_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_FR_SCHALT_3]
+info_number = 5202
+type = "time_range"
+
+[cHEIZPROG_1_FR_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_SA]
+info_number = 5216
+type = "time_range"
+
+[cHEIZPROG_1_SA.default]
+start = "07:00"
+end = "23:00"
+
+[cHEIZPROG_1_SA_SCHALT_2]
+info_number = 5217
+type = "time_range"
+
+[cHEIZPROG_1_SA_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_SA_SCHALT_3]
+info_number = 5218
+type = "time_range"
+
+[cHEIZPROG_1_SA_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_SO]
+info_number = 5232
+type = "time_range"
+
+[cHEIZPROG_1_SO.default]
+start = "07:00"
+end = "23:00"
+
+[cHEIZPROG_1_SO_SCHALT_2]
+info_number = 5233
+type = "time_range"
+
+[cHEIZPROG_1_SO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_SO_SCHALT_3]
+info_number = 5234
+type = "time_range"
+
+[cHEIZPROG_1_SO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_1_MO_FR]
+info_number = 5248
+type = "time_range"
+
+[cHEIZPROG_1_MO_FR_SCHALT_2]
+info_number = 5249
+type = "time_range"
+
+[cHEIZPROG_1_MO_FR_SCHALT_3]
+info_number = 5250
+type = "time_range"
+
+[cHEIZPROG_1_SA_SO]
+info_number = 5264
+type = "time_range"
+
+[cHEIZPROG_1_SA_SO_SCHALT_2]
+info_number = 5265
+type = "time_range"
+
+[cHEIZPROG_1_SA_SO_SCHALT_3]
+info_number = 5266
+type = "time_range"
+
+[cHEIZPROG_1_MO_SO]
+info_number = 5280
+type = "time_range"
+
+[cHEIZPROG_1_MO_SO_SCHALT_2]
+info_number = 5281
+type = "time_range"
+
+[cHEIZPROG_1_MO_SO_SCHALT_3]
+info_number = 5282
+type = "time_range"
+
+[cHEIZPROG_1_MO_DO]
+info_number = 5296
+type = "time_range"
+
+[cHEIZPROG_1_MO_DO_SCHALT_2]
+info_number = 5297
+type = "time_range"
+
+[cHEIZPROG_1_MO_DO_SCHALT_3]
+info_number = 5298
+type = "time_range"
+
+[cHEIZPROG_2]
+info_number = 5376
+type = "time_range"
+
+[cHEIZPROG_2_MO]
+info_number = 5392
+type = "time_range"
+
+[cHEIZPROG_2_MO.default]
+start = "06:00"
+end = "08:00"
+
+[cHEIZPROG_2_MO_SCHALT_2]
+info_number = 5393
+type = "time_range"
+
+[cHEIZPROG_2_MO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_MO_SCHALT_3]
+info_number = 5394
+type = "time_range"
+
+[cHEIZPROG_2_MO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_DI]
+info_number = 5408
+type = "time_range"
+
+[cHEIZPROG_2_DI.default]
+start = "06:00"
+end = "08:00"
+
+[cHEIZPROG_2_DI_SCHALT_2]
+info_number = 5409
+type = "time_range"
+
+[cHEIZPROG_2_DI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_DI_SCHALT_3]
+info_number = 5410
+type = "time_range"
+
+[cHEIZPROG_2_DI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_MI]
+info_number = 5424
+type = "time_range"
+
+[cHEIZPROG_2_MI.default]
+start = "06:00"
+end = "08:00"
+
+[cHEIZPROG_2_MI_SCHALT_2]
+info_number = 5425
+type = "time_range"
+
+[cHEIZPROG_2_MI_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_MI_SCHALT_3]
+info_number = 5426
+type = "time_range"
+
+[cHEIZPROG_2_MI_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_DO]
+info_number = 5440
+type = "time_range"
+
+[cHEIZPROG_2_DO.default]
+start = "06:00"
+end = "08:00"
+
+[cHEIZPROG_2_DO_SCHALT_2]
+info_number = 5441
+type = "time_range"
+
+[cHEIZPROG_2_DO_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_DO_SCHALT_3]
+info_number = 5442
+type = "time_range"
+
+[cHEIZPROG_2_DO_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_FR]
+info_number = 5456
+type = "time_range"
+
+[cHEIZPROG_2_FR.default]
+start = "06:00"
+end = "08:00"
+
+[cHEIZPROG_2_FR_SCHALT_2]
+info_number = 5457
+type = "time_range"
+
+[cHEIZPROG_2_FR_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_FR_SCHALT_3]
+info_number = 5458
+type = "time_range"
+
+[cHEIZPROG_2_FR_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_SA]
+info_number = 5472
+type = "time_range"
+
+[cHEIZPROG_2_SA.default]
+start = "07:00"
+end = "23:00"
+
+[cHEIZPROG_2_SA_SCHALT_2]
+info_number = 5473
+type = "time_range"
+
+[cHEIZPROG_2_SA_SCHALT_2.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_SA_SCHALT_3]
+info_number = 5474
+type = "time_range"
+
+[cHEIZPROG_2_SA_SCHALT_3.default]
+start = "00:00"
+end = "00:00"
+
+[cHEIZPROG_2_SO]
+info_number = 5488
+type = "time_range"
+
+[cHEIZPROG_2_SO.default]
+start = "07:00"
+end = "23:00"
+
+[cHEIZPROG_2_SO_SCHALT_2]
+info_number = 5489
+type = "time_range"
+
+[cHEIZPROG_2_SO_SCHALT_3]
+info_number = 5490
+type = "time_range"
+
+[cHEIZPROG_2_MO_FR]
+info_number = 5504
+type = "time_range"
+
+[cHEIZPROG_2_MO_FR_SCHALT_2]
+info_number = 5505
+type = "time_range"
+
+[cHEIZPROG_2_MO_FR_SCHALT_3]
+info_number = 5506
+type = "time_range"
+
+[cHEIZPROG_2_SA_SO]
+info_number = 5520
+type = "time_range"
+
+[cHEIZPROG_2_SA_SO_SCHALT_2]
+info_number = 5521
+type = "time_range"
+
+[cHEIZPROG_2_SA_SO_SCHALT_3]
+info_number = 5522
+type = "time_range"
+
+[cHEIZPROG_2_MO_SO]
+info_number = 5536
+type = "time_range"
+
+[cHEIZPROG_2_MO_SO_SCHALT_2]
+info_number = 5537
+type = "time_range"
+
+[cHEIZPROG_2_MO_SO_SCHALT_3]
+info_number = 5538
+type = "time_range"
+
+[cHEIZPROG_2_MO_DO]
+info_number = 5552
+type = "time_range"
+
+[cHEIZPROG_2_MO_DO_SCHALT_2]
+info_number = 5553
+type = "time_range"
+
+[cHEIZPROG_2_MO_DO_SCHALT_3]
+info_number = 5554
+type = "time_range"
+
+[cSOFTWARE_NUMMER]
+info_number = 409
+type = "int"
+
+[cSOFTWARE_VERSION]
+info_number = 410
+type = "int"
+
+[cSOFTWARE_UNTERINDEX]
+info_number = 587
+type = "int"
+
+[cMODUS_PARTY_DAUER]
+info_number = 4952
+type = "int"
+min = 0
+max = 360
+default = 0
+
+[cMODUS_URLAUB_ANFANG_TAG]
+info_number = 283
+big_endian = true
+type = "int"
+min = 0
+max = 31
+default = 2
+
+[cMODUS_URLAUB_ANFANG_MONAT]
+info_number = 284
+big_endian = true
+type = "int"
+min = 0
+max = 12
+default = 1
+
+[cMODUS_URLAUB_ANFANG_JAHR]
+info_number = 285
+big_endian = true
+type = "int"
+min = 0
+max = 49
+default = 1
+
+[cMODUS_URLAUB_ENDE_TAG]
+info_number = 286
+big_endian = true
+type = "int"
+min = 0
+max = 31
+default = 3
+
+[cMODUS_URLAUB_ENDE_MONAT]
+info_number = 287
+big_endian = true
+type = "int"
+min = 0
+max = 12
+default = 1
+
+[cMODUS_URLAUB_ENDE_JAHR]
+info_number = 288
+big_endian = true
+type = "int"
+min = 0
+max = 49
+default = 1
+
+[cKESSELISTTEMP]
+info_number = 13
+type = "float"
+factor = 10.0
+
+[cKESSELSOLLTEMP]
+info_number = 2
+type = "float"
+factor = 10.0
+min = 40.0
+max = 80.0
+default = 55.0
+
+[cRUECKLAUFTEMP]
+info_number = 22
+type = "float"
+factor = 10.0
+
+[cVOLUMENSTROM]
+info_number = 474
+type = "float"
+factor = 1.0
+
+[cPWM_SIGNAL]
+info_number = 49399
+type = "enum"
+
+[cMISCHERSTELLUNG_1_3UV1]
+info_number = 1691
+type = "enum"
+
+[cMISCHERSTELLUNG_2_3UVB]
+info_number = 49403
+type = "enum"
+
+[cT_TVBH1]
+info_number = 49410
+type = "float"
+factor = 10.0
+
+[cT_TVBHMIX]
+info_number = 49406
+type = "float"
+factor = 10.0
+
+[cT_TVBH]
+info_number = 49599
+type = "float"
+factor = 10.0
+
+[cDEFROST_AKTIV]
+info_number = 49398
+type = "enum"
+
+[cPUMPENLAUFZEIT]
+info_number = 1700
+type = "int"
+
+[cKOMPRESSORLAUFZEIT]
+info_number = 1701
+type = "int"
+
+[cVMIN_A1]
+info_number = 1633
+type = "float"
+factor = 1.0
+
+[cVMIN_WP]
+info_number = 1672
+type = "float"
+factor = 1.0
+
+[cVMIN_GCU]
+info_number = 49309
+type = "float"
+factor = 1.0
+
+[cFEHLER_AKTUELL]
+info_number = 5000
+type = "int"
+
+[eZEITMASTER]
+info_number = 2591
+big_endian = true
+type = "int"
+
+[eSCHALTSCHWELLE_TDHW]
+info_number = 49331
+type = "float"
+factor = 10.0
+
+[eSONDERFKT_SCHALTKONTAKT]
+info_number = 49329
+type = "float"
+factor = 10.0
+
+[eWARTEZEIT_SONDERFKT]
+info_number = 49330
+type = "float"
+factor = 10.0
+
+[eWASSER_MAX_DRUCKVERLUST]
+info_number = 1830
+type = "float"
+factor = 1000.0
+
+[eWASSER_MAXIMALDRUCK]
+info_number = 1831
+type = "float"
+factor = 1000.0
+
+[eWASSER_MINIMALDRUCK]
+info_number = 1832
+type = "float"
+factor = 1000.0
+
+[eWASSER_SOLLDRUCK]
+info_number = 1829
+type = "float"
+factor = 1000.0
+
+[eWP_FLUESTERBETRIEB]
+info_number = 1686
+type = "float"
+factor = 10.0
+
+[eWP_LEISTUNG_HEIZSTAB_S1]
+info_number = 1641
+type = "float"
+factor = 10.0
+
+[eWP_LEISTUNG_HEIZSTAB_S2]
+info_number = 1642
+type = "float"
+factor = 10.0
+
+[eWP_LEISTUNG_HZU_BIV]
+info_number = 1643
+type = "float"
+factor = 10.0
+
+[eWP_MAX_TEMP_HEIZUNG]
+info_number = 1646
+type = "float"
+factor = 10.0
+
+[eWP_MOD_HYST_DURCHFLUSS]
+info_number = 1666
+type = "float"
+factor = 10.0
+
+[eWP_SOLLWERT_ANPASSUNG_HEIZEN]
+info_number = 1696
+type = "float"
+factor = 10.0
+
+[eWP_SOLLWERT_ANPASSUNG_KUEHLEN]
+info_number = 1697
+type = "float"
+factor = 10.0
+
+[eWP_SPREIZUNG_HZ_BETRIEB]
+info_number = 1667
+type = "float"
+factor = 10.0
+
+[eWP_SPREIZUNG_WW_BETRIEB]
+info_number = 1668
+type = "float"
+factor = 10.0
+
+[eWP_START_MAX_TEMP]
+info_number = 1676
+type = "float"
+factor = 10.0
+
+[eWP_VERZ_ZEIT_PUMPE]
+info_number = 1669
+type = "float"
+factor = 10.0
+
+[eABSENKOPTIMIERUNG]
+info_number = 302
+type = "int"
+
+[eADAPTION]
+info_number = 277
+big_endian = true
+type = "int"
+
+[eAUFHEIZOPTIMIERUNG]
+info_number = 259
+big_endian = true
+type = "int"
+
+[eFROSTSCHUTZTEMP]
+info_number = 2560
+type = "float"
+factor = 10.0
+
+[eHEIZGRENZE_NACHT]
+info_number = 279
+type = "float"
+factor = 10.0
+
+[eHEIZGRENZE_TAG]
+info_number = 278
+type = "float"
+factor = 10.0
+
+[eHZK_FUNKTION]
+info_number = 321
+type = "int"
+
+[eHZKKURVE]
+info_number = 270
+type = "float"
+factor = 10.0
+
+[eKUEHLSOLLWERT_KORR_HZK_0]
+info_number = 4953
+type = "float"
+factor = 10.0
+
+[eMAX_AUFHEIZVORVERLEGUNG]
+info_number = 272
+type = "int"
+
+[eMAX_KUEHLEN_AUSSENTEMP_HZK0]
+info_number = 4956
+type = "float"
+factor = 10.0
+
+[eMAX_VORLAUFTEMP]
+info_number = 40
+type = "float"
+factor = 10.0
+
+[eMIN_VORLAUFTEMP]
+info_number = 299
+type = "float"
+factor = 10.0
+
+[eRAUMEINFLUSS]
+info_number = 271
+big_endian = true
+type = "float"
+factor = 10.0
+
+[eSTART_KUEHLEN_AUSSENTEMP_HZK0]
+info_number = 5045
+type = "float"
+factor = 10.0
+
+[eVL_SOLL_MAX_KUEHLEN_HZK0]
+info_number = 4958
+type = "float"
+factor = 10.0
+
+[eVL_SOLL_START_KUEHLEN_HZK_0]
+info_number = 4957
+type = "float"
+factor = 10.0
+
+[eVORLAUFSOLLTEMP_NACHT]
+info_number = 298
+type = "float"
+factor = 10.0
+
+[eVORLAUFSOLLTEMP_TAG]
+info_number = 297
+type = "float"
+factor = 10.0
+min = 10.0
+max = 70.0
+
+[eWP_AUSSENGERAET]
+info_number = 1690
+type = "float"
+factor = 10.0
+
+[eWP_HT_NT_FKT_ANSCHLUSS]
+info_number = 1648
+type = "float"
+factor = 10.0
+
+[eWP_HT_NT_FUNKTION]
+info_number = 1647
+type = "float"
+factor = 10.0
+
+[eWP_INNENGERAET]
+info_number = 1689
+type = "float"
+factor = 10.0
+
+[eWP_INTERLINKFUNKTION]
+info_number = 1657
+type = "float"
+factor = 10.0
+
+[eWP_MODUS_SMART_GRID]
+info_number = 1684
+type = "float"
+factor = 10.0
+
+[eWP_PWM_LEISTUNG_MAX]
+info_number = 1662
+type = "float"
+factor = 10.0
+
+[eWP_PWM_LEISTUNG_MIN]
+info_number = 1663
+type = "float"
+factor = 10.0
+
+[eWP_RAUMTHERMOSTAT]
+info_number = 1656
+type = "float"
+factor = 10.0
+
+[eWP_SMART_GRID]
+info_number = 1683
+type = "float"
+factor = 10.0
+
+[eANTILEG_START_ZEIT]
+info_number = 64847
+big_endian = true
+type = "float"
+factor = 10.0
+
+[eANTILEG_TEMP]
+info_number = 1415
+type = "float"
+factor = 10.0
+
+[eZIRKPUMPE_BEI_WWFREIGABE]
+info_number = 386
+type = "int"
+
+[eABWESEND_RAUMSOLLTEMP]
+info_number = 317
+type = "float"
+factor = 10.0
+min = 5.0
+max = 40.0
+default = 15.0
+
+[eWP_HYSTERESE_DHW]
+info_number = 1681
+type = "float"
+factor = 10.0
+
+[eWP_WARTEZEIT_BOH]
+info_number = 1682
+type = "float"
+factor = 10.0
+
+[eFEIERTAGENDE_JAHR]
+info_number = 4949
+type = "int"
+
+[eVORLAUFSOLLTEMP]
+info_number = 4
+type = "float"
+factor = 10.0
+
+[eVORLAUFISTTEMP]
+info_number = 15
+type = "float"
+factor = 10.0
