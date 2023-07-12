@@ -1,18 +1,19 @@
-use std::path::Path;
+use std::collections::HashMap;
 
+use altherma_gateway::utils::read_toml;
 use futures_util::stream::StreamExt;
 use socketcan::{tokio::CanSocket, EmbeddedFrame, Frame};
 
-use altherma_gateway::model::{Address, Parameter, State, ParameterType, FloatParameter, Data};
-use altherma_gateway::rotex::RotexData;
+use altherma_gateway::model::{
+    Address, Device, FloatParameter, Parameter, ParameterType, State,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let devices: HashMap<String, Device> = read_toml("data/devices.toml")?;
+    let parameters: HashMap<String, Parameter> = read_toml("data/parameters.toml")?;
 
-    let rotex_data = RotexData::read(Path::new("data.toml"))?;
-
-    let state = State::from_rotex_data(&rotex_data);
-    println!("{:?}", state);
+    let state = State::new(devices, parameters);
 
     let mut socket_rx = CanSocket::open("can0")?;
     //let socket_tx = CanSocket::open("vcan0")?;
@@ -48,9 +49,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 value.map(|v| v.to_string()).unwrap_or("null".into())
                             );
                         }
-                        _ => {
-
-                        }
+                        _ => {}
                     }
                 }
                 x => {
