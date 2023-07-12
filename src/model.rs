@@ -1,11 +1,7 @@
-use std::collections::{HashMap, BTreeMap};
+use std::collections::HashMap;
 
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
-use serde_hex::{SerHex, StrictPfx};
-use time::macros::format_description;
-
-use crate::rotex::{self, HexStr, RotexData};
 
 time::serde::format_description!(hhmm_format, Time, "[hour]:[minute]");
 
@@ -19,8 +15,34 @@ pub struct Data {
 pub struct State {
     pub devices: HashMap<String, Device>,
     pub device_by_address: HashMap<Address, (String, Op)>,
-    pub parameters: HashMap<String, ParameterType>,
+    pub parameters: HashMap<String, Parameter>,
     pub parameter_by_address: HashMap<u16, String>,
+}
+
+impl State {
+    pub fn new(devices: HashMap<String, Device>, parameters: HashMap<String, Parameter>) -> Self {
+        let device_by_address = devices
+            .iter()
+            .flat_map(|(name, device)| {
+                [
+                    (device.get, (name.clone(), Op::Get)),
+                    (device.set, (name.clone(), Op::Set)),
+                    (device.answer, (name.clone(), Op::Answer)),
+                ]
+            })
+            .map(|(name, x)| (name, x))
+            .collect::<HashMap<_, _>>();
+        let parameter_by_address = parameters
+            .iter()
+            .map(|(name, parameter)| (parameter.info_number, name.clone()))
+            .collect::<HashMap<_, _>>();
+        Self {
+            devices,
+            device_by_address,
+            parameters,
+            parameter_by_address,
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
