@@ -11,7 +11,7 @@ pub enum ReadTomlError {
     #[error("I/O error")]
     IO(#[from] io::Error),
     #[error("Toml parsing failed")]
-    Toml(#[from] toml::de::Error)
+    Toml(#[from] toml::de::Error),
 }
 
 pub fn read_toml<T: DeserializeOwned, P: AsRef<Path>>(path: P) -> Result<T, ReadTomlError> {

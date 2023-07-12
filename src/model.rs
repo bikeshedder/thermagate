@@ -64,57 +64,12 @@ pub enum DeviceType {
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct Address(pub u32, pub u8, pub u8, pub u8);
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum Op {
     Get,
     Set,
     Answer,
 }
-
-/*
-impl State {
-    pub fn from_rotex_data(data: &RotexData) -> Self {
-        let devices = data
-            .heat_generators
-            .iter()
-            .map(|d| Device::from_rotex_data(d, DeviceType::HeatGeneator))
-            .chain(
-                data.heating_circuits
-                    .iter()
-                    .map(|d| Device::from_rotex_data(d, DeviceType::HeatingCircuit)),
-            )
-            .chain(
-                data.heating_circuit_modules
-                    .iter()
-                    .map(|d| Device::from_rotex_data(d, DeviceType::HeatingCircuit)),
-            )
-            .map(|d| (d.name.clone(), d))
-            .collect::<HashMap<_, _>>();
-        let device_by_address = devices
-            .iter()
-            .flat_map(|(name, device)| {
-                [
-                    (device.get, (name.clone(), Op::Get)),
-                    (device.set, (name.clone(), Op::Set)),
-                    (device.answer, (name.clone(), Op::Answer)),
-                ]
-            })
-            .map(|(name, x)| (name, x))
-            .collect::<HashMap<_, _>>();
-        let parameter_by_address = data
-            .parameters
-            .iter()
-            .map(|p| (p.info_number.as_u16(), p.name.clone()))
-            .collect::<HashMap<_, _>>();
-        Self {
-            devices,
-            device_by_address,
-            parameters,
-            parameter_by_address,
-        }
-    }
-}
- */
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ParameterMeta {
@@ -174,10 +129,14 @@ fn is_false(v: &bool) -> bool {
     !v
 }
 
+fn default_false() -> bool {
+    false
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Parameter {
     pub info_number: u16,
-    #[serde(skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "is_false", default = "default_false")]
     pub big_endian: bool,
     #[serde(flatten)]
     pub r#type: ParameterType,
