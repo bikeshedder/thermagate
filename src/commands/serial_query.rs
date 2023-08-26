@@ -1,8 +1,7 @@
-use crate::{serial::reg_query, config::Config};
+use crate::{serial::{reg_query, self}, config::Config};
 
 use clap::Parser;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio_serial::SerialPortBuilderExt;
 
 #[derive(Debug, Parser)]
 pub struct Args {
@@ -11,11 +10,7 @@ pub struct Args {
 }
 
 pub async fn cmd(config: Config, args: Args) -> Result<(), Box<dyn std::error::Error>> {
-    let mut stream = tokio_serial::new(&config.serial.path, 9600)
-        .data_bits(tokio_serial::DataBits::Eight)
-        .parity(tokio_serial::Parity::Even)
-        .stop_bits(tokio_serial::StopBits::One)
-        .open_native_async()?;
+    let mut stream = serial::open_stream(&config.serial)?;
     println!("Sending to {} ...", config.serial.path);
     let request = reg_query(args.registry_id);
     println!(">>> {:?}", request);
