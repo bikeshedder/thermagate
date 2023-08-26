@@ -1,5 +1,5 @@
 pub mod can;
-pub mod gateway;
+pub mod commands;
 pub mod hass;
 pub mod model;
 pub mod rotex;

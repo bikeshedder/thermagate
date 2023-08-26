@@ -1,9 +1,10 @@
-use altherma_gateway::hass::{DeviceClass, Sensor};
-use rumqttc::{AsyncClient, MqttOptions};
 use std::time::Duration;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+use rumqttc::{AsyncClient, MqttOptions};
+
+use crate::hass::{DeviceClass, Sensor};
+
+pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     let mut mqttoptions = MqttOptions::new("altherma-gateway", "homeassistant.local", 1883);
     mqttoptions
         .set_credentials("altherma", "ahHu1oi3Riiviex1")
@@ -20,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         name: "Altherma HCM2.cAUSSENTEMP".into(),
         state_topic: "altherma-gateway/HCM2/cAUSSENTEMP".into(),
         value_template: Some("{{ (value | float) }}".into()),
-        unit_of_measurement: Some(altherma_gateway::hass::UnitOfMeasurement::TempCelsius),
+        unit_of_measurement: Some(crate::hass::UnitOfMeasurement::TempCelsius),
         device_class: Some(DeviceClass::Temperature),
         ..Default::default()
     };

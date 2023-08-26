@@ -1,17 +1,8 @@
 use std::{collections::HashMap, sync::Arc};
 
-use tracing::Level;
-use tracing_subscriber::FmtSubscriber;
-
 use crate::{web::run_server, can, model::{Device, Parameter, State}, utils::read_toml};
 
-pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::TRACE)
-        .finish();
-
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
-
+pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     let devices: HashMap<String, Device> = read_toml("data/devices.toml")?;
     let parameters: HashMap<String, Parameter> = read_toml("data/parameters.toml")?;
 
