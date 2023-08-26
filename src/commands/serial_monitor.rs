@@ -1,8 +1,7 @@
 use tokio::io::AsyncReadExt;
 use tokio_serial::SerialPortBuilderExt;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     let dev = "/dev/ttyUSB0";
     let mut receiver = tokio_serial::new(dev, 9600)
         .data_bits(tokio_serial::DataBits::Eight)

@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::{sync::{Arc, atomic::{AtomicBool, Ordering}}, time::Duration};
 
 use serde::Serialize;
 use futures_util::StreamExt;
@@ -61,7 +61,7 @@ impl BusDriver {
         let internal = Internal {
             device: device.to_owned(),
             state,
-            keep_running: true,
+            keep_running: AtomicBool::new(true),
             tx,
             bus_state: state_tx,
         };
@@ -81,14 +81,14 @@ impl BusDriver {
 struct Internal {
     device: String,
     state: Arc<State>,
-    keep_running: bool,
+    keep_running: AtomicBool,
     tx: Sender<BusFrame>,
     bus_state: watch::Sender<BusState>,
 }
 
 impl Internal {
     pub async fn start(self) {
-        while self.keep_running {
+        while self.keep_running.load(Ordering::Relaxed) {
             match CanSocket::open(&self.device) {
                 Ok(socket) => {
                     self.bus_state.send_replace(BusState::Connected);
@@ -97,7 +97,7 @@ impl Internal {
                     }
                 }
                 Err(e) => {
-                    if self.keep_running {
+                    if self.keep_running.load(Ordering::Relaxed) {
                         let message = format!("Could not open CAN bus device {}: {}", self.device, e);
                         warn!("{message}");
                         self.bus_state.send_replace(BusState::Error(message));

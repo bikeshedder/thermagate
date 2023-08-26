@@ -1,19 +1,17 @@
-use altherma_gateway::serial::reg_query;
+use crate::serial::reg_query;
+
+use clap::Parser;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_serial::SerialPortBuilderExt;
 
-use clap::Parser;
-
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[command(author, version, about, long_about = None)]
-struct Cli {
+pub struct Args {
     registry_id: u8,
     response_length: usize,
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let cli = Cli::parse();
+pub async fn cmd(args: Args) -> Result<(), Box<dyn std::error::Error>> {
     let dev = "/dev/ttyUSB0";
     let mut stream = tokio_serial::new(dev, 9600)
         .data_bits(tokio_serial::DataBits::Eight)
@@ -21,10 +19,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .stop_bits(tokio_serial::StopBits::One)
         .open_native_async()?;
     println!("Sending to {} ...", dev);
-    let request = reg_query(cli.registry_id);
+    let request = reg_query(args.registry_id);
     println!(">>> {:?}", request);
     stream.write_all(&request).await?;
-    let mut response = vec![0u8; cli.response_length];
+    let mut response = vec![0u8; args.response_length];
     stream.read_exact(&mut response).await?;
     println!("<<< {:?}", response);
     Ok(())

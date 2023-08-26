@@ -64,7 +64,7 @@ impl<'de, T: FromHexStr> Deserialize<'de> for HexStr<T> {
             }
         }
 
-        let visitor = HexStringVisitor(PhantomData::<T>::default());
+        let visitor = HexStringVisitor(PhantomData::<T>);
 
         deserializer.deserialize_str(visitor).map(HexStr)
     }

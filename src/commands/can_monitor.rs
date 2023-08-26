@@ -1,13 +1,12 @@
 use std::{collections::HashMap, sync::Arc};
 
-use altherma_gateway::{can::BusDriver, utils::read_toml};
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
-use altherma_gateway::model::{Device, Parameter, State};
+use crate::{can::BusDriver, utils::read_toml};
+use crate::model::{Device, Parameter, State};
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     // a builder for `FmtSubscriber`.
     let subscriber = FmtSubscriber::builder()
         // all spans/events with a level higher than TRACE (e.g, debug, info, warn, etc.)

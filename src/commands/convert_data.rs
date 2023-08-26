@@ -4,9 +4,9 @@ use std::{
     path::Path,
 };
 
-use altherma_gateway::{model::Data, rotex::RotexData};
+use crate::{model::Data, rotex::RotexData};
 
-pub fn main() -> Result<(), Box<dyn std::error::Error>> {
+pub fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     let input_path = Path::new("rotex-data.json");
     let input_file = File::open(input_path)?;
     let reader = BufReader::new(input_file);
