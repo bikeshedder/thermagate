@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::serial::SerialConfig;
 
-pub const DEFAULT_CONFIG: &str = include_str!("config.default.toml");
+pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
