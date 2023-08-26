@@ -40,12 +40,16 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let args = Cli::parse();
 
+    if matches!(args.command, Command::DefaultConfig) {
+        return default_config::cmd();
+    }
+
     let config = Config::load(&args.config_file)?;
 
     match args.command {
         Command::CanMonitor => can_monitor::cmd(config).await,
         Command::ConvertData => convert_data::cmd(),
-        Command::DefaultConfig => default_config::cmd(),
+        Command::DefaultConfig => unreachable!(),
         Command::Gateway => gateway::cmd(config).await,
         Command::MqttTest => mqtt_test::cmd(config).await,
         Command::SerialQuery(args) => serial_query::cmd(config, args).await,
