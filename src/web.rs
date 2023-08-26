@@ -1,16 +1,9 @@
 use std::net::SocketAddr;
 
-use axum::{
-    routing::{get, post},
-    http::StatusCode,
-    response::IntoResponse,
-    Json, Router,
-};
+use axum::{routing::get, Router};
 
-pub async fn run_server() {
-    let app = Router::new()
-        .route("/", get(root));
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+pub async fn run_server(addr: SocketAddr) {
+    let app = Router::new().route("/", get(root));
     tracing::debug!("listening on http://{}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())

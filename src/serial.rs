@@ -1,3 +1,15 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SerialConfig {
+    pub path: String,
+    pub baud_rate: u32,
+    pub data_bits: tokio_serial::DataBits,
+    pub flow_control: tokio_serial::FlowControl,
+    pub parity: tokio_serial::Parity,
+    pub stop_bits: tokio_serial::StopBits,
+}
+
 fn crc(buf: &[u8]) -> u8 {
     !buf.iter().fold(0u8, |s, &b| s.wrapping_add(b))
 }

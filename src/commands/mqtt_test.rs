@@ -2,20 +2,21 @@ use std::time::Duration;
 
 use rumqttc::{AsyncClient, MqttOptions};
 
-use crate::hass::{DeviceClass, Sensor};
+use crate::{
+    config::Config,
+    hass::{DeviceClass, Sensor},
+};
 
-pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
-    let mut mqttoptions = MqttOptions::new("altherma-gateway", "homeassistant.local", 1883);
+pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
+    let mut mqttoptions =
+        MqttOptions::new(config.mqtt.device_id, config.mqtt.host, config.mqtt.port);
     mqttoptions
-        .set_credentials("altherma", "ahHu1oi3Riiviex1")
+        .set_credentials(config.mqtt.username, config.mqtt.password)
         .set_keep_alive(Duration::from_secs(5));
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
 
     //client.subscribe("hello/rumqtt", QoS::AtMostOnce).await?;
-
-    let hass_discovery_prefix = "homeassistant";
-    let device_prefix = "altherma-gateway";
 
     let sensor = Sensor {
         name: "Altherma HCM2.cAUSSENTEMP".into(),
@@ -27,7 +28,7 @@ pub async fn cmd() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     sensor
-        .register(&client, hass_discovery_prefix, device_prefix)
+        .register(&client, &config.hass.mqtt_discovery_prefix, &config.hass.device_prefix)
         .await?;
     sensor.value(&client, "30.8").await?;
 
