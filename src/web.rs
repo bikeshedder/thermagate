@@ -7,9 +7,10 @@ use axum::{
     },
     response::{IntoResponse, Response},
     routing::get,
-    Json, Router,
+    Json, Router, http::Method,
 };
 use tokio::sync::broadcast;
+use tower_http::cors::{Any, CorsLayer};
 
 use crate::{can::BusFrame, commands::gateway::Params};
 
@@ -20,10 +21,17 @@ struct AppState {
 }
 
 pub async fn run_server(addr: SocketAddr, params_data: Params, tx: broadcast::Sender<BusFrame>) {
+    let cors = CorsLayer::new()
+        // allow `GET` and `POST` when accessing the resource
+        .allow_methods([Method::GET, Method::POST])
+        // allow requests from any origin
+        .allow_origin(Any);
+
     let app = Router::new()
         .route("/", get(root))
         .route("/ws", get(ws))
         .route("/params", get(params))
+        .layer(cors)
         .with_state(AppState {
             params: params_data,
             tx,
@@ -40,12 +48,7 @@ async fn root() -> &'static str {
 }
 
 async fn params(state: State<AppState>) -> impl IntoResponse {
-    let values = state
-        .params
-        .0
-        .lock()
-        .await
-        .clone();
+    let values = state.params.0.lock().await.clone();
     Json(values)
 }
 
