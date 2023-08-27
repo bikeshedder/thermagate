@@ -1,7 +1,9 @@
 use std::{collections::HashMap, sync::Arc};
 
+use tokio::sync::broadcast;
+
 use crate::{
-    can,
+    can::{self, BusFrame},
     config::Config,
     data::{DEVICES, PARAMETERS},
     model::{Device, Parameter, State},
@@ -17,13 +19,18 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
 
     let mut can = can::BusDriver::new(&config.can.interface, state);
 
-    tokio::spawn(async move {
-        while let Some(frame) = can.recv().await {
-            println!("{frame:?}");
+    let (tx, _) = broadcast::channel::<BusFrame>(16);
+
+    tokio::spawn({
+        let tx = tx.clone();
+        async move {
+            while let Some(frame) = can.recv().await {
+                let _ = tx.send(frame);
+            }
         }
     });
 
-    run_server(config.http.listen).await;
+    run_server(config.http.listen, tx).await;
 
     Ok(())
 }
