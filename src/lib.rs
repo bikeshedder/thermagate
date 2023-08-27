@@ -1,6 +1,7 @@
 pub mod can;
 pub mod commands;
 pub mod config;
+pub mod data;
 pub mod hass;
 pub mod model;
 pub mod rotex;

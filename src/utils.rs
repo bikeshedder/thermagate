@@ -18,6 +18,10 @@ pub fn read_toml<T: DeserializeOwned, P: AsRef<Path>>(path: P) -> Result<T, Read
     let file = File::open(path)?;
     let reader = BufReader::new(file);
     let toml = io::read_to_string(reader)?;
-    let data = toml::from_str(&toml)?;
+    read_toml_str(&toml)
+}
+
+pub fn read_toml_str<T: DeserializeOwned>(toml: &str) -> Result<T, ReadTomlError> {
+    let data = toml::from_str(toml)?;
     Ok(data)
 }
