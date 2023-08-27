@@ -3,21 +3,31 @@ use std::{net::SocketAddr, time::Duration};
 use axum::{
     extract::{
         ws::{Message, WebSocket},
-        WebSocketUpgrade, State,
+        State, WebSocketUpgrade,
     },
-    response::Response,
+    response::{IntoResponse, Response},
     routing::get,
-    Router,
+    Json, Router,
 };
 use tokio::sync::broadcast;
 
-use crate::can::BusFrame;
+use crate::{can::BusFrame, commands::gateway::Params};
 
-pub async fn run_server(addr: SocketAddr, tx: broadcast::Sender<BusFrame>) {
+#[derive(Clone)]
+struct AppState {
+    pub params: Params,
+    pub tx: broadcast::Sender<BusFrame>,
+}
+
+pub async fn run_server(addr: SocketAddr, params_data: Params, tx: broadcast::Sender<BusFrame>) {
     let app = Router::new()
         .route("/", get(root))
         .route("/ws", get(ws))
-        .with_state(tx);
+        .route("/params", get(params))
+        .with_state(AppState {
+            params: params_data,
+            tx,
+        });
     tracing::debug!("listening on http://{}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
@@ -29,8 +39,18 @@ async fn root() -> &'static str {
     "Hello, World!"
 }
 
-async fn ws(ws: WebSocketUpgrade, tx: State<broadcast::Sender<BusFrame>>) -> Response {
-    let rx = tx.subscribe();
+async fn params(state: State<AppState>) -> impl IntoResponse {
+    let values = state
+        .params
+        .0
+        .lock()
+        .await
+        .clone();
+    Json(values)
+}
+
+async fn ws(ws: WebSocketUpgrade, state: State<AppState>) -> Response {
+    let rx = state.tx.subscribe();
     ws.on_upgrade(move |socket| handle_socket(socket, rx))
 }
 
