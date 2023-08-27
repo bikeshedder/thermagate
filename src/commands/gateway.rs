@@ -1,10 +1,17 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::{web::run_server, can, model::{Device, Parameter, State}, utils::read_toml, config::Config};
+use crate::{
+    can,
+    config::Config,
+    data::{DEVICES, PARAMETERS},
+    model::{Device, Parameter, State},
+    utils::read_toml_str,
+    web::run_server,
+};
 
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
-    let devices: HashMap<String, Device> = read_toml("data/devices.toml")?;
-    let parameters: HashMap<String, Parameter> = read_toml("data/parameters.toml")?;
+    let devices: HashMap<String, Device> = read_toml_str(DEVICES)?;
+    let parameters: HashMap<String, Parameter> = read_toml_str(PARAMETERS)?;
 
     let state = Arc::new(State::new(devices, parameters));
 
