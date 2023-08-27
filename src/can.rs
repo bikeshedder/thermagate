@@ -20,7 +20,7 @@ pub struct BusDriver {
     status: Arc<BusStatusInternal>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize)]
 pub struct BusFrame {
     pub op: Op,
     pub device: String,
@@ -28,7 +28,7 @@ pub struct BusFrame {
     pub value: Option<Value>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize)]
 pub enum Value {
     Float(f32),
     Invalid(u16),

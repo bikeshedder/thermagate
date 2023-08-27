@@ -64,7 +64,7 @@ pub enum DeviceType {
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 pub struct Address(pub u32, pub u8, pub u8, pub u8);
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize)]
 pub enum Op {
     Get,
     Set,
