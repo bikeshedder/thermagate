@@ -5,9 +5,10 @@ use axum::{
         ws::{Message, WebSocket},
         State, WebSocketUpgrade,
     },
+    http::Method,
     response::{IntoResponse, Response},
     routing::get,
-    Json, Router, http::Method,
+    Json, Router,
 };
 use tokio::sync::broadcast;
 use tower_http::cors::{Any, CorsLayer};
@@ -37,10 +38,8 @@ pub async fn run_server(addr: SocketAddr, params_data: Params, tx: broadcast::Se
             tx,
         });
     tracing::debug!("listening on http://{}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
 }
 
 async fn root() -> &'static str {

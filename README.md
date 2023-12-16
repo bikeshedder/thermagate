@@ -2,6 +2,14 @@
 
 ## Installation instructions
 
+### Configure display (rotate 90 degrees)
+
+Edit `/boot/cmdline.txt` and add the following
+
+```
+fbcon=rotate:3
+```
+
 ### Configure CAN hat
 
 Edit `/boot/config.txt`
