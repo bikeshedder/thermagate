@@ -1,15 +1,28 @@
-use std::{sync::{Arc, atomic::{AtomicBool, Ordering}}, time::Duration};
+use std::{
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
+};
 
-use serde::Serialize;
 use futures_util::StreamExt;
+use serde::Serialize;
 use socketcan::{tokio::CanSocket, CanError, EmbeddedFrame, Frame};
+use time::format_description;
 use tokio::{
-    sync::{mpsc::{channel, Receiver, Sender}, watch},
+    sync::{
+        mpsc::{channel, Receiver, Sender},
+        watch,
+    },
     time::sleep,
 };
 use tracing::{debug, warn};
 
-use crate::model::{Address, FloatParameter, Op, ParameterType, State};
+use crate::model::{
+    Address, BoolParameter, EnumParameter, FloatParameter, IntParameter, Op, ParameterType, State,
+    TimeRangeParameter,
+};
 
 static CHANNEL_BUFFER: usize = 100;
 
@@ -30,7 +43,11 @@ pub struct BusFrame {
 
 #[derive(Debug, Clone, Serialize)]
 pub enum Value {
+    Bool(bool),
+    Int(i16),
     Float(f32),
+    Enum(u16),
+    TimeRange(String, String),
     Invalid(u16),
 }
 
@@ -55,9 +72,7 @@ impl BusDriver {
     pub fn new(device: &str, state: Arc<State>) -> Self {
         let (tx, rx) = channel(CHANNEL_BUFFER);
         let (state_tx, state_rx) = watch::channel(BusState::Connecting);
-        let status = Arc::new(BusStatusInternal {
-            state: state_rx,
-        });
+        let status = Arc::new(BusStatusInternal { state: state_rx });
         let internal = Internal {
             device: device.to_owned(),
             state,
@@ -73,7 +88,7 @@ impl BusDriver {
     }
     pub fn status(&self) -> BusStatus {
         BusStatus {
-            state: self.status.state.borrow().clone()
+            state: self.status.state.borrow().clone(),
         }
     }
 }
@@ -98,7 +113,8 @@ impl Internal {
                 }
                 Err(e) => {
                     if self.keep_running.load(Ordering::Relaxed) {
-                        let message = format!("Could not open CAN bus device {}: {}", self.device, e);
+                        let message =
+                            format!("Could not open CAN bus device {}: {}", self.device, e);
                         warn!("{message}");
                         self.bus_state.send_replace(BusState::Error(message));
                         sleep(Duration::from_secs(5)).await;
@@ -117,7 +133,7 @@ impl Internal {
                     [a0, a1, a2, p0, p1, v0, v1] => {
                         let a = Address(frame.id_word(), *a0, *a1, *a2);
                         let Some((d_name, op)) = self.state.device_by_address.get(&a) else {
-                            debug!("Unsupported address: {:?}", a);
+                            //debug!("Unsupported address: {:?}", a);
                             continue;
                         };
                         let p = ((*p0 as u16) << 8) + (*p1 as u16);
@@ -125,30 +141,68 @@ impl Internal {
                             debug!("Unknown parameter: {}", p);
                             continue;
                         };
-                        let v = ((*v0 as u16) << 8) + (*v1 as u16);
-                        let v = v as i16;
                         let param = &self.state.parameters[p_name];
-                        match param.r#type {
-                            ParameterType::Float(FloatParameter { factor, .. }) => {
-                                let value = if v == i16::MIN {
-                                    None
-                                } else {
-                                    Some(Value::Float(v as f32 / factor))
-                                };
-                                if self
-                                    .tx
-                                    .try_send(BusFrame {
-                                        op: op.to_owned(),
-                                        device: d_name.to_owned(),
-                                        parameter: p_name.to_owned(),
-                                        value,
-                                    })
-                                    .is_err()
-                                {
-                                    debug!("CAN bus driver queue full")
+                        // Big endian and little endian is actually mixed up.
+                        let v = if param.big_endian {
+                            ((*v1 as u16) << 8) + (*v0 as u16)
+                        } else {
+                            ((*v0 as u16) << 8) + (*v1 as u16)
+                        };
+                        let value = if v == 32768 {
+                            None
+                        } else {
+                            match &param.r#type {
+                                ParameterType::Bool(BoolParameter { .. }) => {
+                                    Some(Value::Bool(v != 0))
+                                }
+                                ParameterType::Int(IntParameter { .. }) => {
+                                    Some(Value::Int(v as i16))
+                                }
+                                ParameterType::Float(FloatParameter { factor, .. }) => {
+                                    let v = v as i16;
+                                    if v == i16::MIN {
+                                        None
+                                    } else {
+                                        Some(Value::Float(v as f32 / factor))
+                                    }
+                                }
+                                ParameterType::Enum(EnumParameter { .. }) => Some(Value::Enum(v)),
+                                ParameterType::TimeRange(TimeRangeParameter { .. }) => {
+                                    if *v0 == 128 {
+                                        None
+                                    } else {
+                                        let format =
+                                            format_description::parse("[hour]:[minute]").unwrap();
+                                        let start = (time::Time::MIDNIGHT
+                                            + Duration::from_secs(60 * 15 * (*v0 as u64)))
+                                        .format(&format)
+                                        .unwrap();
+                                        // FIXME what to do when v1 is 96
+                                        // The original G1 code mapped that to "24:00"
+                                        let end = if *v1 == 96 {
+                                            String::from("24:00")
+                                        } else {
+                                            (time::Time::MIDNIGHT
+                                                + Duration::from_secs(60 * 15 * (*v1 as u64)))
+                                            .format(&format)
+                                            .unwrap()
+                                        };
+                                        Some(Value::TimeRange(start, end))
+                                    }
                                 }
                             }
-                            _ => {}
+                        };
+                        if self
+                            .tx
+                            .try_send(BusFrame {
+                                op: op.to_owned(),
+                                device: d_name.to_owned(),
+                                parameter: p_name.to_owned(),
+                                value,
+                            })
+                            .is_err()
+                        {
+                            debug!("CAN bus driver queue full")
                         }
                     }
                     x => {
