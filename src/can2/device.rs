@@ -1,12 +1,16 @@
 use std::fmt;
 
-use strum::{AsRefStr, FromRepr};
+use num_enum::{FromPrimitive, IntoPrimitive};
+use socketcan::StandardId;
+use strum::AsRefStr;
 
-#[derive(Debug, strum::Display, FromRepr, AsRefStr)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, AsRefStr, FromPrimitive, IntoPrimitive)]
 #[repr(u16)]
 pub enum Device {
+    /// Control panel
     RoCon = 0x10a,
-    HG1 = 0x180, // aka. Main
+    /// 1st heat generator
+    HG1 = 0x180,
     HG2 = 0x181,
     HG3 = 0x182,
     HG4 = 0x183,
@@ -14,7 +18,12 @@ pub enum Device {
     HG6 = 0x185,
     HG7 = 0x186,
     HG8 = 0x187,
-    HC1 = 0x300, // aka. Boiler
+    /// 1st heat generator
+    /// This is the built-in circuit
+    HC1 = 0x300,
+    /// 2nd heat generator
+    /// This is typically used for mixer devices such as the
+    /// ROTEX RoCon M1 (Daikin EHS157068)
     HC2 = 0x301,
     HC3 = 0x302,
     HC4 = 0x303,
@@ -22,6 +31,15 @@ pub enum Device {
     HC6 = 0x305,
     HC7 = 0x306,
     HC8 = 0x307,
+    HC9 = 0x308,
+    HC10 = 0x309,
+    HC11 = 0x30a,
+    HC12 = 0x30b,
+    HC13 = 0x30c,
+    HC14 = 0x30d,
+    HC15 = 0x30e,
+    HC16 = 0x30f,
+    HCAll = 0x379,
     HCM1 = 0x600,
     HCM2 = 0x601,
     HCM3 = 0x602,
@@ -38,31 +56,27 @@ pub enum Device {
     HCM14 = 0x60d,
     HCM15 = 0x60e,
     HCM16 = 0x60f,
-    G1_2 = 0x68d,
+    HCMall = 0x679,
+    /// This is the address used by the ROTEX RoCon G1 Gateway (Daikin EHS157056)
     G1 = 0x69d,
-    // FIXME use a better name for ourselves
-    NRG = 0x666,
+    /// This is the address used by this project
+    GW = 0x666,
+    #[num_enum(catch_all)]
+    Other(u16),
 }
 
-#[derive(Debug)]
-pub enum Addr {
-    Device(Device),
-    Unknown(u16),
-}
-
-impl fmt::Display for Addr {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Unknown(addr) => write!(f, "0x{:03x}", addr),
-            Self::Device(dev) => write!(f, "{}", dev),
-        }
+impl From<Device> for socketcan::Id {
+    fn from(value: Device) -> Self {
+        socketcan::Id::Standard(StandardId::new(u16::from(value)).unwrap())
     }
 }
 
-impl From<u16> for Addr {
-    fn from(id: u16) -> Self {
-        Device::from_repr(id)
-            .map(Self::Device)
-            .unwrap_or(Self::Unknown(id))
+impl fmt::Display for Device {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Self::Other(addr) = self {
+            write!(f, "0x{addr:03x}")
+        } else {
+            write!(f, "{}", self.as_ref())
+        }
     }
 }

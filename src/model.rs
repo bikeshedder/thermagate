@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
+use strum::AsRefStr;
 
 time::serde::format_description!(hhmm_format, Time, "[hour]:[minute]");
 
@@ -142,7 +143,7 @@ pub struct Parameter {
     pub r#type: ParameterType,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, AsRefStr)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum ParameterType {
     Bool(BoolParameter),
