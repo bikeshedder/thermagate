@@ -1,4 +1,5 @@
 pub mod can;
+pub mod can2;
 pub mod commands;
 pub mod config;
 pub mod data;
