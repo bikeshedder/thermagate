@@ -1,6 +1,7 @@
 use altherma_gateway::{
     commands::{
-        can_monitor, convert_data, default_config, gateway, mqtt_test, serial_monitor, serial_query,
+        can_can, can_monitor, convert_data, default_config, gateway, mqtt_test, serial_monitor,
+        serial_query,
     },
     config::Config,
 };
@@ -28,6 +29,7 @@ enum Command {
     MqttTest,
     SerialMonitor,
     SerialQuery(serial_query::Args),
+    CanCan,
 }
 
 #[tokio::main]
@@ -54,5 +56,6 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::MqttTest => mqtt_test::cmd(config).await,
         Command::SerialQuery(args) => serial_query::cmd(config, args).await,
         Command::SerialMonitor => serial_monitor::cmd(config).await,
+        Command::CanCan => can_can::cmd(config).await,
     }
 }
