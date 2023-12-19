@@ -1,11 +1,10 @@
 pub mod can;
-pub mod can2;
 pub mod commands;
 pub mod config;
 pub mod data;
 pub mod hass;
-pub mod model;
-pub mod rotex;
+pub mod old_can;
+pub mod old_model;
 pub mod serial;
 pub mod utils;
 pub mod web;

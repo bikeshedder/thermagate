@@ -152,3 +152,23 @@ pub enum ParameterType {
     Enum(EnumParameter),
     TimeRange(TimeRangeParameter),
 }
+
+impl ParameterType {
+    pub fn decode_str(&self, data: [u8; 2]) -> String {
+        match self {
+            ParameterType::Bool(_) => if data[0] != 0 { "true" } else { "false" }.to_owned(),
+            ParameterType::Int(_) => format!("{}", u16::from_be_bytes(data)),
+            ParameterType::Float(p) => {
+                format!("{}", (u16::from_be_bytes(data) as f32) / p.factor)
+            }
+            ParameterType::Enum(_) => {
+                // TODO
+                format!("{}", u16::from_be_bytes(data))
+            }
+            ParameterType::TimeRange(_) => {
+                // TODO
+                format!("{}", u16::from_be_bytes(data))
+            }
+        }
+    }
+}

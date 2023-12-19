@@ -1,7 +1,7 @@
 use std::fmt;
 
 use num_enum::{FromPrimitive, IntoPrimitive};
-use socketcan::{CanDataFrame, EmbeddedFrame, Frame};
+use socketcan::{CanDataFrame, EmbeddedFrame, Frame, StandardId};
 use thiserror::Error;
 
 use super::device::Device;
@@ -33,12 +33,6 @@ pub enum MessageType {
     Unknown(u8),
 }
 
-#[derive(Debug)]
-pub struct Param {
-    pub id: u16,
-    pub data: Vec<u8>,
-}
-
 #[derive(Debug, Error)]
 pub enum FrameError {
     #[error("Invalid sender: {0}")]
@@ -51,7 +45,7 @@ impl Message {
     pub fn parse(sender_id: u16, raw: [u8; 7]) -> Self {
         let sender = Device::from(sender_id);
         let receiver =
-            Device::from((((raw[0] & 0b11110000) as u16) << 3) + (raw[1] & 0b01111111) as u16);
+            Device::from((((raw[0] & 0b11110000) as u16) << 3) | (raw[1] & 0b01111111) as u16);
         let (param, data) = if raw[2] == 0xFA {
             (u16::from_be_bytes([raw[3], raw[4]]), [raw[5], raw[6]])
         } else {
@@ -101,7 +95,11 @@ impl TryFrom<&CanDataFrame> for Message {
 
 impl From<Message> for CanDataFrame {
     fn from(msg: Message) -> Self {
-        CanDataFrame::new(msg.sender, &msg.compose()).unwrap()
+        CanDataFrame::new(
+            StandardId::new(u16::from(msg.sender)).unwrap(),
+            &msg.compose(),
+        )
+        .unwrap()
     }
 }
 
@@ -136,8 +134,6 @@ impl fmt::Display for Message {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::can2::device::Device;
 
     use super::*;
 

@@ -4,10 +4,10 @@ use serde::Serialize;
 use tokio::sync::{broadcast, Mutex};
 
 use crate::{
-    can::{self, BusFrame, Value},
     config::Config,
     data::{DEVICES, PARAMETERS},
-    model::{Device, Op, Parameter, State},
+    old_can::{self, BusFrame, Value},
+    old_model::{Device, Op, Parameter, State},
     utils::read_toml_str,
     web::run_server,
 };
@@ -27,7 +27,7 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
 
     let state = Arc::new(State::new(devices, parameters));
 
-    let mut can = can::BusDriver::new(&config.can.interface, state);
+    let mut can = old_can::BusDriver::new(&config.can.interface, state);
 
     let (tx, _) = broadcast::channel::<BusFrame>(16);
 

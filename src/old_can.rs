@@ -19,7 +19,7 @@ use tokio::{
 };
 use tracing::{debug, warn};
 
-use crate::model::{
+use crate::old_model::{
     Address, BoolParameter, EnumParameter, FloatParameter, IntParameter, Op, ParameterType, State,
     TimeRangeParameter,
 };

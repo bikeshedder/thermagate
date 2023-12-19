@@ -1,7 +1,6 @@
 use altherma_gateway::{
     commands::{
-        can_can, can_monitor, convert_data, default_config, gateway, mqtt_test, serial_monitor,
-        serial_query,
+        can_can, can_monitor, default_config, gateway, mqtt_test, serial_monitor, serial_query,
     },
     config::Config,
 };
@@ -22,7 +21,6 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum Command {
     CanMonitor,
-    ConvertData,
     #[clap(about = "Print default configuration")]
     DefaultConfig,
     Gateway,
@@ -50,7 +48,6 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match args.command {
         Command::CanMonitor => can_monitor::cmd(config).await,
-        Command::ConvertData => convert_data::cmd(),
         Command::DefaultConfig => unreachable!(),
         Command::Gateway => gateway::cmd(config).await,
         Command::MqttTest => mqtt_test::cmd(config).await,
