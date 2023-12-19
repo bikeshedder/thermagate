@@ -1,15 +1,15 @@
 use std::fmt;
 
 use num_enum::{FromPrimitive, IntoPrimitive};
-use socketcan::StandardId;
 use strum::AsRefStr;
 
+///
 #[derive(Debug, Clone, Copy, Eq, PartialEq, AsRefStr, FromPrimitive, IntoPrimitive)]
 #[repr(u16)]
 pub enum Device {
     /// Control panel
     RoCon = 0x10a,
-    /// 1st heat generator
+    /// First heat generator
     HG1 = 0x180,
     HG2 = 0x181,
     HG3 = 0x182,
@@ -18,10 +18,10 @@ pub enum Device {
     HG6 = 0x185,
     HG7 = 0x186,
     HG8 = 0x187,
-    /// 1st heat generator
+    /// First heating circuit
     /// This is the built-in circuit
     HC1 = 0x300,
-    /// 2nd heat generator
+    /// Second heating circuit
     /// This is typically used for mixer devices such as the
     /// ROTEX RoCon M1 (Daikin EHS157068)
     HC2 = 0x301,
@@ -39,7 +39,10 @@ pub enum Device {
     HC14 = 0x30d,
     HC15 = 0x30e,
     HC16 = 0x30f,
-    HCAll = 0x379,
+    /// Broadcast address for all heating circuits
+    HCX = 0x379,
+    Outdoor = 0x500,
+    /// First heating circuit module
     HCM1 = 0x600,
     HCM2 = 0x601,
     HCM3 = 0x602,
@@ -56,19 +59,14 @@ pub enum Device {
     HCM14 = 0x60d,
     HCM15 = 0x60e,
     HCM16 = 0x60f,
-    HCMall = 0x679,
+    /// Broadcast address for all HCM devices
+    HCMX = 0x679,
     /// This is the address used by the ROTEX RoCon G1 Gateway (Daikin EHS157056)
     G1 = 0x69d,
     /// This is the address used by this project
     GW = 0x666,
     #[num_enum(catch_all)]
     Other(u16),
-}
-
-impl From<Device> for socketcan::Id {
-    fn from(value: Device) -> Self {
-        socketcan::Id::Standard(StandardId::new(u16::from(value)).unwrap())
-    }
 }
 
 impl fmt::Display for Device {
