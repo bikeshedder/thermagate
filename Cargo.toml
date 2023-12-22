@@ -34,12 +34,6 @@ serialport = { version = "4", features = ["serde"] }
 socketcan = { version = "3.3.0", features = ["tokio"] }
 strum = { version = "0.25.0", features = ["derive"] }
 thiserror = "1.0.40"
-time = { version = "0.3.23", features = [
-    "serde",
-    "parsing",
-    "macros",
-    "serde-human-readable",
-] }
 tokio = { version = "1.28.2", features = [
     "macros",
     "rt-multi-thread",

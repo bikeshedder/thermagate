@@ -1,10 +1,22 @@
 use std::fmt;
 
 use num_enum::{FromPrimitive, IntoPrimitive};
+use serde::{Deserialize, Serialize};
 use strum::AsRefStr;
 
 ///
-#[derive(Debug, Clone, Copy, Eq, PartialEq, AsRefStr, FromPrimitive, IntoPrimitive)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    Eq,
+    PartialEq,
+    AsRefStr,
+    FromPrimitive,
+    IntoPrimitive,
+    Serialize,
+    Deserialize,
+)]
 #[repr(u16)]
 pub enum Device {
     /// Control panel

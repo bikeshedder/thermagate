@@ -63,7 +63,6 @@ dependencies = [
  "socketcan",
  "strum",
  "thiserror",
- "time",
  "tokio",
  "tokio-serial",
  "toml 0.8.8",
