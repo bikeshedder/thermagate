@@ -1,6 +1,7 @@
 use std::fmt;
 
 use rust_decimal::Decimal;
+use serde::Serialize;
 use strum::EnumMessage;
 
 #[derive(Debug, Default)]
@@ -66,7 +67,7 @@ pub struct Enum16Param<T> {
     pub values: phf::OrderedMap<i16, &'static str>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Time {
     hour: u8,
     minute: u8,
@@ -74,10 +75,13 @@ pub struct Time {
 
 impl Time {
     pub fn new(hour: u8, minute: u8) -> Option<Self> {
-        if hour > 23 {
+        if hour > 24 {
             return None;
         }
         if !matches!(minute, 0 | 15 | 30 | 45) {
+            return None;
+        }
+        if hour == 24 && minute != 0 {
             return None;
         }
         Some(Self { hour, minute })
@@ -104,7 +108,7 @@ pub struct TimeRangeParam {
     pub default: Option<TimeRange>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize)]
 pub struct TimeRange {
     pub start: Time,
     pub end: Time,
@@ -135,6 +139,7 @@ pub trait DecodeParam: Param {
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value>;
 }
 
+#[derive(Debug, Clone, Serialize)]
 pub enum AnyValue {
     Bool(bool),
     I8(i8),

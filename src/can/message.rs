@@ -1,12 +1,17 @@
 use std::fmt;
 
 use num_enum::{FromPrimitive, IntoPrimitive};
+use serde::{Deserialize, Serialize};
 use socketcan::{CanDataFrame, EmbeddedFrame, Frame, StandardId};
 use thiserror::Error;
 
-use super::device::Device;
+use super::{
+    device::Device,
+    param::{AnyValue, Param},
+    params::PARAMS,
+};
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Message {
     pub sender: Device,
     pub receiver: Device,
@@ -15,7 +20,9 @@ pub struct Message {
     pub data: [u8; 2],
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, FromPrimitive, IntoPrimitive)]
+#[derive(
+    Debug, Copy, Clone, Eq, PartialEq, FromPrimitive, IntoPrimitive, Serialize, Deserialize,
+)]
 #[repr(u8)]
 pub enum MessageType {
     Set = 0b0000,
@@ -75,6 +82,11 @@ impl Message {
         data[5] = self.data[0];
         data[6] = self.data[1];
         data
+    }
+    pub fn decode_param(&self) -> Option<(&'static dyn Param, Option<AnyValue>)> {
+        PARAMS
+            .get(&self.param)
+            .map(|&p| (p, p.decode_any(self.data)))
     }
 }
 

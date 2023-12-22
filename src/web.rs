@@ -1,8 +1,8 @@
-use std::{net::SocketAddr, time::Duration};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 
 use axum::{
     extract::{
-        ws::{Message, WebSocket},
+        ws::{Message as WsMessage, WebSocket},
         State, WebSocketUpgrade,
     },
     http::Method,
@@ -13,15 +13,18 @@ use axum::{
 use tokio::sync::broadcast;
 use tower_http::cors::{Any, CorsLayer};
 
-use crate::{commands::gateway::Params, old_can::BusFrame};
+use crate::{
+    can::driver::{CanDriver, ReceivedMessage},
+    commands::gateway::Params,
+};
 
 #[derive(Clone)]
 struct AppState {
     pub params: Params,
-    pub tx: broadcast::Sender<BusFrame>,
+    pub can: Arc<CanDriver>,
 }
 
-pub async fn run_server(addr: SocketAddr, params_data: Params, tx: broadcast::Sender<BusFrame>) {
+pub async fn run_server(addr: SocketAddr, params_data: Params, can: CanDriver) {
     let cors = CorsLayer::new()
         // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
@@ -35,7 +38,7 @@ pub async fn run_server(addr: SocketAddr, params_data: Params, tx: broadcast::Se
         .layer(cors)
         .with_state(AppState {
             params: params_data,
-            tx,
+            can: Arc::new(can),
         });
     tracing::debug!("listening on http://{}", addr);
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
@@ -52,18 +55,18 @@ async fn params(state: State<AppState>) -> impl IntoResponse {
 }
 
 async fn ws(ws: WebSocketUpgrade, state: State<AppState>) -> Response {
-    let rx = state.tx.subscribe();
+    let rx = state.0.can.rx();
     ws.on_upgrade(move |socket| handle_socket(socket, rx))
 }
 
-async fn handle_socket(mut socket: WebSocket, mut rx: broadcast::Receiver<BusFrame>) {
+async fn handle_socket(mut socket: WebSocket, mut rx: broadcast::Receiver<ReceivedMessage>) {
     loop {
-        let Ok(frame) = rx.recv().await else {
+        let Ok(message) = rx.recv().await else {
             // Server is shutting down
             return;
         };
         if socket
-            .send(Message::Text(serde_json::to_string(&frame).unwrap()))
+            .send(WsMessage::Text(serde_json::to_string(&*message).unwrap()))
             .await
             .is_err()
         {
