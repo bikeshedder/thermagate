@@ -6,14 +6,14 @@ use strum::EnumMessage;
 
 use crate::can::device::Device;
 use crate::can::message::{Message, MessageType};
-use crate::can::param::Param;
+use crate::can::param::{DecodeParam, Param};
 use crate::can::params;
 use crate::config::Config;
 use crate::data::PARAMETERS;
 use crate::old_model::{Parameter, ParameterType};
 use crate::utils::read_toml_str;
 
-pub fn get<P: Param>(socket: &CanSocket, dev: Device, param: &P) -> P::Value {
+pub fn get<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option<P::Value> {
     let req = Message {
         sender: Device::GW,
         receiver: dev,
@@ -54,7 +54,7 @@ struct BetterParam {
     r#type: ParameterType,
 }
 
-pub fn get_and_print<P: Param>(socket: &CanSocket, dev: Device, param: &P) -> P::Value
+pub fn get_and_print<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option<P::Value>
 where
     P: Param,
     P::Value: fmt::Display,
@@ -62,8 +62,8 @@ where
     let value = get(socket, dev, param);
     println!(
         "{} = {} {}",
-        param.name(),
-        value,
+        param.label().de,
+        value.as_ref().map(|v| format!("{}", v)).unwrap_or_default(),
         param.unit().and_then(|e| e.get_message()).unwrap_or("")
     );
     value
@@ -72,51 +72,40 @@ where
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let socket = CanSocket::open(&config.can.interface).unwrap();
 
-    let parameters: HashMap<String, Parameter> = read_toml_str(PARAMETERS)?;
-    let param_by_id: HashMap<u16, BetterParam> = parameters
-        .into_iter()
-        .map(|(name, p)| {
-            (
-                p.info_number,
-                BetterParam {
-                    name,
-                    r#type: p.r#type,
-                },
-            )
-        })
-        .collect();
-
     get_and_print(&socket, Device::HG1, &params::T_AU);
     get_and_print(&socket, Device::HG1, &params::P);
     let flow = get_and_print(&socket, Device::HG1, &params::V);
 
     let t_r = get_and_print(&socket, Device::HG1, &params::T_R); // ???
-    let t_v_bh = get_and_print(&socket, Device::HG1, &params::T_V_BH); // ???
+    let t_v_bh = get_and_print(&socket, Device::HG1, &params::T_TVBH); // ???
 
     get_and_print(&socket, Device::HG1, &params::T_LIQ);
     let t_v = get_and_print(&socket, Device::HG1, &params::T_V); // ???
 
     get_and_print(&socket, Device::HG1, &params::T_DHW);
 
-    get_and_print(&socket, Device::HG1, &params::B1);
+    get_and_print(&socket, Device::HG1, &params::MISCHERSTELLUNG_2_3UVB);
     get_and_print(&socket, Device::HG1, &params::MISCHERSTELLUNG_1);
 
     //get_and_print(&socket, Device::HG1, &DHW_EHS);
-    let delta_t: f32 = (t_v - t_r).try_into().unwrap();
+    let delta_t: f32 = (t_v.unwrap() - t_r.unwrap()).try_into().unwrap();
 
     println!("-------------");
-    println!("flow = {} l/h", flow);
+    println!("flow = {} l/h", flow.unwrap());
     println!("delta_t = {:.1} °C", delta_t);
-    let kwh_per_c = 1.16f32;
-    let kwh = flow as f32 * delta_t * kwh_per_c;
+    let kwh_per_k = 1.16f32;
+    let kwh = flow.unwrap() as f32 * delta_t * kwh_per_k;
     println!(
         "{} l/h * {:.2} °C * {:.2} kWh/°C = {:.3} kW",
-        flow, delta_t, kwh_per_c, kwh
+        flow.unwrap(),
+        delta_t,
+        kwh_per_k,
+        kwh
     );
 
     get_and_print(&socket, Device::HG1, &params::PROGRAMMSCHALTER);
     get_and_print(&socket, Device::HG1, &params::SG);
-    get_and_print(&socket, Device::HG1, &params::DEFROST_AKTIV);
+    get_and_print(&socket, Device::HG1, &params::BETRIEBSART);
 
     /*
     get_and_print(&socket, Device::HCM1, &AUSSENTEMP);
@@ -133,6 +122,9 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     get_and_print(&socket, Device::HG1, &LAUFZEIT_KOMPRESSOR);
     get_and_print(&socket, Device::HG1, &LAUFZEIT_PUMPE);
     */
+
+    get_and_print(&socket, Device::HG1, &params::LEISTUNG_WW);
+    get_and_print(&socket, Device::HG1, &params::WW_AKTIV);
 
     get_and_print(&socket, Device::Outdoor, &params::STATUS_KOMPRESSOR);
     get_and_print(&socket, Device::Outdoor, &params::STATUS_UMWAELZPUMPE);

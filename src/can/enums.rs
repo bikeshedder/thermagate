@@ -1,7 +1,7 @@
 use num_enum::FromPrimitive;
 
 #[derive(Debug, FromPrimitive, strum::Display)]
-#[repr(u8)]
+#[repr(i16)]
 pub enum Betriebsart {
     Standby = 0,
     Heizen = 1,
@@ -9,11 +9,11 @@ pub enum Betriebsart {
     Abtauen = 3,
     Warmwasserbereitung = 4,
     #[num_enum(catch_all)]
-    Unknown(u8),
+    Unknown(i16),
 }
 
 #[derive(Debug, FromPrimitive, strum::Display)]
-#[repr(u8)]
+#[repr(i8)]
 pub enum Programm {
     Bereitschaft = 1,
     Heizen = 3,
@@ -23,18 +23,16 @@ pub enum Programm {
     Automatik2 = 12,
     Kuehlen = 17,
     #[num_enum(catch_all)]
-    Unknown(u8),
+    Unknown(i8),
 }
 
-// 1=Bereitschaft,3=Heizen,4=Absenken,5=Sommer,17=Kühlen,11=Automatik 1,12=Automatik 2
-
 #[derive(Debug, FromPrimitive, strum::Display)]
-#[repr(u8)]
-pub enum SmartGrid {
-    Normal = 0,
-    SG1 = 1,
-    SG2 = 2,
-    SG3 = 3,
+#[repr(i16)]
+pub enum SG {
+    SGN = 3,
+    SG1 = 4,
+    SG2 = 5,
+    SG3 = 6,
     #[num_enum(catch_all)]
-    Unknown(u8),
+    Unknown(i16),
 }

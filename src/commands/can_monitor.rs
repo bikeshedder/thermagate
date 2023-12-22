@@ -1,37 +1,14 @@
-use std::collections::HashMap;
-
 use console::style;
 use itertools::Itertools;
 use socketcan::{CanFrame, CanSocket, EmbeddedFrame, Frame, Socket};
 
 use crate::can::device::Device;
 use crate::can::message::{Message, MessageType};
+use crate::can::params::PARAMS;
 use crate::config::Config;
-use crate::data::PARAMETERS;
-use crate::old_model::{Parameter, ParameterType};
-use crate::utils::read_toml_str;
-
-struct BetterParam {
-    name: String,
-    r#type: ParameterType,
-}
 
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let socket = CanSocket::open(&config.can.interface).unwrap();
-
-    let parameters: HashMap<String, Parameter> = read_toml_str(PARAMETERS)?;
-    let param_by_id: HashMap<u16, BetterParam> = parameters
-        .into_iter()
-        .map(|(name, p)| {
-            (
-                p.info_number,
-                BetterParam {
-                    name,
-                    r#type: p.r#type,
-                },
-            )
-        })
-        .collect();
 
     let req = style("REQ").cyan();
     let rsp = style("RSP").green();
@@ -88,11 +65,15 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
                     || msg.r#type == MessageType::Response
                     || msg.r#type == MessageType::Set
                 {
-                    if let Some(p) = param_by_id.get(&msg.param) {
-                        print!("{} ", style(&p.name).magenta());
+                    if let Some(p) = PARAMS.get(&msg.param) {
+                        print!("{} ", style(&p.name()).magenta());
                         if msg.r#type == MessageType::Response || msg.r#type == MessageType::Set {
-                            let decoded_data = p.r#type.decode_str(msg.data);
-                            print!("= {} ", style(decoded_data).bold());
+                            let decoded_data = p.decode_any(msg.data);
+                            if let Some(decoded_data) = decoded_data {
+                                print!("= {} ", style(decoded_data).bold());
+                            } else {
+                                print!("= {} ", style("None").italic());
+                            }
                         }
                     } else if msg.r#type == MessageType::Response || msg.r#type == MessageType::Set
                     {
