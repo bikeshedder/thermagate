@@ -48,21 +48,21 @@ pub struct DecParam {
     pub max: Option<Decimal>,
 }
 
-pub struct Enum8Param {
+pub struct Enum8Param<T> {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
     pub mutable: bool,
-    pub default: Option<u16>,
+    pub default: Option<T>,
     pub values: phf::OrderedMap<i8, &'static str>,
 }
 
-pub struct Enum16Param {
+pub struct Enum16Param<T> {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
     pub mutable: bool,
-    pub default: Option<u16>,
+    pub default: Option<T>,
     pub values: phf::OrderedMap<i16, &'static str>,
 }
 
@@ -133,16 +133,6 @@ pub trait Param: Sync {
 pub trait DecodeParam: Param {
     type Value;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value>;
-}
-
-pub enum AnyParam {
-    Bool(BoolParam),
-    I8(I8Param),
-    I16(I16Param),
-    Dec(DecParam),
-    Enum8(Enum8Param),
-    Enum16(Enum16Param),
-    TimeRange(TimeRangeParam),
 }
 
 pub enum AnyValue {
@@ -299,7 +289,10 @@ impl DecodeParam for DecParam {
     }
 }
 
-impl Param for Enum8Param {
+impl<T> Param for Enum8Param<T>
+where
+    T: From<i8> + Sync,
+{
     fn id(&self) -> u16 {
         self.id
     }
@@ -313,19 +306,24 @@ impl Param for Enum8Param {
         None
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data)
-            .map(|v| AnyValue::Enum8(v, self.values.get(&v).copied()))
+        decode_i8(data).map(|v| AnyValue::Enum8(v, self.values.get(&v).copied()))
     }
 }
 
-impl DecodeParam for Enum8Param {
-    type Value = i8;
+impl<T> DecodeParam for Enum8Param<T>
+where
+    T: From<i8> + Sync,
+{
+    type Value = T;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
-        decode_i8(data)
+        decode_i8(data).map(From::from)
     }
 }
 
-impl Param for Enum16Param {
+impl<T> Param for Enum16Param<T>
+where
+    T: From<i16> + Sync,
+{
     fn id(&self) -> u16 {
         self.id
     }
@@ -339,15 +337,17 @@ impl Param for Enum16Param {
         None
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data)
-            .map(|v| AnyValue::Enum16(v, self.values.get(&v).copied()))
+        decode_i16(data).map(|v| AnyValue::Enum16(v, self.values.get(&v).copied()))
     }
 }
 
-impl DecodeParam for Enum16Param {
-    type Value = i16;
+impl<T> DecodeParam for Enum16Param<T>
+where
+    T: From<i16> + Sync,
+{
+    type Value = T;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
-        decode_i16(data)
+        decode_i16(data).map(From::from)
     }
 }
 
