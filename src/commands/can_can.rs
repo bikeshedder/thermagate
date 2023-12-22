@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::fmt;
 
 use socketcan::{CanDataFrame, CanFrame, CanSocket, Socket};
@@ -9,9 +8,6 @@ use crate::can::message::{Message, MessageType};
 use crate::can::param::{DecodeParam, Param};
 use crate::can::params;
 use crate::config::Config;
-use crate::data::PARAMETERS;
-use crate::old_model::{Parameter, ParameterType};
-use crate::utils::read_toml_str;
 
 pub fn get<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option<P::Value> {
     let req = Message {
@@ -49,11 +45,6 @@ pub fn get<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option
     unreachable!()
 }
 
-struct BetterParam {
-    name: String,
-    r#type: ParameterType,
-}
-
 pub fn get_and_print<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option<P::Value>
 where
     P: Param,
@@ -77,7 +68,7 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let flow = get_and_print(&socket, Device::HG1, &params::V);
 
     let t_r = get_and_print(&socket, Device::HG1, &params::T_R); // ???
-    let t_v_bh = get_and_print(&socket, Device::HG1, &params::T_TVBH); // ???
+    get_and_print(&socket, Device::HG1, &params::T_TVBH); // ???
 
     get_and_print(&socket, Device::HG1, &params::T_LIQ);
     let t_v = get_and_print(&socket, Device::HG1, &params::T_V); // ???

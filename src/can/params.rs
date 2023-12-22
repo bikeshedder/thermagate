@@ -321,7 +321,7 @@ pub const MAX_AUFHEIZVORVERLEGUNG: I16Param = I16Param {
     min: None,
     max: None,
 };
-pub const PROGRAMMSCHALTER: Enum8Param = Enum8Param {
+pub const PROGRAMMSCHALTER: Enum8Param<enums::Programm> = Enum8Param {
     id: 0x0112,
     name: "PROGRAMMSCHALTER",
     label: MultilingualStr {
@@ -2833,7 +2833,7 @@ pub const SCHALTSCHWELLE_TDHW: DecParam = DecParam {
     min: None,
     max: None,
 };
-pub const BETRIEBSART: Enum16Param = Enum16Param {
+pub const BETRIEBSART: Enum16Param<enums::Betriebsart> = Enum16Param {
     id: 0xc0f6,
     name: "BETRIEBSART",
     label: MultilingualStr {
@@ -2857,7 +2857,7 @@ pub const PWM_SIGNAL: I8Param = I8Param {
     min: None,
     max: None,
 };
-pub const SG: Enum16Param = Enum16Param {
+pub const SG: Enum16Param<enums::SG> = Enum16Param {
     id: 0xc0f8,
     name: "SG",
     label: MultilingualStr {
