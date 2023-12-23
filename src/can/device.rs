@@ -81,6 +81,15 @@ pub enum Device {
     Other(u16),
 }
 
+impl Device {
+    pub fn name(&self) -> &str {
+        self.as_ref()
+    }
+    pub fn is_other(&self) -> bool {
+        matches!(self, Self::Other(_))
+    }
+}
+
 impl fmt::Display for Device {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Self::Other(addr) = self {

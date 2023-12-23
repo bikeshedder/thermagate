@@ -1,7 +1,7 @@
-use serde::{Serialize, Deserialize};
-use tokio_serial::{SerialPortBuilderExt, SerialStream, Error};
+use serde::{Deserialize, Serialize};
+use tokio_serial::{Error, SerialPortBuilderExt, SerialStream};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SerialConfig {
     pub path: String,
     pub baud_rate: u32,

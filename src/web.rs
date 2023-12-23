@@ -10,6 +10,7 @@ use axum::{
     routing::get,
     Json, Router,
 };
+use maud::{html, DOCTYPE};
 use tokio::sync::broadcast;
 use tower_http::cors::{Any, CorsLayer};
 
@@ -24,7 +25,7 @@ struct AppState {
     pub can: Arc<CanDriver>,
 }
 
-pub async fn run_server(addr: SocketAddr, params_data: Params, can: CanDriver) {
+pub async fn run_server(addr: SocketAddr, params_data: Params, can: Arc<CanDriver>) {
     let cors = CorsLayer::new()
         // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
@@ -38,15 +39,27 @@ pub async fn run_server(addr: SocketAddr, params_data: Params, can: CanDriver) {
         .layer(cors)
         .with_state(AppState {
             params: params_data,
-            can: Arc::new(can),
+            can,
         });
     tracing::debug!("listening on http://{}", addr);
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn root() -> &'static str {
-    "Hello, World!"
+async fn root() -> impl IntoResponse {
+    html! {
+        (DOCTYPE)
+        html {
+            head {
+
+            }
+            body {
+                h1 {
+                    "Hello world!"
+                }
+            }
+        }
+    }
 }
 
 async fn params(state: State<AppState>) -> impl IntoResponse {

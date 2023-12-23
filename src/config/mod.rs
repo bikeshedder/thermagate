@@ -1,5 +1,7 @@
 use std::net::SocketAddr;
 
+use nrg_hass::config::HomeAssistantConfig;
+use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
 
 use crate::serial::SerialConfig;
@@ -11,7 +13,7 @@ pub struct Config {
     pub http: HttpConfig,
     pub can: CanConfig,
     pub mqtt: MqttConfig,
-    pub hass: HassConfig,
+    pub hass: HomeAssistantConfig,
     pub serial: SerialConfig,
 }
 
@@ -36,19 +38,4 @@ pub struct HttpConfig {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CanConfig {
     pub interface: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct MqttConfig {
-    pub device_id: String,
-    pub host: String,
-    pub port: u16,
-    pub username: String,
-    pub password: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct HassConfig {
-    pub mqtt_discovery_prefix: String,
-    pub device_prefix: String,
 }

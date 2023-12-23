@@ -5,15 +5,13 @@ listen = "127.0.0.1:3000"
 interface = "can0"
 
 [mqtt]
-device_id = "altherma-gateway"
-host = "homeassistant.local"
-port = 1883
+addr = "altherma-gateway:1883"
 username = ""
 password = ""
 
 [hass]
 mqtt_discovery_prefix = "homeassistant"
-device_prefix =  "altherma-gateway"
+device_prefix = "altherma-gateway"
 
 [serial]
 path = "/dev/ttyUSB0"
