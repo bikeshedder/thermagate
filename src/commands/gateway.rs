@@ -1,15 +1,24 @@
-use std::{collections::HashMap, sync::Arc};
+use std::{
+    collections::{hash_map::Entry, HashMap},
+    sync::Arc,
+};
 
+use nrg_hass::{config::HomeAssistantConfig, discovery::announce, state::publish_state};
+use num_traits::ToPrimitive;
+use rumqttc::AsyncClient;
 use serde::Serialize;
+use serde_json::{json, Number};
 use tokio::sync::{broadcast, Mutex};
+use tracing::debug;
 
 use crate::{
     can::{
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
-        param::AnyValue,
+        param::{AnyValue, Unit},
     },
     config::Config,
+    hass::make_hass_sensor,
     web::run_server,
 };
 
@@ -23,28 +32,73 @@ pub enum Param {
 pub struct Params(pub Arc<Mutex<HashMap<String, HashMap<&'static str, Param>>>>);
 
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
-    let can = CanDriver::new(&config.can.interface);
+    let can = Arc::new(CanDriver::new(&config.can.interface));
     let params: Params = Params(Arc::new(Mutex::new(HashMap::new())));
-    tokio::spawn(recv_params(params.clone(), can.rx()));
+    let (mqtt, mut mqtt_event_loop) = config.mqtt.client();
+    tokio::spawn(recv_params(
+        params.clone(),
+        can.rx(),
+        mqtt,
+        config.hass.clone(),
+    ));
+    tokio::spawn(async move {
+        while let Ok(ev) = mqtt_event_loop.poll().await {
+            debug!("{:?}", ev);
+        }
+    });
+    tokio::spawn(query_params(can.clone()));
     run_server(config.http.listen, params, can).await;
     Ok(())
 }
 
-async fn recv_params(params: Params, mut rx: broadcast::Receiver<ReceivedMessage>) {
+async fn query_params(can: Arc<CanDriver>) {}
+
+async fn recv_params(
+    params: Params,
+    mut rx: broadcast::Receiver<ReceivedMessage>,
+    mqtt: AsyncClient,
+    hass_cfg: HomeAssistantConfig,
+) {
     while let Ok(message) = rx.recv().await {
         let Some((param, value)) = message.decode_param() else {
             continue;
         };
+        if message.sender.is_other() {
+            continue;
+        }
+        let mqtt_value = if let Some(value) = &value {
+            match (&value, param.unit()) {
+                (AnyValue::Bool(b), _) => json!(b),
+                (AnyValue::I8(v), _) => json!(v),
+                (AnyValue::I16(v), _) => json!(v),
+                (AnyValue::Dec(v), Some(Unit::LitersPerHour)) => {
+                    // Convert liters per hour to cubic meters per hour
+                    json!(v.to_f64().map(|v| v / 1000f64))
+                }
+                (AnyValue::Dec(v), _) => json!(v.to_f64()),
+                (AnyValue::Enum8(_, n), _) => json!(n),
+                (AnyValue::Enum16(_, n), _) => json!(n),
+                (AnyValue::TimeRange(v), _) => json!(v.to_string()),
+            }
+        } else {
+            json!(null)
+        };
         match message.r#type {
             MessageType::Request => {
-                params
+                if let Entry::Vacant(e) = params
                     .0
                     .lock()
                     .await
                     .entry(message.receiver.to_string())
                     .or_default()
                     .entry(param.name())
-                    .or_insert(Param::Loading);
+                {
+                    e.insert(Param::Loading);
+                    let sensor = make_hass_sensor(message.receiver, param);
+                    announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor)
+                        .await
+                        .unwrap();
+                }
             }
             MessageType::Response => {
                 params
@@ -53,7 +107,10 @@ async fn recv_params(params: Params, mut rx: broadcast::Receiver<ReceivedMessage
                     .await
                     .entry(message.sender.to_string())
                     .or_default()
-                    .insert(param.name(), Param::Value(value));
+                    .entry(param.name())
+                    .or_insert(Param::Value(value.clone()));
+                let sensor = make_hass_sensor(message.sender, param);
+                publish_state(&mqtt, &sensor, mqtt_value).await.unwrap();
             }
             // Ignore other message types
             _ => {}

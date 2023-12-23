@@ -20,6 +20,12 @@ futures-util = "0.3.28"
 indexmap = { version = "2.0.0", features = ["serde"] }
 itertools = "0.12.0"
 lazy_static = "1.4.0"
+maud = { git = "https://github.com/vidhanio/maud", branch = "patch-1", features = [
+    "axum",
+] }
+nrg-hass = { git = "https://github.com/bikeshedder/nrg" }
+nrg-mqtt = { git = "https://github.com/bikeshedder/nrg" }
+num-traits = "0.2.17"
 num_enum = "0.7.1"
 phf = { version = "0.11.2", features = ["macros"] }
 regex = "1.9.1"
