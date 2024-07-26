@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 135.46667 135.46667"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.914906"
+     inkscape:cx="295.11228"
+     inkscape:cy="277.07764"
+     inkscape:window-width="1669"
+     inkscape:window-height="1313"
+     inkscape:window-x="3138"
+     inkscape:window-y="516"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-80.930458,-78.521822)">
+    <path
+       id="rect4951"
+       style="fill:#676c53;stroke-width:0.753223"
+       d="m 80.930462,78.521822 -4e-6,67.733328 67.732352,-67.733325 z"
+       inkscape:export-filename="gateway-logo.png"
+       inkscape:export-xdpi="182.06259"
+       inkscape:export-ydpi="182.06259" />
+    <path
+       id="rect9744"
+       style="fill:#7fff2a;stroke-width:0.753223"
+       d="m 148.66281,78.521825 -67.732352,67.733325 1.1e-5,67.73333 L 216.39712,78.521828 Z" />
+  </g>
+</svg>
