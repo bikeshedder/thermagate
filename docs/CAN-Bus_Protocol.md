@@ -1,15 +1,19 @@
 # CAN-Bus Protocol
 
-## Non standard use of the CAN-Bus
+## Message IDs
 
-The Daikin/ROTEX uses the CAN-Bus in a non-standard way. The message ID is not used to identify the message being sent but the device sending the message.
+The Daikin/ROTEX uses the CAN-Bus in a **non-standard** way. The message ID is not used to identify the message type and sending node but just the device sending the message.
+
+The actual message type is then encoded as part of the first byte of the message data.
 
 ## Data encoding
 
 The 7 `data` bytes of every CAN-bus frame are encoded the following way:
 
-- `data[0]` stores the first (MSB) 4 bits of the recipient address followed by 4 bits of the message type
-- `data[1]` contains a padding bit followed by the remaining 7 bits (LSB) of the recipient address
+- `data[0]` stores the first (MSB) 4 bits of the recipient address followed by 4 bits of the message type:  
+  `data[0] = (recipient_address >> 3) & 0b11110000 | message_type & 0b00001111`
+- `data[1]` contains a padding bit followed by the remaining 7 bits (LSB) of the recipient address  
+  `data[1] = recipient_address & 0b01111111`
 - `data[2]` contains the parameter ID. The parameter ID `0xFA` denotes that the parameter ID is a 16 bit integer and the next two bytes are used to store the parameter ID instead.
 
 Depending on `data[2]` the remaining 4 bytes are either used to just encode the value or a two byte parameter ID followed by 2 bytes for the value.
@@ -67,7 +71,7 @@ The most reliable way to figure out parameter IDs and their meanings is to use t
 
 - The G1 gateway requests the `SOFTWARE_NUMBER` (0x0199) to detect the existence of devices.
 - The G1 gateway requests basically all known parameters from all devices even if they never report that parameter.
-- Parameters that should be unique are reported by multiple devices with varying values. e.g. the `AUSSENTEMP` (0x000c, outdoor temp.) parameter is reported by `HG1`, `HCM1` and `HCM2`. `HG` reports a value for that parameter that varies sligthly from the `HCM` devices which doesn't make sense to me.
+- Parameters that should be unique are reported by multiple devices with varying values. e.g. the `AUSSENTEMP` (0x000c, outdoor temp.) parameter is reported by `HG1`, `HCM1` and `HCM2`. `HG` reports a value for that parameter that varies sligthly from the `HCM` devices which doesn't seam to make a lot of sense.
 
 ## A word of caution!
 
@@ -79,4 +83,4 @@ I've heard from other people that it is possible to brick your HPSU if you're no
 
 - The [Rotex HPSU configuration](https://github.com/crycode-de/ioBroker.canbus/blob/master/well-known-messages/configs/rotex-hpsu.md) included in the [ioBroker.canbus](https://github.com/crycode-de/ioBroker.canbus/) repository helped me a lot to decipher the message format.
 - The [fhemHPSU](https://github.com/ahermann86/fhemHPSU) project contains an exhaustive list of parameters.
-- The `data.json` included in the `G1 Gateway` software contains a large number of parameters but is very incomplete: `/var/local/rocon-g1/node_modules/rotex-control-module/data/data.json`
+- The `data.json` included in the `G1 Gateway` software contains a large number of parameters. This list is still very incomplete but a good starting point for experimentation: `/var/local/rocon-g1/node_modules/rotex-control-module/data/data.json`
