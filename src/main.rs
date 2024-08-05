@@ -1,5 +1,5 @@
 use altherma_gateway::{
-    commands::{can_can, can_monitor, default_config, gateway, serial_monitor, serial_query},
+    commands::{can_can, can_monitor, default_config, gateway},
     config::Config,
 };
 use clap::{Parser, Subcommand};
@@ -22,8 +22,6 @@ enum Command {
     #[clap(about = "Print default configuration")]
     DefaultConfig,
     Gateway,
-    SerialMonitor,
-    SerialQuery(serial_query::Args),
     CanCan,
 }
 
@@ -47,8 +45,6 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::CanMonitor => can_monitor::cmd(config).await,
         Command::DefaultConfig => unreachable!(),
         Command::Gateway => gateway::cmd(config).await,
-        Command::SerialQuery(args) => serial_query::cmd(config, args).await,
-        Command::SerialMonitor => serial_monitor::cmd(config).await,
         Command::CanCan => can_can::cmd(config).await,
     }
 }
