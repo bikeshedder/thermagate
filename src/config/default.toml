@@ -5,7 +5,7 @@ listen = "127.0.0.1:3000"
 interface = "can0"
 
 [mqtt]
-addr = "altherma-gateway:1883"
+addr = "mqtt-broker:1883"
 username = ""
 password = ""
 
