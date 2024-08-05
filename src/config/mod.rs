@@ -8,6 +8,7 @@ pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
+    pub language: Language,
     pub http: HttpConfig,
     pub can: CanConfig,
     pub mqtt: MqttConfig,
@@ -25,6 +26,13 @@ impl Config {
             .build()?
             .try_deserialize::<Self>()?)
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Language {
+    DE,
+    EN,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
