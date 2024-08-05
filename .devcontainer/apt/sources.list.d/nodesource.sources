@@ -1,0 +1,6 @@
+Types: deb
+URIs: https://deb.nodesource.com/node_20.x
+Signed-By: /etc/apt/keyrings/nodesource.asc
+Suites: nodistro
+Components: main
+Enabled: yes
