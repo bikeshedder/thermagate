@@ -12,11 +12,3 @@ password = ""
 [hass]
 mqtt_discovery_prefix = "homeassistant"
 device_prefix = "altherma-gateway"
-
-[serial]
-path = "/dev/ttyUSB0"
-baud_rate = 9600
-data_bits = "Eight"
-parity = "Even"
-stop_bits = "One"
-flow_control = "None"
