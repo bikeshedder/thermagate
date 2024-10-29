@@ -8,6 +8,7 @@ interface = "can0"
 
 [mqtt]
 addr = "mqtt-broker:1883"
+device_id = "thermagate"
 username = ""
 password = ""
 

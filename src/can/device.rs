@@ -2,7 +2,7 @@ use std::fmt;
 
 use num_enum::{FromPrimitive, IntoPrimitive};
 use serde::{Deserialize, Serialize};
-use strum::AsRefStr;
+use strum::{AsRefStr, IntoStaticStr};
 
 ///
 #[derive(
@@ -16,6 +16,7 @@ use strum::AsRefStr;
     IntoPrimitive,
     Serialize,
     Deserialize,
+    IntoStaticStr,
 )]
 #[repr(u16)]
 pub enum Device {
@@ -75,6 +76,8 @@ pub enum Device {
     HCMX = 0x679,
     /// This is the address used by the ROTEX RoCon G1 Gateway (Daikin EHS157056)
     G1 = 0x69d,
+    /// This is the address used by the control panel when communicating with HC2
+    RoCon2 = 0x69e,
     /// This is the address used by this project
     GW = 0x666,
     #[num_enum(catch_all)]
@@ -82,8 +85,11 @@ pub enum Device {
 }
 
 impl Device {
-    pub fn name(&self) -> &str {
-        self.as_ref()
+    pub fn id(&self) -> u16 {
+        u16::from(*self)
+    }
+    pub fn name(&self) -> &'static str {
+        self.into()
     }
     pub fn is_other(&self) -> bool {
         matches!(self, Self::Other(_))
@@ -98,4 +104,9 @@ impl fmt::Display for Device {
             write!(f, "{}", self.as_ref())
         }
     }
+}
+
+#[test]
+fn test_device_name() {
+    assert_eq!(Device::Other(42).name(), "Other");
 }

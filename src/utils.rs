@@ -5,6 +5,7 @@ use std::{
 };
 
 use serde::de::DeserializeOwned;
+use tracing::warn;
 
 #[derive(Debug, thiserror::Error)]
 pub enum ReadTomlError {
@@ -24,4 +25,10 @@ pub fn read_toml<T: DeserializeOwned, P: AsRef<Path>>(path: P) -> Result<T, Read
 pub fn read_toml_str<T: DeserializeOwned>(toml: &str) -> Result<T, ReadTomlError> {
     let data = toml::from_str(toml)?;
     Ok(data)
+}
+
+pub fn warn_if_err<E: std::error::Error>(result: Result<(), E>, error_message: &str) {
+    if let Err(error) = result {
+        warn!("{}: {}", error_message, error);
+    }
 }

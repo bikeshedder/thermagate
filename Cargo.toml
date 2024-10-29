@@ -18,26 +18,30 @@ config = { version = "0.14.0", default-features = false, features = ["toml"] }
 console = "0.15.7"
 futures-util = "0.3.28"
 itertools = "0.13.0"
-maud = { version = "0.26.0", features = ["axum"] }
+mime_guess = "2.0.5"
 nrg-hass = { git = "https://github.com/bikeshedder/nrg" }
 nrg-mqtt = { git = "https://github.com/bikeshedder/nrg" }
 num-traits = "0.2.17"
 num_enum = "0.7.1"
 phf = { version = "0.11.2", features = ["macros"] }
 rumqttc = "0.24.0"
+rust-embed = { version = "8.5.0", features = ["axum"] }
 rust_decimal = "1.33.1"
 rust_decimal_macros = "1.33.1"
 serde = { version = "1.0.164", features = ["derive"] }
 serde_json = "1.0.96"
 socketcan = { version = "3.3.0", features = ["tokio"] }
+socketioxide = "0.15.0"
 strum = { version = "0.26.0", features = ["derive"] }
 thiserror = "1.0.40"
+time = { version = "0.3.36", features = ["parsing"] }
 tokio = { version = "1.28.2", features = [
     "macros",
     "rt-multi-thread",
     "io-util",
     "sync",
 ] }
+tokio-stream = { version = "0.1.16", features = ["sync"] }
 toml = "0.8"
 tower-http = { version = "0.6.0", features = ["fs", "cors"] }
 tracing = { version = "0.1.37", features = ["async-await"] }
