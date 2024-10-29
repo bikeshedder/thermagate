@@ -1,10 +1,16 @@
 # <img src="logo.svg" height="64px" style="height: 1.5em; vertical-align: bottom"> Thermagate
 
-> **⚠️ This project is still work in progress and not in a useable state, yet. Please don't report missing or broken features. ⚠️**
-
 This software is designed to work for the **Daikin Altherma 3 H HT ECH<sub>2</sub>O (ETSXB16P50D)**. It should be mostly compatible with other Daikin and ROTEX heat pump models that utilize a CAN bus for communication purposes.
 
 Daikin heat pumps that don't use a CAN bus are **NOT** supported. If your heat pump does have built-in WiFi it is a newer/different model and uses a completely different communication technology.
+
+## Disclaimer
+
+**⚠️ This software is provided "as is," without any warranty, including merchantability, fitness for a particular purpose, or noninfringement. The authors are not liable for any claims, damages, or liabilities. Use at your own risk.**
+
+This is an independent project, unaffiliated with Daikin Industries, Ltd., or any of its affiliates. All trademarks are the property of their respective holders, and no affiliation or endorsement is implied.
+
+This software is an original work, developed independently without reliance on or use of any third-party or proprietary code, intellectual property, or trade secrets. Any resemblance to other software is coincidental.
 
 ## Prerequisites
 
