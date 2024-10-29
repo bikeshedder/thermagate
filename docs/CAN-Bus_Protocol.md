@@ -85,4 +85,4 @@ I've heard from other people that it is possible to brick your HPSU if you're no
 - The [fhemHPSU](https://github.com/ahermann86/fhemHPSU) project contains an exhaustive list of parameters.
 - The `data.json` included in the `G1 Gateway` software contains a large number of parameters. This list is very incomplete and contains a few errors but is a good starting point for experimentation: `/var/local/rocon-g1/node_modules/rotex-control-module/data/data.json`
 
-The mentioned sources were only used for initial experimentation. The `params.csv` and `enums.csv` files which are distributed in this repository were reverse engineered from the communication seen of an actual `ETSXB16P50D` and `EPRA14DAW1` device. Therefore is does not contain the same typos and errors of the original Rocon G1 device.
+The mentioned sources were only used for initial experimentation. The `params.csv` and `enums.csv` files which are distributed in this repository were reverse engineered from the communication seen of an actual `ETSXB16P50D` and `EPRA14DAW1` device. It does not contain the same typos and errors of the original Rocon G1 device and is not based on its source code in any way.
