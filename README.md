@@ -20,6 +20,8 @@ While this software is useful on its own it really shines when combined with a M
 
 ## Installation instructions
 
+As of now no binary release exists, yet. You need to build the code yourself:
+
 1. Clone this repository
 2. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
 3. Run `cargo build --release` to build the binary or `cargo run` to run command directly.
@@ -38,7 +40,7 @@ The `thermagate` command comes with a `default-config` command that will print t
 thermagate default-config > config.toml
 ```
 
-You probably want to change the `listen` address to something more relaced such as `0.0.0.0:3000` so it can be reached from the outside and modify the `[mqtt]` settings.
+**👉 You probably want to change the `listen` address to something more relaxed such as `[::]:3000` (IPv6) or `0.0.0.0:3000` (IPv4) so it can be reached from the outside and modify the `[mqtt]` settings.**
 
 The default configuration file can also be found in the sources: [`src/config/default.toml`](./src/config/default.toml)
 
@@ -52,15 +54,7 @@ If you want to keep the existing gateway software for future reference you can a
 
 ## Raspberry PI 4 configuration
 
-I use a Raspberry PI 4 with the official Raspberry PI 7 Display and the Waveshare RS485 CAN HAT (B). The following instructions are only meant when using the very same hardware.
-
-### Configure display (rotate 90 degrees)
-
-Edit `/boot/cmdline.txt` and add the following
-
-```
-fbcon=rotate:3
-```
+I use a Raspberry PI 4 with a Waveshare RS485 CAN HAT (B). The following instructions are only meant when using the very same hardware.
 
 ### Configure CAN hat
 
@@ -81,3 +75,5 @@ auto can0
 iface can0 can static
     bitrate 20000
 ```
+
+After rebooting the Raspberry and hooking it up to the CAN-bus of the heat pump you should be able to run the Thermagate software with its default configuration.
