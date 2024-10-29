@@ -238,6 +238,9 @@ mod tests {
             data: [0x01, 0x00],
         };
         assert_eq!(Message::parse(id, data), msg);
-        assert_eq!(msg.compose(), data);
+        // This assertion is not true as we encode all requests in the
+        // 0xfa-format just like the RoCon interface.
+        //assert_eq!(msg.compose(), data);
+        assert_eq!(msg.compose(), [0x36, 0x00, 0xfa, 0, 0xfe, 1, 0]);
     }
 }
