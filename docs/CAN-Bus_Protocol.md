@@ -10,9 +10,9 @@ The actual message type is then encoded as part of the first byte of the message
 
 The 7 `data` bytes of every CAN-bus frame are encoded the following way:
 
-- `data[0]` stores the first (MSB) 4 bits of the recipient address followed by 4 bits of the message type:  
+- `data[0]` stores the first (MSB) 4 bits of the recipient address followed by 4 bits of the message type:
   `data[0] = (recipient_address >> 3) & 0b11110000 | message_type & 0b00001111`
-- `data[1]` contains a padding bit followed by the remaining 7 bits (LSB) of the recipient address  
+- `data[1]` contains a padding bit followed by the remaining 7 bits (LSB) of the recipient address
   `data[1] = recipient_address & 0b01111111`
 - `data[2]` contains the parameter ID. The parameter ID `0xFA` denotes that the parameter ID is a 16 bit integer and the next two bytes are used to store the parameter ID instead.
 
@@ -83,4 +83,6 @@ I've heard from other people that it is possible to brick your HPSU if you're no
 
 - The [Rotex HPSU configuration](https://github.com/crycode-de/ioBroker.canbus/blob/master/well-known-messages/configs/rotex-hpsu.md) included in the [ioBroker.canbus](https://github.com/crycode-de/ioBroker.canbus/) repository helped me a lot to decipher the message format.
 - The [fhemHPSU](https://github.com/ahermann86/fhemHPSU) project contains an exhaustive list of parameters.
-- The `data.json` included in the `G1 Gateway` software contains a large number of parameters. This list is still very incomplete but a good starting point for experimentation: `/var/local/rocon-g1/node_modules/rotex-control-module/data/data.json`
+- The `data.json` included in the `G1 Gateway` software contains a large number of parameters. This list is very incomplete and contains a few errors but is a good starting point for experimentation: `/var/local/rocon-g1/node_modules/rotex-control-module/data/data.json`
+
+The mentioned sources were only used for initial experimentation. The `params.csv` and `enums.csv` files which are distributed in this repository were reverse engineered from the communication seen of an actual `ETSXB16P50D` and `EPRA14DAW1` device. Therefore is does not contain the same typos and errors of the original Rocon G1 device.
