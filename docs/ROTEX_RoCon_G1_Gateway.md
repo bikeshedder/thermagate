@@ -151,6 +151,25 @@ the `apiKey` parameter. e.g. <http://rocon-g1.local/api/?apiKey=85aea117b02c99ae
 
 ![RoCon G1 API setting/HC1](images/rocon_g1_api_setting_hc1.png)
 
+## Download the Rocon G1 software from the update server
+
+Updates are requested from this URL:
+
+    https://api.rotex-control.com/installation/update/`<hwaddr>`/`<version>`
+
+`<hwaddr>` must be replaced by the hardware address of the eth0 device all
+uppercase with the `:` removed. This identical to the `Asset number` that
+is printed on the Rocon G1 device. The software actually calls
+`ifconfig eth0` internally to get to detect its own identity.
+
+`<version>` is the version number you want to upgrade from. You can just
+use `0` to get the most recent version no matter what. When using a `137`
+the server responts with `HTTP/1.1 204 No Content` as there is no update
+available.
+
+There are plenty of photos in the web with hardware addresses shown that
+work just fine: https://duckduckgo.com/?q=daikin+rocon+g1&iax=images&ia=images
+
 ## Final thoughts
 
 This device could've been great. The general software engineering is well
