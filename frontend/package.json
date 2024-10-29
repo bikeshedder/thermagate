@@ -1,0 +1,23 @@
+{
+  "name": "thermagate-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "start": "vite"
+  },
+  "dependencies": {
+    "@solidjs/router": "^0.10.5",
+    "@suid/icons-material": "*",
+    "@suid/material": "*",
+    "socket.io-client": "^4.7.2",
+    "solid-js": "*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@suid/vite-plugin": "*",
+    "typescript": "^4.8.2",
+    "vite": "*",
+    "vite-plugin-solid": "*"
+  }
+}
