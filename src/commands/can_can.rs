@@ -1,4 +1,5 @@
 use std::fmt;
+use std::time::Duration;
 
 use socketcan::{CanDataFrame, CanFrame, CanSocket, Socket};
 use strum::EnumMessage;
@@ -62,63 +63,76 @@ where
 
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let socket = CanSocket::open(&config.can.interface).unwrap();
+    loop {
+        fetch_params(&socket).await;
+        tokio::time::sleep(Duration::from_secs(15)).await;
+    }
+}
 
-    get_and_print(&socket, Device::HG1, &params::T_AU);
-    get_and_print(&socket, Device::HG1, &params::P);
-    let flow = get_and_print(&socket, Device::HG1, &params::V);
+async fn fetch_params(socket: &CanSocket) {
+    get(&socket, Device::HG1, &params::OUTSIDE_TEMP);
+    get(&socket, Device::Outdoor, &params::STATUS_COMPRESSOR);
+    get(&socket, Device::HG1, &params::OPERATING_MODE);
+    get(&socket, Device::HC2, &params::OPERATING_MODE);
+    let flow = get(&socket, Device::HG1, &params::V);
+    let t_r = get(&socket, Device::HG1, &params::T_R);
+    get(&socket, Device::HG1, &params::T_DHW);
+    get(&socket, Device::HG1, &params::T_AU);
+    get(&socket, Device::HG1, &params::MODE);
+    get(&socket, Device::HG1, &params::EXTERNAL_REQUEST);
+    get(&socket, Device::HG1, &params::ROOM_THERMOSTAT_INTERLINK);
+    get(&socket, Device::HG1, &params::QUIET_MODE);
+    get(&socket, Device::HG1, &params::STATUS_HEATING_SUPPORT);
+    get(
+        &socket,
+        Device::Outdoor,
+        &params::STATUS_HEAT_CIRCULATION_PUMP,
+    );
+    get(&socket, Device::Outdoor, &params::PWM_PUMP);
+    get(&socket, Device::HG1, &params::BUH_CURRENT_OUTPUT);
+    get(&socket, Device::HG1, &params::MIX_3UVDHW);
+    get(&socket, Device::HG1, &params::MIX_3UVB1);
+    get(&socket, Device::HG1, &params::FEED_TEMPERATURE_CURRENT);
+    get(&socket, Device::HG1, &params::FEED_TEMPERATURE_TARGET);
+    get(&socket, Device::HC1, &params::AVERAGE_OUTSIDE_TEMP);
+    get(&socket, Device::HC2, &params::AVERAGE_OUTSIDE_TEMP);
+    get(&socket, Device::HG1, &params::HOT_WATER_TEMP_CURRENT);
+    get(&socket, Device::HG1, &params::HOT_WATER_TEMP_TARGET);
+    get(&socket, Device::HG1, &params::RETURN_FLOW_TEMP);
+    get(&socket, Device::HCM2, &params::FEED_TEMP_HC_CURRENT);
+    get(&socket, Device::HC1, &params::FEED_TEMP_HC_TARGET);
+    let t_v = get(&socket, Device::HG1, &params::FEED_TEMP_PHX);
+    get(&socket, Device::HG1, &params::FEED_TEMP_BUH);
+    get(&socket, Device::HG1, &params::OUTDOOR_TEMP_OPT);
+    get(&socket, Device::HG1, &params::REFRIGERANT_TEMP);
+    get(&socket, Device::HG1, &params::VOLUME_FLOW);
+    get(&socket, Device::HG1, &params::WATER_PRESSURE);
+    get(&socket, Device::HCM2, &params::MIXER_PUMP_STATUS);
+    get(&socket, Device::HC2, &params::MIXER_PUMP_PWM);
+    get(&socket, Device::HCM2, &params::MIXER_INFO_1);
+    get(&socket, Device::HCM2, &params::MIXER_INFO_2);
+    get(&socket, Device::HCM2, &params::MIXER_INFO_3);
+    get(&socket, Device::HCM2, &params::MIXER_INFO_4);
+    get(&socket, Device::HG1, &params::ENERGY_HP_COOLING);
+    get(&socket, Device::HG1, &params::ENERGY_HP_HEATING);
+    get(&socket, Device::HG1, &params::ENERGY_HOT_WATER);
+    get(&socket, Device::HG1, &params::ENERGY_HP_TOTAL);
+    get(&socket, Device::HG1, &params::ENERGY_ELECTRICAL);
+    get(&socket, Device::HG1, &params::ENERGY_EXT_HOT_WATER);
+    get(&socket, Device::HG1, &params::ENERGY_EXT_HEATING);
+    get(&socket, Device::HG1, &params::RUNTIME_COMPRESSOR);
+    get(&socket, Device::HG1, &params::RUNTIME_PUMP);
 
-    let t_r = get_and_print(&socket, Device::HG1, &params::T_R); // ???
-    get_and_print(&socket, Device::HG1, &params::T_TVBH); // ???
-
-    get_and_print(&socket, Device::HG1, &params::T_LIQ);
-    let t_v = get_and_print(&socket, Device::HG1, &params::T_V); // ???
-
-    get_and_print(&socket, Device::HG1, &params::T_DHW);
-
-    get_and_print(&socket, Device::HG1, &params::MISCHERSTELLUNG_2_3UVB);
-    get_and_print(&socket, Device::HG1, &params::MISCHERSTELLUNG_1);
-
-    //get_and_print(&socket, Device::HG1, &DHW_EHS);
     let delta_t: f32 = (t_v.unwrap() - t_r.unwrap()).try_into().unwrap();
 
-    println!("-------------");
-    println!("flow = {} l/h", flow.unwrap());
-    println!("delta_t = {:.1} °C", delta_t);
+    //println!("-------------");
+    //println!("flow = {} l/h", flow.unwrap());
+    //println!("delta_t = {:.1} °C", delta_t);
+    let flow_m3h = flow.unwrap() as f32 / 1000.0;
     let kwh_per_k = 1.16f32;
-    let kwh = flow.unwrap() as f32 * delta_t * kwh_per_k;
+    let kwh = flow_m3h * delta_t * kwh_per_k;
     println!(
-        "{} l/h * {:.2} °C * {:.2} kWh/°C = {:.3} kW",
-        flow.unwrap(),
-        delta_t,
-        kwh_per_k,
-        kwh
+        "{} m³/h * {:.2} °C * {:.2} kWh/°C = {:.3} kW",
+        flow_m3h, delta_t, kwh_per_k, kwh
     );
-
-    get_and_print(&socket, Device::HG1, &params::PROGRAMMSCHALTER);
-    get_and_print(&socket, Device::HG1, &params::SG);
-    get_and_print(&socket, Device::HG1, &params::BETRIEBSART);
-
-    /*
-    get_and_print(&socket, Device::HCM1, &AUSSENTEMP);
-    get_and_print(&socket, Device::HC1, &AUSSENTEMP_WAERMEPUMPE);
-    get_and_print(&socket, Device::HCM1, &VORLAUF);
-
-    get_and_print(&socket, Device::HG1, &ENERGIE_WP_KUEHLUNG);
-    get_and_print(&socket, Device::HG1, &ENERGIE_WP_HEIZUNG);
-    get_and_print(&socket, Device::HG1, &WW_POWER);
-    get_and_print(&socket, Device::HG1, &ENERGIE_EXT_QUELLE_WARMWASSER);
-    get_and_print(&socket, Device::HG1, &ENERGIE_EXT_QUELLE_HEIZUNG);
-    get_and_print(&socket, Device::HG1, &ENERGIE_WARMWASSER);
-    get_and_print(&socket, Device::HG1, &ENERGIE_WP_GESAMT);
-    get_and_print(&socket, Device::HG1, &LAUFZEIT_KOMPRESSOR);
-    get_and_print(&socket, Device::HG1, &LAUFZEIT_PUMPE);
-    */
-
-    get_and_print(&socket, Device::HG1, &params::LEISTUNG_WW);
-    get_and_print(&socket, Device::HG1, &params::WW_AKTIV);
-
-    get_and_print(&socket, Device::Outdoor, &params::STATUS_KOMPRESSOR);
-    get_and_print(&socket, Device::Outdoor, &params::STATUS_UMWAELZPUMPE);
-
-    Ok(())
 }

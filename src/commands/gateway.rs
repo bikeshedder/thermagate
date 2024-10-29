@@ -7,7 +7,7 @@ use nrg_hass::{config::HomeAssistantConfig, discovery::announce, state::publish_
 use num_traits::ToPrimitive;
 use rumqttc::AsyncClient;
 use serde::Serialize;
-use serde_json::{json, Number};
+use serde_json::json;
 use tokio::sync::{broadcast, Mutex};
 use tracing::debug;
 
@@ -19,21 +19,29 @@ use crate::{
     },
     config::Config,
     hass::make_hass_sensor,
-    web::run_server,
+    utils::warn_if_err,
+    web::{run_server, ParamUpdate},
 };
 
-#[derive(Serialize, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub enum Param {
     Loading,
     Value(Option<AnyValue>),
 }
 
 #[derive(Clone)]
-pub struct Params(pub Arc<Mutex<HashMap<String, HashMap<&'static str, Param>>>>);
+pub struct Params {
+    pub values: Arc<Mutex<HashMap<String, HashMap<&'static str, Param>>>>,
+    pub tx: broadcast::Sender<Arc<ParamUpdate>>,
+}
 
 pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
     let can = Arc::new(CanDriver::new(&config.can.interface));
-    let params: Params = Params(Arc::new(Mutex::new(HashMap::new())));
+    let (params_tx, _) = broadcast::channel(100); // FIXME size?
+    let params: Params = Params {
+        values: Arc::new(Mutex::new(HashMap::new())),
+        tx: params_tx,
+    };
     let (mqtt, mut mqtt_event_loop) = config.mqtt.client();
     tokio::spawn(recv_params(
         params.clone(),
@@ -47,11 +55,15 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
         }
     });
     tokio::spawn(query_params(can.clone()));
-    run_server(config.http.listen, params, can).await;
+    run_server(&config.http, params, can).await;
     Ok(())
 }
 
-async fn query_params(can: Arc<CanDriver>) {}
+async fn query_params(_can: Arc<CanDriver>) {
+    // This function is supposed to query parameters in periodic intervals.
+    // As of now the gateway just listens to the CAN bus and provides access
+    // to all the variables read by RoCon G1.
+}
 
 async fn recv_params(
     params: Params,
@@ -79,6 +91,7 @@ async fn recv_params(
                 (AnyValue::Enum8(_, n), _) => json!(n),
                 (AnyValue::Enum16(_, n), _) => json!(n),
                 (AnyValue::TimeRange(v), _) => json!(v.to_string()),
+                (AnyValue::Time(v), _) => json!(v.to_string()),
             }
         } else {
             json!(null)
@@ -86,7 +99,7 @@ async fn recv_params(
         match message.r#type {
             MessageType::Request => {
                 if let Entry::Vacant(e) = params
-                    .0
+                    .values
                     .lock()
                     .await
                     .entry(message.receiver.to_string())
@@ -95,22 +108,30 @@ async fn recv_params(
                 {
                     e.insert(Param::Loading);
                     let sensor = make_hass_sensor(message.receiver, param);
-                    announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor)
-                        .await
-                        .unwrap();
+                    warn_if_err(
+                        announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor).await,
+                        "Failed to announce device to MQTT broker",
+                    )
                 }
             }
             MessageType::Response => {
                 params
-                    .0
+                    .values
                     .lock()
                     .await
                     .entry(message.sender.to_string())
                     .or_default()
-                    .entry(param.name())
-                    .or_insert(Param::Value(value.clone()));
+                    .insert(param.name(), Param::Value(value.clone()));
                 let sensor = make_hass_sensor(message.sender, param);
-                publish_state(&mqtt, &sensor, mqtt_value).await.unwrap();
+                warn_if_err(
+                    publish_state(&mqtt, &sensor, mqtt_value).await,
+                    "Failed to publish state to MQTT broker",
+                );
+                let _ = params.tx.send(Arc::new(ParamUpdate {
+                    device: message.sender.into(),
+                    param: param.into(),
+                    value: Param::Value(value.clone()),
+                }));
             }
             // Ignore other message types
             _ => {}

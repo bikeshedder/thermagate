@@ -4,12 +4,15 @@ use rust_decimal::Decimal;
 use serde::Serialize;
 use strum::EnumMessage;
 
+use super::r#enum::{Enum, EnumVariant};
+
 #[derive(Debug, Default)]
 pub struct BoolParam {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<bool>,
 }
 
@@ -18,7 +21,8 @@ pub struct I8Param {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<i8>,
     pub unit: Option<Unit>,
     pub min: Option<i8>,
@@ -30,7 +34,8 @@ pub struct I16Param {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<i16>,
     pub unit: Option<Unit>,
     pub min: Option<i16>,
@@ -41,7 +46,8 @@ pub struct DecParam {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<Decimal>,
     pub unit: Option<Unit>,
     pub scale: u32,
@@ -53,18 +59,27 @@ pub struct Enum8Param<T> {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<T>,
-    pub values: phf::OrderedMap<i8, &'static str>,
 }
 
-pub struct Enum16Param<T> {
+pub struct Enum16Param<T: Enum> {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<T>,
-    pub values: phf::OrderedMap<i16, &'static str>,
+}
+
+pub struct TimeParam {
+    pub id: u16,
+    pub name: &'static str,
+    pub label: MultilingualStr,
+    pub read: bool,
+    pub write: bool,
+    pub default: Option<Time>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -74,7 +89,7 @@ pub struct Time {
 }
 
 impl Time {
-    pub fn new(hour: u8, minute: u8) -> Option<Self> {
+    pub const fn new(hour: u8, minute: u8) -> Option<Self> {
         if hour > 24 {
             return None;
         }
@@ -85,6 +100,13 @@ impl Time {
             return None;
         }
         Some(Self { hour, minute })
+    }
+    #[track_caller]
+    pub const fn new_const(hour: u8, minute: u8) -> Self {
+        match Self::new(hour, minute) {
+            Some(time) => time,
+            None => panic!("Invalid time"),
+        }
     }
     pub fn hour(&self) -> u8 {
         self.hour
@@ -104,7 +126,8 @@ pub struct TimeRangeParam {
     pub id: u16,
     pub name: &'static str,
     pub label: MultilingualStr,
-    pub mutable: bool,
+    pub read: bool,
+    pub write: bool,
     pub default: Option<TimeRange>,
 }
 
@@ -128,9 +151,14 @@ pub struct MultilingualStr {
 
 pub trait Param: Sync {
     fn id(&self) -> u16;
-    fn name(&self) -> &str;
+    fn name(&self) -> &'static str;
     fn label(&self) -> MultilingualStr;
-    fn unit(&self) -> Option<Unit>;
+    fn unit(&self) -> Option<Unit> {
+        None
+    }
+    fn choices(&self) -> Option<&'static [EnumVariant]> {
+        None
+    }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue>;
 }
 
@@ -148,6 +176,7 @@ pub enum AnyValue {
     Enum8(i8, Option<&'static str>),
     Enum16(i16, Option<&'static str>),
     TimeRange(TimeRange),
+    Time(Time),
 }
 
 impl fmt::Display for AnyValue {
@@ -172,6 +201,7 @@ impl fmt::Display for AnyValue {
                 }
             }
             AnyValue::TimeRange(v) => write!(f, "{}", v),
+            AnyValue::Time(v) => write!(f, "{}", v),
         }
     }
 }
@@ -180,6 +210,8 @@ impl fmt::Display for AnyValue {
 pub enum Unit {
     #[strum(message = "°C")]
     DegCelsius,
+    #[strum(message = "K")]
+    Kelvin,
     #[strum(message = "kW")]
     KiloWatt,
     #[strum(message = "kWh")]
@@ -192,20 +224,23 @@ pub enum Unit {
     Hours,
     #[strum(message = "%")]
     Percent,
+    #[strum(message = "A")]
+    Ampere,
+    #[strum(message = "min")]
+    Minutes,
+    #[strum(message = "s")]
+    Seconds,
 }
 
 impl Param for BoolParam {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
         self.label
-    }
-    fn unit(&self) -> Option<Unit> {
-        None
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
         self.decode(data).map(AnyValue::Bool)
@@ -215,7 +250,7 @@ impl Param for BoolParam {
 impl DecodeParam for BoolParam {
     type Value = bool;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
-        decode_i8(data).map(|v| v != 0)
+        decode_i16(data).map(|v| v != 0)
     }
 }
 
@@ -223,7 +258,7 @@ impl Param for I8Param {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
@@ -248,7 +283,7 @@ impl Param for I16Param {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
@@ -273,7 +308,7 @@ impl Param for DecParam {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
@@ -296,59 +331,59 @@ impl DecodeParam for DecParam {
 
 impl<T> Param for Enum8Param<T>
 where
-    T: From<i8> + Sync,
+    T: Enum,
 {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn unit(&self) -> Option<Unit> {
-        None
+    fn choices(&self) -> Option<&'static [EnumVariant]> {
+        Some(T::VARIANTS)
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        decode_i8(data).map(|v| AnyValue::Enum8(v, self.values.get(&v).copied()))
+        decode_i8(data).map(|v| AnyValue::Enum8(v, Some(T::from(v.into()).into())))
     }
 }
 
 impl<T> DecodeParam for Enum8Param<T>
 where
-    T: From<i8> + Sync,
+    T: Enum,
 {
     type Value = T;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
-        decode_i8(data).map(From::from)
+        decode_i8(data).map(|v| v.into()).map(From::from)
     }
 }
 
 impl<T> Param for Enum16Param<T>
 where
-    T: From<i16> + Sync,
+    T: Enum,
 {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn unit(&self) -> Option<Unit> {
-        None
+    fn choices(&self) -> Option<&'static [EnumVariant]> {
+        Some(T::VARIANTS)
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        decode_i16(data).map(|v| AnyValue::Enum16(v, self.values.get(&v).copied()))
+        decode_i16(data).map(|v| AnyValue::Enum16(v, Some(T::from(v).into())))
     }
 }
 
 impl<T> DecodeParam for Enum16Param<T>
 where
-    T: From<i16> + Sync,
+    T: Enum,
 {
     type Value = T;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
@@ -356,18 +391,37 @@ where
     }
 }
 
-impl Param for TimeRangeParam {
+impl Param for TimeParam {
     fn id(&self) -> u16 {
         self.id
     }
-    fn name(&self) -> &str {
+    fn name(&self) -> &'static str {
         self.name
     }
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn unit(&self) -> Option<Unit> {
-        None
+    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
+        self.decode(data).map(AnyValue::Time)
+    }
+}
+
+impl DecodeParam for TimeParam {
+    type Value = Time;
+    fn decode(&self, data: [u8; 2]) -> Option<Self::Value> {
+        Time::new(data[1] / 4, (data[1] % 4) * 15)
+    }
+}
+
+impl Param for TimeRangeParam {
+    fn id(&self) -> u16 {
+        self.id
+    }
+    fn name(&self) -> &'static str {
+        self.name
+    }
+    fn label(&self) -> MultilingualStr {
+        self.label
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
         self.decode(data).map(AnyValue::TimeRange)
@@ -380,8 +434,10 @@ impl DecodeParam for TimeRangeParam {
         if data[0] == 0x80 {
             return None;
         }
-        let start = Time::new(data[0] / 4, (data[0] % 4) * 15).unwrap();
-        let end = Time::new(data[1] / 4, (data[1] % 4) * 15).unwrap();
+        // FIXME better handling if start/end don't parse. At least do some logging or
+        // mark the value as errnous.
+        let start = Time::new(data[0] / 4, (data[0] % 4) * 15)?;
+        let end = Time::new(data[1] / 4, (data[1] % 4) * 15)?;
         Some(TimeRange { start, end })
     }
 }
