@@ -9,16 +9,12 @@ pub fn make_hass_sensor(device: CanDevice, param: &dyn CanParam) -> Sensor {
     let mut b = Sensor::builder();
     b.object_id(format!(
         "{}_{}_{}",
-        "altherma_gateway",
+        "thermagate",
         device.name().to_lowercase(),
         param.name().to_lowercase()
     ));
-    b.name(format!("Altherma {} {}", device.name(), param.label().de));
-    b.state_topic(format!(
-        "altherma-gateway/{}/{}",
-        device.name(),
-        param.name()
-    ));
+    b.name(format!("Thermagate {} {}", device.name(), param.label().de));
+    b.state_topic(format!("thermagate/{}/{}", device.name(), param.name()));
     if let Some(unit) = param.unit() {
         match unit {
             CanUnit::DegCelsius => b

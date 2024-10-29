@@ -1,12 +1,12 @@
 [package]
-name = "altherma-gateway"
+name = "thermagate"
 version = "0.1.0"
 edition = "2021"
 authors = ["Michael P. Jung <michael.jung@terreon.de>"]
 description = "Gateway compatible with ROTEX based DAIKIN Altherma 3 heat pump"
 keywords = ["daikin", "altherma", "gateway", "heat pump"]
 license = "GPL-3.0"
-repository = "https://github.com/bikeshedder/altherma-gateway"
+repository = "https://github.com/bikeshedder/thermagate"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

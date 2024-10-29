@@ -1,4 +1,4 @@
-# <img src="logo.svg" height="64px" style="height: 1.5em; vertical-align: bottom"> Altherma Gateway
+# <img src="logo.svg" height="64px" style="height: 1.5em; vertical-align: bottom"> Thermagate
 
 > **⚠️ This project is still work in progress and not in a useable state, yet. Please don't report missing or broken features. ⚠️**
 
@@ -22,14 +22,14 @@ If you do want to build on your local workstation and just create a binary that 
 
 1. `cargo install cross`
 2. `cross build --release --target armv7-unknown-linux-musleabihf`
-3. Copy the binary `target/armv7-unknown-linux-musleabihf/release/altherma-gateway` to the target device.
+3. Copy the binary `target/armv7-unknown-linux-musleabihf/release/thermagate` to the target device.
 
 ## Configuration file
 
-The `altherma-gateway` command comes with a `default-config` command that will print the default configuration. You can pipe that output to a `config.toml` and change it as needed:
+The `thermagate` command comes with a `default-config` command that will print the default configuration. You can pipe that output to a `config.toml` and change it as needed:
 
 ```
-altherma-gateway default-config > config.toml
+thermagate default-config > config.toml
 ```
 
 You probably want to change the `listen` address to something more relaced such as `0.0.0.0:3000` so it can be reached from the outside and modify the `[mqtt]` settings.

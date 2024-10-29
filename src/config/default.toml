@@ -13,4 +13,4 @@ password = ""
 
 [hass]
 mqtt_discovery_prefix = "homeassistant"
-device_prefix = "altherma-gateway"
+device_prefix = "thermagate"
