@@ -26,4 +26,4 @@ RUN \
 FROM alpine AS rt
 COPY --from=build /build/bin/* /bin/
 
-CMD ["/bin/altherma-gateway"]
+CMD ["/bin/thermagate"]

@@ -38,71 +38,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "altherma-gateway"
-version = "0.1.0"
-dependencies = [
- "axum",
- "clap",
- "config",
- "console",
- "futures-core",
- "futures-util",
- "indexmap",
- "itertools 0.13.0",
- "lazy_static",
- "maud",
- "nrg-hass",
- "nrg-mqtt",
- "num-traits",
- "num_enum",
- "phf",
- "regex",
- "rumqttc",
- "rust_decimal",
- "rust_decimal_macros",
- "serde",
- "serde-hex",
- "serde_json",
- "serde_yaml",
- "serialport",
- "socketcan",
- "socketioxide",
- "strum",
- "thiserror",
- "tokio",
- "tokio-serial",
- "tokio-stream",
- "toml",
- "tower-http",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "altherma-gateway-codegen"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "csv",
- "heck",
- "hex",
- "indexmap",
- "lazy_static",
- "num-traits",
- "prettyplease",
- "proc-macro2",
- "quote",
- "regex",
- "rust_decimal",
- "serde",
- "serde_json",
- "syn 2.0.72",
- "time",
- "toml",
-]
-
-[[package]]
 name = "anstream"
 version = "0.6.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -858,9 +793,6 @@ name = "hex"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "http"
@@ -2161,6 +2093,71 @@ name = "tap"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
+
+[[package]]
+name = "thermagate"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "clap",
+ "config",
+ "console",
+ "futures-core",
+ "futures-util",
+ "indexmap",
+ "itertools 0.13.0",
+ "lazy_static",
+ "maud",
+ "nrg-hass",
+ "nrg-mqtt",
+ "num-traits",
+ "num_enum",
+ "phf",
+ "regex",
+ "rumqttc",
+ "rust_decimal",
+ "rust_decimal_macros",
+ "serde",
+ "serde-hex",
+ "serde_json",
+ "serde_yaml",
+ "serialport",
+ "socketcan",
+ "socketioxide",
+ "strum",
+ "thiserror",
+ "tokio",
+ "tokio-serial",
+ "tokio-stream",
+ "toml",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "thermagate-codegen"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "csv",
+ "heck",
+ "indexmap",
+ "itertools 0.13.0",
+ "lazy_static",
+ "num-traits",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "regex",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "syn 2.0.72",
+ "time",
+ "toml",
+]
 
 [[package]]
 name = "thiserror"

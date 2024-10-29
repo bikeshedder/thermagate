@@ -1,13 +1,13 @@
-use altherma_gateway::{
+use clap::{Parser, Subcommand};
+use thermagate::{
     commands::{can_can, can_monitor, default_config, gateway},
     config::Config,
 };
-use clap::{Parser, Subcommand};
 use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
 #[derive(Debug, Parser)]
-#[command(name = "altherma-gateway")]
+#[command(name = "thermagate")]
 #[command(author, version, about, long_about = None)]
 struct Cli {
     #[clap(default_value = "config.toml")]
