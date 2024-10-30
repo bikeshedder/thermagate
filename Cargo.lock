@@ -1069,7 +1069,7 @@ dependencies = [
 [[package]]
 name = "nrg-hass"
 version = "0.1.0"
-source = "git+https://github.com/bikeshedder/nrg#7fe30f17e14c66054d02e0f706e42ad5b0904f07"
+source = "git+https://github.com/bikeshedder/nrg#51cdc2ae315d3868430b27407fed991bca57d6a1"
 dependencies = [
  "derive_builder",
  "rumqttc",
@@ -1080,7 +1080,7 @@ dependencies = [
 [[package]]
 name = "nrg-mqtt"
 version = "0.1.0"
-source = "git+https://github.com/bikeshedder/nrg#7fe30f17e14c66054d02e0f706e42ad5b0904f07"
+source = "git+https://github.com/bikeshedder/nrg#51cdc2ae315d3868430b27407fed991bca57d6a1"
 dependencies = [
  "anyhow",
  "itertools 0.13.0",
