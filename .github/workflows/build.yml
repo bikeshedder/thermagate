@@ -79,14 +79,11 @@ jobs:
           path: thermagate-amd64
       - uses: actions/download-artifact@v4
         with:
-          name: thermagate-armv7
-          path: thermagate-armv7
+          pattern: thermagate-*
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           prerelease: true
           tag_name:
             latest
-          files: |
-            thermagate-amd64
-            thermagate-armv7
+          files: thermagate-*
