@@ -9,22 +9,32 @@ use crate::can::{
     r#enum::Enum,
 };
 
-pub fn make_hass_sensor(device: CanDevice, param: &dyn CanParam) -> Sensor {
+pub fn make_hass_sensor(
+    device: CanDevice,
+    param: &dyn CanParam,
+    device_id: &str,
+    topic_prefix: &str,
+) -> Sensor {
     let mut b = Sensor::builder();
     b.unique_id(format!(
         "{}.{}.{:04x}",
-        "altherma",
+        device_id,
         device.name().to_lowercase(),
         param.id()
     ));
     b.object_id(format!(
         "{}_{}_{}",
-        "thermagate",
+        device_id,
         device.name().to_lowercase(),
         param.name().to_lowercase()
     ));
     b.name(format!("Thermagate {} {}", device.name(), param.label().de));
-    b.state_topic(format!("thermagate/{}/{}", device.name(), param.name()));
+    b.state_topic(format!(
+        "{}/{}/{}",
+        topic_prefix,
+        device.name(),
+        param.name()
+    ));
     if let Some(unit) = param.unit() {
         match unit {
             CanUnit::DegCelsius => b

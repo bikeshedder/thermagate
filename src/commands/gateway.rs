@@ -4,6 +4,7 @@ use std::{
 };
 
 use nrg_hass::{config::HomeAssistantConfig, discovery::announce, state::publish_state};
+use nrg_mqtt::config::MqttConfig;
 use num_traits::ToPrimitive;
 use rumqttc::AsyncClient;
 use serde::Serialize;
@@ -48,6 +49,7 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
         can.rx(),
         mqtt,
         config.hass.clone(),
+        config.mqtt.clone(),
     ));
     tokio::spawn(async move {
         while let Ok(ev) = mqtt_event_loop.poll().await {
@@ -70,6 +72,7 @@ async fn recv_params(
     mut rx: broadcast::Receiver<ReceivedMessage>,
     mqtt: AsyncClient,
     hass_cfg: HomeAssistantConfig,
+    mqtt_cfg: MqttConfig,
 ) {
     while let Ok(message) = rx.recv().await {
         let Some((param, value)) = message.decode_param() else {
@@ -107,7 +110,12 @@ async fn recv_params(
                     .entry(param.name())
                 {
                     e.insert(Param::Loading);
-                    let sensor = make_hass_sensor(message.receiver, param);
+                    let sensor = make_hass_sensor(
+                        message.receiver,
+                        param,
+                        &hass_cfg.object_id,
+                        &mqtt_cfg.topic_prefix,
+                    );
                     warn_if_err(
                         announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor).await,
                         "Failed to announce device to MQTT broker",
@@ -122,7 +130,12 @@ async fn recv_params(
                     .entry(message.sender.to_string())
                     .or_default()
                     .insert(param.name(), Param::Value(value.clone()));
-                let sensor = make_hass_sensor(message.sender, param);
+                let sensor = make_hass_sensor(
+                    message.sender,
+                    param,
+                    &hass_cfg.object_id,
+                    &mqtt_cfg.topic_prefix,
+                );
                 warn_if_err(
                     publish_state(&mqtt, &sensor, mqtt_value).await,
                     "Failed to publish state to MQTT broker",
