@@ -189,7 +189,7 @@ slow cloud service offered at <https://www.daikin-control.com/login>.
 Please don't get me wrong. I can see how such service could provide useful
 for a service technician. If even basic features such as filtering by parameter
 or heating circuit would work. When exporting parameters only the first 20
-parameters are exported. Someone seams to have forgotten to disable pagination.
+parameters are exported. Someone seems to have forgotten to disable pagination.
 The visualization of parameters is a nice feature though.
 
 But then... does that really have to be a cloud service? All that served by

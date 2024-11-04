@@ -71,13 +71,13 @@ The most reliable way to figure out parameter IDs and their meanings is to use t
 
 - The G1 gateway requests the `SOFTWARE_NUMBER` (0x0199) to detect the existence of devices.
 - The G1 gateway requests basically all known parameters from all devices even if they never report that parameter.
-- Parameters that should be unique are reported by multiple devices with varying values. e.g. the `AUSSENTEMP` (0x000c, outdoor temp.) parameter is reported by `HG1`, `HCM1` and `HCM2`. `HG` reports a value for that parameter that varies sligthly from the `HCM` devices which doesn't seam to make a lot of sense.
+- Parameters that should be unique are reported by multiple devices with varying values. e.g. the `AUSSENTEMP` (0x000c, outdoor temp.) parameter is reported by `HG1`, `HCM1` and `HCM2`. `HG` reports a value for that parameter that varies sligthly from the `HCM` devices which doesn't make a lot of sense.
 
 ## A word of caution!
 
-The RoCon interface is very prone to crashing. Never send messages to it or use its device id for sending messages. If doing so the RoCon interface can freeze, crash and/or reset itself to factory defaults. Gladly all configuration except for the date and time seams to be stored outside the `RoCon` interface so after crashing it that's the only setup that needs to be done again.
+The RoCon interface is very prone to crashing. Never send messages to it or use its device id for sending messages. If doing so the RoCon interface can freeze, crash and/or reset itself to factory defaults. Gladly all configuration except for the date and time seems to be stored outside the `RoCon` interface. After crashing it that's the only setup that needs to be done again.
 
-I've heard from other people that it is possible to brick your HPSU if you're not careful. The entire protocol and the meaning of parameters was deduced from the bus messages, the G1 Gateway source code and other projects interfacing the HPSU via the can bus.
+I've heard from other people that it is possible to brick your HPSU if you're not careful. The entire protocol and the meaning of parameters were deduced from the bus messages, the G1 Gateway source code and other projects interfacing the HPSU via the can bus.
 
 ## Acknowledgements
 
