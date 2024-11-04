@@ -1,4 +1,4 @@
-use std::fmt;
+use std::fmt::{self, Debug};
 
 use rust_decimal::Decimal;
 use serde::Serialize;
@@ -42,6 +42,7 @@ pub struct I16Param {
     pub max: Option<i16>,
 }
 
+#[derive(Debug)]
 pub struct DecParam {
     pub id: u16,
     pub name: &'static str,
@@ -55,6 +56,7 @@ pub struct DecParam {
     pub max: Option<Decimal>,
 }
 
+#[derive(Debug)]
 pub struct Enum8Param<T> {
     pub id: u16,
     pub name: &'static str,
@@ -64,6 +66,7 @@ pub struct Enum8Param<T> {
     pub default: Option<T>,
 }
 
+#[derive(Debug)]
 pub struct Enum16Param<T: Enum> {
     pub id: u16,
     pub name: &'static str,
@@ -73,6 +76,7 @@ pub struct Enum16Param<T: Enum> {
     pub default: Option<T>,
 }
 
+#[derive(Debug)]
 pub struct TimeParam {
     pub id: u16,
     pub name: &'static str,
@@ -122,6 +126,7 @@ impl fmt::Display for Time {
     }
 }
 
+#[derive(Debug)]
 pub struct TimeRangeParam {
     pub id: u16,
     pub name: &'static str,
@@ -149,7 +154,7 @@ pub struct MultilingualStr {
     pub en: &'static str,
 }
 
-pub trait Param: Sync {
+pub trait Param: Sync + Debug {
     fn id(&self) -> u16;
     fn name(&self) -> &'static str;
     fn label(&self) -> MultilingualStr;

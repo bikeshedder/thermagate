@@ -14,8 +14,8 @@ readme = "README.md"
 [dependencies]
 axum = { version = "0.7", features = ["ws", "tracing"] }
 clap = { version = "4.3.4", features = ["derive"] }
-config = { version = "0.14.0", default-features = false, features = ["toml"] }
 console = "0.15.7"
+figment = { version = "0.10.19", features = ["toml"] }
 futures-util = "0.3.28"
 itertools = "0.13.0"
 mime_guess = "2.0.5"
@@ -30,6 +30,7 @@ rust_decimal = "1.33.1"
 rust_decimal_macros = "1.33.1"
 serde = { version = "1.0.164", features = ["derive"] }
 serde_json = "1.0.96"
+serde_with = "3.11.0"
 socketcan = { version = "3.3.0", features = ["tokio"] }
 socketioxide = "0.15.0"
 strum = { version = "0.26.0", features = ["derive"] }

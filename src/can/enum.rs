@@ -1,6 +1,8 @@
+use std::fmt::Debug;
+
 use super::param::MultilingualStr;
 
-pub trait Enum: Into<&'static str> + From<i16> + Sync {
+pub trait Enum: Into<&'static str> + From<i16> + Sync + Debug {
     const VARIANTS: &'static [EnumVariant];
 }
 

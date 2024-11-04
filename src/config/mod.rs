@@ -1,8 +1,13 @@
 use std::{net::SocketAddr, time::Duration};
 
+use figment::{
+    providers::{Format, Toml},
+    Figment,
+};
 use nrg_hass::config::HomeAssistantConfig;
 use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
+use serde_with::{serde_as, DurationSeconds};
 
 use crate::can::{device::Device, params::ParamName};
 
@@ -19,15 +24,11 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load(config_file: &str) -> Result<Self, Box<dyn std::error::Error>> {
-        Ok(config::Config::builder()
-            .add_source(config::File::from_str(
-                DEFAULT_CONFIG,
-                config::FileFormat::Toml,
-            ))
-            .add_source(config::File::new(config_file, config::FileFormat::Toml))
-            .build()?
-            .try_deserialize::<Self>()?)
+    pub fn load(config_file: &str) -> Result<Self, figment::Error> {
+        Figment::new()
+            .merge(Toml::string(DEFAULT_CONFIG))
+            .merge(Toml::file(config_file))
+            .extract()
     }
 }
 
@@ -48,8 +49,10 @@ pub struct CanConfig {
     pub interface: String,
 }
 
+#[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QueryConfig {
+    #[serde_as(as = "DurationSeconds")]
     pub interval: Duration,
     pub params: Vec<QueryParam>,
 }

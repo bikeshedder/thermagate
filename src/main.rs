@@ -21,6 +21,7 @@ enum Command {
     CanMonitor,
     #[clap(about = "Print default configuration")]
     DefaultConfig,
+    CheckConfig,
     Gateway,
     CanCan,
 }
@@ -44,6 +45,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     match args.command {
         Command::CanMonitor => can_monitor::cmd(config).await,
         Command::DefaultConfig => unreachable!(),
+        Command::CheckConfig => Ok(()),
         Command::Gateway => gateway::cmd(config).await,
         Command::CanCan => can_can::cmd(config).await,
     }

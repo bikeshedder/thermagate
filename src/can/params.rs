@@ -6453,474 +6453,1219 @@ pub static PARAMS: phf::Map<u16, &dyn Param> = phf::phf_map! {
     OUTDOOR_UNIT, 0xc34du16 => & INDOOR_UNIT, 0xfd4fu16 => & G1_ANTILEG_START_ZEIT,
     0xfdacu16 => & STATUS_HEAT_CIRCULATION_PUMP, 0xfdf4u16 => & ANTI_LEGIONELLA_TIME
 };
+pub static PARAM_NAME_MAP: phf::Map<&str, &dyn Param> = phf::phf_map! {
+    "FEED_TEMPERATURE_TARGET" => & FEED_TEMPERATURE_TARGET, "HOT_WATER_TEMP_TARGET" => &
+    HOT_WATER_TEMP_TARGET, "FEED_TEMP_HC_TARGET" => & FEED_TEMP_HC_TARGET,
+    "ROOM_TEMP_TARGET_1" => & ROOM_TEMP_TARGET_1, "ROOM_TEMP_TARGET_2" => &
+    ROOM_TEMP_TARGET_2, "ROOM_TEMP_TARGET_3" => & ROOM_TEMP_TARGET_3, "REDUCE_ROOM_TEMP"
+    => & REDUCE_ROOM_TEMP, "OUTSIDE_TEMP" => & OUTSIDE_TEMP, "FEED_TEMPERATURE_CURRENT"
+    => & FEED_TEMPERATURE_CURRENT, "HOT_WATER_TEMP_CURRENT" => & HOT_WATER_TEMP_CURRENT,
+    "FEED_TEMP_HC_CURRENT" => & FEED_TEMP_HC_CURRENT, "MYSTERY_0010" => & MYSTERY_0010,
+    "RAUMISTTEMP" => & RAUMISTTEMP, "VERSTELLTE_RAUMSOLLTEMP" => &
+    VERSTELLTE_RAUMSOLLTEMP, "HOT_WATER_TEMP_TARGET_1" => & HOT_WATER_TEMP_TARGET_1,
+    "RETURN_FLOW_TEMP" => & RETURN_FLOW_TEMP, "WATER_PRESSURE" => & WATER_PRESSURE,
+    "MAX_FEED_TEMP" => & MAX_FEED_TEMP, "MIXER_PUMP_STATUS" => & MIXER_PUMP_STATUS,
+    "MIXER_INFO_1" => & MIXER_INFO_1, "MIXER_INFO_2" => & MIXER_INFO_2, "MIXER_INFO_3" =>
+    & MIXER_INFO_3, "MIXER_INFO_4" => & MIXER_INFO_4, "HOT_WATER_ACTIVE" => &
+    HOT_WATER_ACTIVE, "STATUS_COMPRESSOR" => & STATUS_COMPRESSOR, "ANTI_LEGIONELLA_DAY"
+    => & ANTI_LEGIONELLA_DAY, "AUFHEIZOPTIMIERUNG" => & AUFHEIZOPTIMIERUNG,
+    "BUILDING_INSULATION" => & BUILDING_INSULATION, "HEATING_CURVE" => & HEATING_CURVE,
+    "ROOM_SENSOR_ADAPTATION" => & ROOM_SENSOR_ADAPTATION, "MAX_AUFHEIZVORVERLEGUNG" => &
+    MAX_AUFHEIZVORVERLEGUNG, "SLOPE_OFFSET" => & SLOPE_OFFSET, "OPERATING_MODE" => &
+    OPERATING_MODE, "HEATING_CURVE_ADAPTION" => & HEATING_CURVE_ADAPTION,
+    "HEAT_LIMIT_HEATING_MODE" => & HEAT_LIMIT_HEATING_MODE, "HEAT_LIMIT_REDUCING_MODE" =>
+    & HEAT_LIMIT_REDUCING_MODE, "SCREED" => & SCREED, "VACATION_BEGIN_DAY" => &
+    VACATION_BEGIN_DAY, "VACATION_BEGIN_MONTH" => & VACATION_BEGIN_MONTH,
+    "VACATION_BEGIN_YEAR" => & VACATION_BEGIN_YEAR, "VACATION_END_DAY" => &
+    VACATION_END_DAY, "VACATION_END_MONTH" => & VACATION_END_MONTH, "VACATION_END_YEAR"
+    => & VACATION_END_YEAR, "DATE_DAY" => & DATE_DAY, "DATE_MONTH" => & DATE_MONTH,
+    "DATE_YEAR" => & DATE_YEAR, "TIME_HOUR" => & TIME_HOUR, "TIME_MINUTE" => &
+    TIME_MINUTE, "FEED_TEMP_HEATING_MODE" => & FEED_TEMP_HEATING_MODE,
+    "FEED_TEMP_REDUCING_MODE" => & FEED_TEMP_REDUCING_MODE, "MIN_FEED_TEMP" => &
+    MIN_FEED_TEMP, "ABSENKOPTIMIERUNG" => & ABSENKOPTIMIERUNG, "MAX_MIXER_VALVE_PUMP" =>
+    & MAX_MIXER_VALVE_PUMP, "MIN_MIXER_VALVE_PUMP" => & MIN_MIXER_VALVE_PUMP,
+    "MIXER_PUMP_PWM" => & MIXER_PUMP_PWM, "ROOM_TEMP_ABSENT" => & ROOM_TEMP_ABSENT,
+    "HOT_WATER_TEMP_TARGET_3" => & HOT_WATER_TEMP_TARGET_3, "WEATHER_COMPENSATED" => &
+    WEATHER_COMPENSATED, "LOAD_HOT_WATER" => & LOAD_HOT_WATER, "GERAETE_KENNUNG" => &
+    GERAETE_KENNUNG, "MAX_HOT_WATER_LOADING_TIME" => & MAX_HOT_WATER_LOADING_TIME,
+    "CIRCULATION_PUMP_CONTROL" => & CIRCULATION_PUMP_CONTROL, "VERSION_MAJOR" => &
+    VERSION_MAJOR, "VERSION_MINOR" => & VERSION_MINOR, "VOLUME_FLOW" => & VOLUME_FLOW,
+    "ABSENT" => & ABSENT, "VERSION_PATCH" => & VERSION_PATCH, "FEED_TEMP_COOLING_MODE" =>
+    & FEED_TEMP_COOLING_MODE, "PROGRAMMABLE_OUTPUT" => & PROGRAMMABLE_OUTPUT,
+    "ANTI_LEGIONELLA_TEMP" => & ANTI_LEGIONELLA_TEMP, "CIRCULATION_PUMP_INTERVAL" => &
+    CIRCULATION_PUMP_INTERVAL, "VMIN_A1" => & VMIN_A1, "EXT_POWER_HOT_WATER" => &
+    EXT_POWER_HOT_WATER, "EXT_POWER_STAGE_1" => & EXT_POWER_STAGE_1, "EXT_POWER_STAGE_2"
+    => & EXT_POWER_STAGE_2, "HEATING_SUPPORT_POWER" => & HEATING_SUPPORT_POWER,
+    "HEATING_SUPPORT" => & HEATING_SUPPORT, "HEATING_SUPPORT_HYSTERESIS" => &
+    HEATING_SUPPORT_HYSTERESIS, "HEATING_SUPPORT_MAX_TEMP" => & HEATING_SUPPORT_MAX_TEMP,
+    "HT_NT_FUNCTION" => & HT_NT_FUNCTION, "HT_NT_CONTACT" => & HT_NT_CONTACT,
+    "AUX_SWITCHING_FUNCTION" => & AUX_SWITCHING_FUNCTION, "AUX_WAIT_TIME" => &
+    AUX_WAIT_TIME, "AUX_SWITCHING_THRESHOLD_TDHW" => & AUX_SWITCHING_THRESHOLD_TDHW,
+    "ROOM_THERMOSTAT" => & ROOM_THERMOSTAT, "INTERLINK_FUNCTION" => & INTERLINK_FUNCTION,
+    "MIN_PUMP_POWER" => & MIN_PUMP_POWER, "MAX_PUMP_POWER" => & MAX_PUMP_POWER,
+    "WP_MOD_HYST_DURCHFLUSS" => & WP_MOD_HYST_DURCHFLUSS, "WP_SPREIZUNG_HZ_BETRIEB" => &
+    WP_SPREIZUNG_HZ_BETRIEB, "WP_SPREIZUNG_WW_BETRIEB" => & WP_SPREIZUNG_WW_BETRIEB,
+    "WP_VERZ_ZEIT_PUMPE" => & WP_VERZ_ZEIT_PUMPE, "VMIN_WP" => & VMIN_WP,
+    "WP_START_MAX_TEMP" => & WP_START_MAX_TEMP, "HOT_WATER_HYSTERESIS" => &
+    HOT_WATER_HYSTERESIS, "WAITING_TIME_EXT_HEAT_GENERATOR" => &
+    WAITING_TIME_EXT_HEAT_GENERATOR, "SMART_GRID" => & SMART_GRID, "SMART_GRID_MODE" => &
+    SMART_GRID_MODE, "VENTILATION_FUNCTION" => & VENTILATION_FUNCTION, "QUIET_MODE" => &
+    QUIET_MODE, "WP_INNENGERAET" => & WP_INNENGERAET, "WP_AUSSENGERAET" => &
+    WP_AUSSENGERAET, "MIX_3UVDHW" => & MIX_3UVDHW, "ENERGY_HP_COOLING" => &
+    ENERGY_HP_COOLING, "ENERGY_HP_HEATING" => & ENERGY_HP_HEATING,
+    "INTERLINK_TEMP_INCREASE" => & INTERLINK_TEMP_INCREASE, "INTERLINK_TEMP_REDUCTION" =>
+    & INTERLINK_TEMP_REDUCTION, "RUNTIME_PUMP" => & RUNTIME_PUMP, "RUNTIME_COMPRESSOR" =>
+    & RUNTIME_COMPRESSOR, "GLYCOL" => & GLYCOL, "HP_POWER_LIMITATION" => &
+    HP_POWER_LIMITATION, "EXT_HEAT_SOURCE" => & EXT_HEAT_SOURCE, "BIVALENCE_FUNCTION" =>
+    & BIVALENCE_FUNCTION, "BIVALENCE_TEMP" => & BIVALENCE_TEMP, "PUMP_DT_HEATING" => &
+    PUMP_DT_HEATING, "PUMP_DT_COOLING" => & PUMP_DT_COOLING, "HEATING_SYSTEM" => &
+    HEATING_SYSTEM, "PUMP_LIMIT" => & PUMP_LIMIT, "FEED_TEMP_OVERSHOOT" => &
+    FEED_TEMP_OVERSHOOT, "CONTINUOUS_HEATING" => & CONTINUOUS_HEATING, "COMFORT_HEATING"
+    => & COMFORT_HEATING, "FUNC_BURNER_BLOCKING_CONTACT" => &
+    FUNC_BURNER_BLOCKING_CONTACT, "EMERGENCY" => & EMERGENCY, "WATER_PRESSURE_TARGET" =>
+    & WATER_PRESSURE_TARGET, "WATER_MAX_PRESSURE_LOSS" => & WATER_MAX_PRESSURE_LOSS,
+    "WATER_PRESSURE_MAX" => & WATER_PRESSURE_MAX, "WATER_PRESSURE_MIN" => &
+    WATER_PRESSURE_MIN, "ENERGY_EXT_HOT_WATER" => & ENERGY_EXT_HOT_WATER,
+    "ENERGY_EXT_HEATING" => & ENERGY_EXT_HEATING, "ENERGY_HOT_WATER" => &
+    ENERGY_HOT_WATER, "ENERGY_HP_TOTAL" => & ENERGY_HP_TOTAL, "MYSTERY_093C" => &
+    MYSTERY_093C, "WATER_SENSORS" => & WATER_SENSORS, "FROST_PROTECTION_TEMP" => &
+    FROST_PROTECTION_TEMP, "HOT_WATER_TEMP_TARGET_2" => & HOT_WATER_TEMP_TARGET_2,
+    "AVERAGE_OUTSIDE_TEMP" => & AVERAGE_OUTSIDE_TEMP, "ZEITMASTER" => & ZEITMASTER,
+    "OUTSIDE_TEMP_CORRECTION" => & OUTSIDE_TEMP_CORRECTION, "HOLIDAY_BEGIN_DAY" => &
+    HOLIDAY_BEGIN_DAY, "HOLIDAY_BEGIN_MONTH" => & HOLIDAY_BEGIN_MONTH,
+    "HOLIDAY_BEGIN_YEAR" => & HOLIDAY_BEGIN_YEAR, "HOLIDAY_END_DAY" => & HOLIDAY_END_DAY,
+    "HOLIDAY_END_MONTH" => & HOLIDAY_END_MONTH, "HOLIDAY_END_YEAR" => & HOLIDAY_END_YEAR,
+    "TEMP_MANUAL_OPERATION" => & TEMP_MANUAL_OPERATION, "PARTY" => & PARTY,
+    "COOLING_SETPOINT_CORRECTION" => & COOLING_SETPOINT_CORRECTION,
+    "START_COOLING_OUTSIDE_TEMP" => & START_COOLING_OUTSIDE_TEMP,
+    "MAX_COOLING_OUTSIDE_TEMP" => & MAX_COOLING_OUTSIDE_TEMP, "TARGET_FLOW_COOLING_START"
+    => & TARGET_FLOW_COOLING_START, "TARGET_FLOW_COOLING_MAX" => &
+    TARGET_FLOW_COOLING_MAX, "FEED_TEMP_LOWER_LIMIT" => & FEED_TEMP_LOWER_LIMIT,
+    "FEHLER_AKTUELL" => & FEHLER_AKTUELL, "START_KUEHLEN_AUSSENTEMP_HZK0" => &
+    START_KUEHLEN_AUSSENTEMP_HZK0, "HC_AUTO_1" => & HC_AUTO_1, "HC_AUTO_1_MON_1" => &
+    HC_AUTO_1_MON_1, "HC_AUTO_1_MON_2" => & HC_AUTO_1_MON_2, "HC_AUTO_1_MON_3" => &
+    HC_AUTO_1_MON_3, "HC_AUTO_1_TUE_1" => & HC_AUTO_1_TUE_1, "HC_AUTO_1_TUE_2" => &
+    HC_AUTO_1_TUE_2, "HC_AUTO_1_TUE_3" => & HC_AUTO_1_TUE_3, "HC_AUTO_1_WED_1" => &
+    HC_AUTO_1_WED_1, "HC_AUTO_1_WED_2" => & HC_AUTO_1_WED_2, "HC_AUTO_1_WED_3" => &
+    HC_AUTO_1_WED_3, "HC_AUTO_1_THU_1" => & HC_AUTO_1_THU_1, "HC_AUTO_1_THU_2" => &
+    HC_AUTO_1_THU_2, "HC_AUTO_1_THU_3" => & HC_AUTO_1_THU_3, "HC_AUTO_1_FRI_1" => &
+    HC_AUTO_1_FRI_1, "HC_AUTO_1_FRI_2" => & HC_AUTO_1_FRI_2, "HC_AUTO_1_FRI_3" => &
+    HC_AUTO_1_FRI_3, "HC_AUTO_1_SAT_1" => & HC_AUTO_1_SAT_1, "HC_AUTO_1_SAT_2" => &
+    HC_AUTO_1_SAT_2, "HC_AUTO_1_SAT_3" => & HC_AUTO_1_SAT_3, "HC_AUTO_1_SUN_1" => &
+    HC_AUTO_1_SUN_1, "HC_AUTO_1_SUN_2" => & HC_AUTO_1_SUN_2, "HC_AUTO_1_SUN_3" => &
+    HC_AUTO_1_SUN_3, "HC_AUTO_1_MON_FRI_1" => & HC_AUTO_1_MON_FRI_1,
+    "HC_AUTO_1_MON_FRI_2" => & HC_AUTO_1_MON_FRI_2, "HC_AUTO_1_MON_FRI_3" => &
+    HC_AUTO_1_MON_FRI_3, "HC_AUTO_1_SAT_SUN_1" => & HC_AUTO_1_SAT_SUN_1,
+    "HC_AUTO_1_SAT_SUN_2" => & HC_AUTO_1_SAT_SUN_2, "HC_AUTO_1_SAT_SUN_3" => &
+    HC_AUTO_1_SAT_SUN_3, "HC_AUTO_1_MON_SUN_1" => & HC_AUTO_1_MON_SUN_1,
+    "HC_AUTO_1_MON_SUN_2" => & HC_AUTO_1_MON_SUN_2, "HC_AUTO_1_MON_SUN_3" => &
+    HC_AUTO_1_MON_SUN_3, "HC_AUTO_1_MON_THU_1" => & HC_AUTO_1_MON_THU_1,
+    "HC_AUTO_1_MON_THU_2" => & HC_AUTO_1_MON_THU_2, "HC_AUTO_1_MON_THU_3" => &
+    HC_AUTO_1_MON_THU_3, "HC_AUTO_2" => & HC_AUTO_2, "HC_AUTO_2_MON_1" => &
+    HC_AUTO_2_MON_1, "HC_AUTO_2_MON_2" => & HC_AUTO_2_MON_2, "HC_AUTO_2_MON_3" => &
+    HC_AUTO_2_MON_3, "HC_AUTO_2_TUE_1" => & HC_AUTO_2_TUE_1, "HC_AUTO_2_TUE_2" => &
+    HC_AUTO_2_TUE_2, "HC_AUTO_2_TUE_3" => & HC_AUTO_2_TUE_3, "HC_AUTO_2_WED_1" => &
+    HC_AUTO_2_WED_1, "HC_AUTO_2_WED_2" => & HC_AUTO_2_WED_2, "HC_AUTO_2_WED_3" => &
+    HC_AUTO_2_WED_3, "HC_AUTO_2_THU_1" => & HC_AUTO_2_THU_1, "HC_AUTO_2_THU_2" => &
+    HC_AUTO_2_THU_2, "HC_AUTO_2_THU_3" => & HC_AUTO_2_THU_3, "HC_AUTO_2_FRI_1" => &
+    HC_AUTO_2_FRI_1, "HC_AUTO_2_FRI_2" => & HC_AUTO_2_FRI_2, "HC_AUTO_2_FRI_3" => &
+    HC_AUTO_2_FRI_3, "HC_AUTO_2_SAT_1" => & HC_AUTO_2_SAT_1, "HC_AUTO_2_SAT_2" => &
+    HC_AUTO_2_SAT_2, "HC_AUTO_2_SAT_3" => & HC_AUTO_2_SAT_3, "HC_AUTO_2_SUN_1" => &
+    HC_AUTO_2_SUN_1, "HC_AUTO_2_SUN_2" => & HC_AUTO_2_SUN_2, "HC_AUTO_2_SUN_3" => &
+    HC_AUTO_2_SUN_3, "HC_AUTO_2_MON_FRI_1" => & HC_AUTO_2_MON_FRI_1,
+    "HC_AUTO_2_MON_FRI_2" => & HC_AUTO_2_MON_FRI_2, "HC_AUTO_2_MON_FRI_3" => &
+    HC_AUTO_2_MON_FRI_3, "HC_AUTO_2_SAT_SUN_1" => & HC_AUTO_2_SAT_SUN_1,
+    "HC_AUTO_2_SAT_SUN_2" => & HC_AUTO_2_SAT_SUN_2, "HC_AUTO_2_SAT_SUN_3" => &
+    HC_AUTO_2_SAT_SUN_3, "HC_AUTO_2_MON_SUN_1" => & HC_AUTO_2_MON_SUN_1,
+    "HC_AUTO_2_MON_SUN_2" => & HC_AUTO_2_MON_SUN_2, "HC_AUTO_2_MON_SUN_3" => &
+    HC_AUTO_2_MON_SUN_3, "HC_AUTO_2_MON_THU_1" => & HC_AUTO_2_MON_THU_1,
+    "HC_AUTO_2_MON_THU_2" => & HC_AUTO_2_MON_THU_2, "HC_AUTO_2_MON_THU_3" => &
+    HC_AUTO_2_MON_THU_3, "DHW_AUTO_1" => & DHW_AUTO_1, "DHW_AUTO_1_MON_1" => &
+    DHW_AUTO_1_MON_1, "DHW_AUTO_1_MON_2" => & DHW_AUTO_1_MON_2, "DHW_AUTO_1_MON_3" => &
+    DHW_AUTO_1_MON_3, "DHW_AUTO_1_TUE_1" => & DHW_AUTO_1_TUE_1, "DHW_AUTO_1_TUE_2" => &
+    DHW_AUTO_1_TUE_2, "DHW_AUTO_1_TUE_3" => & DHW_AUTO_1_TUE_3, "DHW_AUTO_1_WED_1" => &
+    DHW_AUTO_1_WED_1, "DHW_AUTO_1_WED_2" => & DHW_AUTO_1_WED_2, "DHW_AUTO_1_WED_3" => &
+    DHW_AUTO_1_WED_3, "DHW_AUTO_1_THU_1" => & DHW_AUTO_1_THU_1, "DHW_AUTO_1_THU_2" => &
+    DHW_AUTO_1_THU_2, "DHW_AUTO_1_THU_3" => & DHW_AUTO_1_THU_3, "DHW_AUTO_1_FRI_1" => &
+    DHW_AUTO_1_FRI_1, "DHW_AUTO_1_FRI_2" => & DHW_AUTO_1_FRI_2, "DHW_AUTO_1_FRI_3" => &
+    DHW_AUTO_1_FRI_3, "DHW_AUTO_1_SAT_1" => & DHW_AUTO_1_SAT_1, "DHW_AUTO_1_SAT_2" => &
+    DHW_AUTO_1_SAT_2, "DHW_AUTO_1_SAT_3" => & DHW_AUTO_1_SAT_3, "DHW_AUTO_1_SUN_1" => &
+    DHW_AUTO_1_SUN_1, "DHW_AUTO_1_SUN_2" => & DHW_AUTO_1_SUN_2, "DHW_AUTO_1_SUN_3" => &
+    DHW_AUTO_1_SUN_3, "DHW_AUTO_1_MON_FRI_1" => & DHW_AUTO_1_MON_FRI_1,
+    "DHW_AUTO_1_MON_FRI_2" => & DHW_AUTO_1_MON_FRI_2, "DHW_AUTO_1_MON_FRI_3" => &
+    DHW_AUTO_1_MON_FRI_3, "DHW_AUTO_1_SAT_SUN_1" => & DHW_AUTO_1_SAT_SUN_1,
+    "DHW_AUTO_1_SAT_SUN_2" => & DHW_AUTO_1_SAT_SUN_2, "DHW_AUTO_1_SAT_SUN_3" => &
+    DHW_AUTO_1_SAT_SUN_3, "DHW_AUTO_1_MON_SUN_1" => & DHW_AUTO_1_MON_SUN_1,
+    "DHW_AUTO_1_MON_SUN_2" => & DHW_AUTO_1_MON_SUN_2, "DHW_AUTO_1_MON_SUN_3" => &
+    DHW_AUTO_1_MON_SUN_3, "DHW_AUTO_1_MON_TUE_1" => & DHW_AUTO_1_MON_TUE_1,
+    "DHW_AUTO_1_MON_TUE_2" => & DHW_AUTO_1_MON_TUE_2, "DHW_AUTO_1_MON_TUE_3" => &
+    DHW_AUTO_1_MON_TUE_3, "DHW_AUTO_2" => & DHW_AUTO_2, "DHW_AUTO_2_MON_1" => &
+    DHW_AUTO_2_MON_1, "DHW_AUTO_2_MON_2" => & DHW_AUTO_2_MON_2, "DHW_AUTO_2_MON_3" => &
+    DHW_AUTO_2_MON_3, "DHW_AUTO_2_TUE_1" => & DHW_AUTO_2_TUE_1, "DHW_AUTO_2_TUE_2" => &
+    DHW_AUTO_2_TUE_2, "DHW_AUTO_2_TUE_3" => & DHW_AUTO_2_TUE_3, "DHW_AUTO_2_WED_1" => &
+    DHW_AUTO_2_WED_1, "DHW_AUTO_2_WED_2" => & DHW_AUTO_2_WED_2, "DHW_AUTO_2_WED_3" => &
+    DHW_AUTO_2_WED_3, "DHW_AUTO_2_THU_1" => & DHW_AUTO_2_THU_1, "DHW_AUTO_2_THU_2" => &
+    DHW_AUTO_2_THU_2, "DHW_AUTO_2_THU_3" => & DHW_AUTO_2_THU_3, "DHW_AUTO_2_FRI_1" => &
+    DHW_AUTO_2_FRI_1, "DHW_AUTO_2_FRI_2" => & DHW_AUTO_2_FRI_2, "DHW_AUTO_2_FRI_3" => &
+    DHW_AUTO_2_FRI_3, "DHW_AUTO_2_SAT_1" => & DHW_AUTO_2_SAT_1, "DHW_AUTO_2_SAT_2" => &
+    DHW_AUTO_2_SAT_2, "DHW_AUTO_2_SAT_3" => & DHW_AUTO_2_SAT_3, "DHW_AUTO_2_SUN_1" => &
+    DHW_AUTO_2_SUN_1, "DHW_AUTO_2_SUN_2" => & DHW_AUTO_2_SUN_2, "DHW_AUTO_2_SUN_3" => &
+    DHW_AUTO_2_SUN_3, "DHW_AUTO_2_MON_FRI_1" => & DHW_AUTO_2_MON_FRI_1,
+    "DHW_AUTO_2_MON_FRI_2" => & DHW_AUTO_2_MON_FRI_2, "DHW_AUTO_2_MON_FRI_3" => &
+    DHW_AUTO_2_MON_FRI_3, "DHW_AUTO_2_SAT_SUN_1" => & DHW_AUTO_2_SAT_SUN_1,
+    "DHW_AUTO_2_SAT_SUN_2" => & DHW_AUTO_2_SAT_SUN_2, "DHW_AUTO_2_SAT_SUN_3" => &
+    DHW_AUTO_2_SAT_SUN_3, "DHW_AUTO_2_MON_SUN_1" => & DHW_AUTO_2_MON_SUN_1,
+    "DHW_AUTO_2_MON_SUN_2" => & DHW_AUTO_2_MON_SUN_2, "DHW_AUTO_2_MON_SUN_3" => &
+    DHW_AUTO_2_MON_SUN_3, "DHW_AUTO_2_MON_TUE_1" => & DHW_AUTO_2_MON_TUE_1,
+    "DHW_AUTO_2_MON_TUE_2" => & DHW_AUTO_2_MON_TUE_2, "DHW_AUTO_2_MON_TUE_3" => &
+    DHW_AUTO_2_MON_TUE_3, "CIRCULATION_MON_1" => & CIRCULATION_MON_1, "CIRCULATION_MON_2"
+    => & CIRCULATION_MON_2, "CIRCULATION_MON_3" => & CIRCULATION_MON_3,
+    "CIRCULATION_TUE_1" => & CIRCULATION_TUE_1, "CIRCULATION_TUE_2" => &
+    CIRCULATION_TUE_2, "CIRCULATION_TUE_3" => & CIRCULATION_TUE_3, "CIRCULATION_WED_1" =>
+    & CIRCULATION_WED_1, "CIRCULATION_WED_2" => & CIRCULATION_WED_2, "CIRCULATION_WED_3"
+    => & CIRCULATION_WED_3, "CIRCULATION_THU_1" => & CIRCULATION_THU_1,
+    "CIRCULATION_THU_2" => & CIRCULATION_THU_2, "CIRCULATION_THU_3" => &
+    CIRCULATION_THU_3, "CIRCULATION_FRI_1" => & CIRCULATION_FRI_1, "CIRCUATLION_FRI_2" =>
+    & CIRCUATLION_FRI_2, "CIRCULATION_FRI_3" => & CIRCULATION_FRI_3, "CIRCULATION_SAT_1"
+    => & CIRCULATION_SAT_1, "CIRCULATION_SAT_2" => & CIRCULATION_SAT_2,
+    "CIRCULATION_SAT_3" => & CIRCULATION_SAT_3, "CIRCULATION_SUN_1" => &
+    CIRCULATION_SUN_1, "CIRCULATION_SUN_2" => & CIRCULATION_SUN_2, "CIRCULATION_SUN_3" =>
+    & CIRCULATION_SUN_3, "HOT_WATER_BLOCKING_TIME" => & HOT_WATER_BLOCKING_TIME,
+    "VMIN_GCU" => & VMIN_GCU, "SONDERFKT_SCHALTKONTAKT" => & SONDERFKT_SCHALTKONTAKT,
+    "WARTEZEIT_SONDERFKT" => & WARTEZEIT_SONDERFKT, "SCHALTSCHWELLE_TDHW" => &
+    SCHALTSCHWELLE_TDHW, "MYSTERY_C0B4" => & MYSTERY_C0B4, "OUTSIDE_TEMP_SENSOR" => &
+    OUTSIDE_TEMP_SENSOR, "MODE" => & MODE, "PWM_SIGNAL" => & PWM_SIGNAL,
+    "EXTERNAL_REQUEST" => & EXTERNAL_REQUEST, "BUH_CURRENT_OUTPUT" => &
+    BUH_CURRENT_OUTPUT, "ROOM_THERMOSTAT_INTERLINK" => & ROOM_THERMOSTAT_INTERLINK,
+    "MIX_3UVB1" => & MIX_3UVB1, "FEED_TEMP_PHX" => & FEED_TEMP_PHX, "FEED_TEMP_BUH" => &
+    FEED_TEMP_BUH, "V" => & V, "T_TVBH1" => & T_TVBH1, "REFRIGERANT_TEMP" => &
+    REFRIGERANT_TEMP, "T_R" => & T_R, "OUTDOOR_TEMP_OPT" => & OUTDOOR_TEMP_OPT, "T_DHW"
+    => & T_DHW, "PWM_PUMP" => & PWM_PUMP, "T_AU" => & T_AU, "STATUS_HEATING_SUPPORT" => &
+    STATUS_HEATING_SUPPORT, "T_TVBH" => & T_TVBH, "SWITCH_TEMP_HC" => & SWITCH_TEMP_HC,
+    "ENERGY_ELECTRICAL_01_LOW" => & ENERGY_ELECTRICAL_01_LOW, "ENERGY_ELECTRICAL_01_HIGH"
+    => & ENERGY_ELECTRICAL_01_HIGH, "ENERGY_ELECTRICAL_02_LOW" => &
+    ENERGY_ELECTRICAL_02_LOW, "ENERGY_ELECTRICAL_02_HIGH" => & ENERGY_ELECTRICAL_02_HIGH,
+    "ENERGY_ELECTRICAL_03_LOW" => & ENERGY_ELECTRICAL_03_LOW, "ENERGY_ELECTRICAL_03_HIGH"
+    => & ENERGY_ELECTRICAL_03_HIGH, "ENERGY_ELECTRICAL_04_LOW" => &
+    ENERGY_ELECTRICAL_04_LOW, "ENERGY_ELECTRICAL_04_HIGH" => & ENERGY_ELECTRICAL_04_HIGH,
+    "ENERGY_ELECTRICAL_05_LOW" => & ENERGY_ELECTRICAL_05_LOW, "ENERGY_ELECTRICAL_05_HIGH"
+    => & ENERGY_ELECTRICAL_05_HIGH, "ENERGY_ELECTRICAL_06_LOW" => &
+    ENERGY_ELECTRICAL_06_LOW, "ENERGY_ELECTRICAL_06_HIGH" => & ENERGY_ELECTRICAL_06_HIGH,
+    "ENERGY_ELECTRICAL_07_LOW" => & ENERGY_ELECTRICAL_07_LOW, "ENERGY_ELECTRICAL_07_HIGH"
+    => & ENERGY_ELECTRICAL_07_HIGH, "ENERGY_ELECTRICAL_08_LOW" => &
+    ENERGY_ELECTRICAL_08_LOW, "ENERGY_ELECTRICAL_08_HIGH" => & ENERGY_ELECTRICAL_08_HIGH,
+    "ENERGY_ELECTRICAL_09_LOW" => & ENERGY_ELECTRICAL_09_LOW, "ENERGY_ELECTRICAL_09_HIGH"
+    => & ENERGY_ELECTRICAL_09_HIGH, "ENERGY_ELECTRICAL_10_LOW" => &
+    ENERGY_ELECTRICAL_10_LOW, "ENERGY_ELECTRICAL_10_HIGH" => & ENERGY_ELECTRICAL_10_HIGH,
+    "ENERGY_ELECTRICAL_11_LOW" => & ENERGY_ELECTRICAL_11_LOW, "ENERGY_ELECTRICAL_11_HIGH"
+    => & ENERGY_ELECTRICAL_11_HIGH, "ENERGY_ELECTRICAL_12_LOW" => &
+    ENERGY_ELECTRICAL_12_LOW, "ENERGY_ELECTRICAL_12_HIGH" => & ENERGY_ELECTRICAL_12_HIGH,
+    "ENERGY_HP_COOLING_01_LOW" => & ENERGY_HP_COOLING_01_LOW, "ENERGY_HP_COOLING_01_HIGH"
+    => & ENERGY_HP_COOLING_01_HIGH, "ENERGY_HP_COOLING_02_LOW" => &
+    ENERGY_HP_COOLING_02_LOW, "ENERGY_HP_COOLING_02_HIGH" => & ENERGY_HP_COOLING_02_HIGH,
+    "ENERGY_HP_COOLING_03_LOW" => & ENERGY_HP_COOLING_03_LOW, "ENERGY_HP_COOLING_03_HIGH"
+    => & ENERGY_HP_COOLING_03_HIGH, "ENERGY_HP_COOLING_04_LOW" => &
+    ENERGY_HP_COOLING_04_LOW, "ENERGY_HP_COOLING_04_HIGH" => & ENERGY_HP_COOLING_04_HIGH,
+    "ENERGY_HP_COOLING_05_LOW" => & ENERGY_HP_COOLING_05_LOW, "ENERGY_HP_COOLING_05_HIGH"
+    => & ENERGY_HP_COOLING_05_HIGH, "ENERGY_HP_COOLING_06_LOW" => &
+    ENERGY_HP_COOLING_06_LOW, "ENERGY_HP_COOLING_06_HIGH" => & ENERGY_HP_COOLING_06_HIGH,
+    "ENERGY_HP_COOLING_07_LOW" => & ENERGY_HP_COOLING_07_LOW, "ENERGY_HP_COOLING_07_HIGH"
+    => & ENERGY_HP_COOLING_07_HIGH, "ENERGY_HP_COOLING_08_LOW" => &
+    ENERGY_HP_COOLING_08_LOW, "ENERGY_HP_COOLING_08_HIGH" => & ENERGY_HP_COOLING_08_HIGH,
+    "ENERGY_HP_COOLING_09_LOW" => & ENERGY_HP_COOLING_09_LOW, "ENERGY_HP_COOLING_09_HIGH"
+    => & ENERGY_HP_COOLING_09_HIGH, "ENERGY_HP_COOLING_10_LOW" => &
+    ENERGY_HP_COOLING_10_LOW, "ENERGY_HP_COOLING_10_HIGH" => & ENERGY_HP_COOLING_10_HIGH,
+    "ENERGY_HP_COOLING_11_LOW" => & ENERGY_HP_COOLING_11_LOW, "ENERGY_HP_COOLING_11_HIGH"
+    => & ENERGY_HP_COOLING_11_HIGH, "ENERGY_HP_COOLING_12_LOW" => &
+    ENERGY_HP_COOLING_12_LOW, "ENERGY_HP_COOLING_12_HIGH" => & ENERGY_HP_COOLING_12_HIGH,
+    "ENERGY_HP_HEATING_01_LOW" => & ENERGY_HP_HEATING_01_LOW, "ENERGY_HP_HEATING_01_HIGH"
+    => & ENERGY_HP_HEATING_01_HIGH, "ENERGY_HP_HEATING_02_LOW" => &
+    ENERGY_HP_HEATING_02_LOW, "ENERGY_HP_HEATING_02_HIGH" => & ENERGY_HP_HEATING_02_HIGH,
+    "ENERGY_HP_HEATING_03_LOW" => & ENERGY_HP_HEATING_03_LOW, "ENERGY_HP_HEATING_03_HIGH"
+    => & ENERGY_HP_HEATING_03_HIGH, "ENERGY_HP_HEATING_04_LOW" => &
+    ENERGY_HP_HEATING_04_LOW, "ENERGY_HP_HEATING_04_HIGH" => & ENERGY_HP_HEATING_04_HIGH,
+    "ENERGY_HP_HEATING_05_LOW" => & ENERGY_HP_HEATING_05_LOW, "ENERGY_HP_HEATING_05_HIGH"
+    => & ENERGY_HP_HEATING_05_HIGH, "ENERGY_HP_HEATING_06_LOW" => &
+    ENERGY_HP_HEATING_06_LOW, "ENERGY_HP_HEATING_06_HIGH" => & ENERGY_HP_HEATING_06_HIGH,
+    "ENERGY_HP_HEATING_07_LOW" => & ENERGY_HP_HEATING_07_LOW, "ENERGY_HP_HEATING_07_HIGH"
+    => & ENERGY_HP_HEATING_07_HIGH, "ENERGY_HP_HEATING_08_LOW" => &
+    ENERGY_HP_HEATING_08_LOW, "ENERGY_HP_HEATING_08_HIGH" => & ENERGY_HP_HEATING_08_HIGH,
+    "ENERGY_HP_HEATING_09_LOW" => & ENERGY_HP_HEATING_09_LOW, "ENERGY_HP_HEATING_19_HIGH"
+    => & ENERGY_HP_HEATING_19_HIGH, "ENERGY_HP_HEATING_10_LOW" => &
+    ENERGY_HP_HEATING_10_LOW, "ENERGY_HP_HEATING_10_HIGH" => & ENERGY_HP_HEATING_10_HIGH,
+    "ENERGY_HP_HEATING_11_LOW" => & ENERGY_HP_HEATING_11_LOW, "ENERGY_HP_HEATING_11_HIGH"
+    => & ENERGY_HP_HEATING_11_HIGH, "ENERGY_HP_HEATING_12_LOW" => &
+    ENERGY_HP_HEATING_12_LOW, "ENERGY_HP_HEATING_12_HIGH" => & ENERGY_HP_HEATING_12_HIGH,
+    "ENERGY_HOT_WATER_01_LOW" => & ENERGY_HOT_WATER_01_LOW, "ENERGY_HOT_WATER_01_HIGH" =>
+    & ENERGY_HOT_WATER_01_HIGH, "ENERGY_HOT_WATER_02_LOW" => & ENERGY_HOT_WATER_02_LOW,
+    "ENERGY_HOT_WATER_02_HIGH" => & ENERGY_HOT_WATER_02_HIGH, "ENERGY_HOT_WATER_03_LOW"
+    => & ENERGY_HOT_WATER_03_LOW, "ENERGY_HOT_WATER_03_HIGH" => &
+    ENERGY_HOT_WATER_03_HIGH, "ENERGY_HOT_WATER_04_LOW" => & ENERGY_HOT_WATER_04_LOW,
+    "ENERGY_HOT_WATER_04_HIGH" => & ENERGY_HOT_WATER_04_HIGH, "ENERGY_HOT_WATER_05_LOW"
+    => & ENERGY_HOT_WATER_05_LOW, "ENERGY_HOT_WATER_05_HIGH" => &
+    ENERGY_HOT_WATER_05_HIGH, "ENERGY_HOT_WATER_06_LOW" => & ENERGY_HOT_WATER_06_LOW,
+    "ENERGY_HOT_WATER_06_HIGH" => & ENERGY_HOT_WATER_06_HIGH, "ENERGY_HOT_WATER_07_LOW"
+    => & ENERGY_HOT_WATER_07_LOW, "ENERGY_HOT_WATER_07_HIGH" => &
+    ENERGY_HOT_WATER_07_HIGH, "ENERGY_HOT_WATER_08_LOW" => & ENERGY_HOT_WATER_08_LOW,
+    "ENERGY_HOT_WATER_08_HIGH" => & ENERGY_HOT_WATER_08_HIGH, "ENERGY_HOT_WATER_09_LOW"
+    => & ENERGY_HOT_WATER_09_LOW, "ENERGY_HOT_WATER_09_HIGH" => &
+    ENERGY_HOT_WATER_09_HIGH, "ENERGY_HOT_WATER_10_LOW" => & ENERGY_HOT_WATER_10_LOW,
+    "ENERGY_HOT_WATER_10_HIGH" => & ENERGY_HOT_WATER_10_HIGH, "ENERGY_HOT_WATER_11_LOW"
+    => & ENERGY_HOT_WATER_11_LOW, "ENERGY_HOT_WATER_11_HIGH" => &
+    ENERGY_HOT_WATER_11_HIGH, "ENERGY_HOT_WATER_12_LOW" => & ENERGY_HOT_WATER_12_LOW,
+    "ENERGY_HOT_WATER_12_HIGH" => & ENERGY_HOT_WATER_12_HIGH, "ENERGY_HP_TOTAL_01_LOW" =>
+    & ENERGY_HP_TOTAL_01_LOW, "ENERGY_HP_TOTAL_01_HIGH" => & ENERGY_HP_TOTAL_01_HIGH,
+    "ENERGY_HP_TOTAL_02_LOW" => & ENERGY_HP_TOTAL_02_LOW, "ENERGY_HP_TOTAL_02_HIGH" => &
+    ENERGY_HP_TOTAL_02_HIGH, "ENERGY_HP_TOTAL_03_LOW" => & ENERGY_HP_TOTAL_03_LOW,
+    "ENERGY_HP_TOTAL_03_HIGH" => & ENERGY_HP_TOTAL_03_HIGH, "ENERGY_HP_TOTAL_04_LOW" => &
+    ENERGY_HP_TOTAL_04_LOW, "ENERGY_HP_TOTAL_04_HIGH" => & ENERGY_HP_TOTAL_04_HIGH,
+    "ENERGY_HP_TOTAL_05_LOW" => & ENERGY_HP_TOTAL_05_LOW, "ENERGY_HP_TOTAL_05_HIGH" => &
+    ENERGY_HP_TOTAL_05_HIGH, "ENERGY_HP_TOTAL_06_LOW" => & ENERGY_HP_TOTAL_06_LOW,
+    "ENERGY_HP_TOTAL_06_HIGH" => & ENERGY_HP_TOTAL_06_HIGH, "ENERGY_HP_TOTAL_07_LOW" => &
+    ENERGY_HP_TOTAL_07_LOW, "ENERGY_HP_TOTAL_07_HIGH" => & ENERGY_HP_TOTAL_07_HIGH,
+    "ENERGY_HP_TOTAL_08_LOW" => & ENERGY_HP_TOTAL_08_LOW, "ENERGY_HP_TOTAL_08_HIGH" => &
+    ENERGY_HP_TOTAL_08_HIGH, "ENERGY_HP_TOTAL_09_LOW" => & ENERGY_HP_TOTAL_09_LOW,
+    "ENERGY_HP_TOTAL_09_HIGH" => & ENERGY_HP_TOTAL_09_HIGH, "ENERGY_HP_TOTAL_10_LOW" => &
+    ENERGY_HP_TOTAL_10_LOW, "ENERGY_HP_TOTAL_10_HIGH" => & ENERGY_HP_TOTAL_10_HIGH,
+    "ENERGY_HP_TOTAL_11_LOW" => & ENERGY_HP_TOTAL_11_LOW, "ENERGY_HP_TOTAL_11_HIGH" => &
+    ENERGY_HP_TOTAL_11_HIGH, "ENERGY_HP_TOTAL_12_LOW" => & ENERGY_HP_TOTAL_12_LOW,
+    "ENERGY_HP_TOTAL_12_HIGH" => & ENERGY_HP_TOTAL_12_HIGH, "SOLAR_FUNCTION" => &
+    SOLAR_FUNCTION, "ENERGY_ELECTRICAL" => & ENERGY_ELECTRICAL, "OUTDOOR_UNIT" => &
+    OUTDOOR_UNIT, "INDOOR_UNIT" => & INDOOR_UNIT, "G1_ANTILEG_START_ZEIT" => &
+    G1_ANTILEG_START_ZEIT, "STATUS_HEAT_CIRCULATION_PUMP" => &
+    STATUS_HEAT_CIRCULATION_PUMP, "ANTI_LEGIONELLA_TIME" => & ANTI_LEGIONELLA_TIME
+};
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[repr(u16)]
 pub enum ParamName {
-    FeedTemperatureTarget = 2u16,
-    HotWaterTempTarget = 3u16,
-    FeedTempHcTarget = 4u16,
-    RoomTempTarget1 = 5u16,
-    RoomTempTarget2 = 6u16,
-    RoomTempTarget3 = 7u16,
-    ReduceRoomTemp = 8u16,
-    OutsideTemp = 12u16,
-    FeedTemperatureCurrent = 13u16,
-    HotWaterTempCurrent = 14u16,
-    FeedTempHcCurrent = 15u16,
-    Mystery0010 = 16u16,
-    Raumisttemp = 17u16,
-    VerstellteRaumsolltemp = 18u16,
-    HotWaterTempTarget1 = 19u16,
-    ReturnFlowTemp = 22u16,
-    WaterPressure = 28u16,
-    MaxFeedTemp = 40u16,
-    MixerPumpStatus = 82u16,
-    MixerInfo1 = 86u16,
-    MixerInfo2 = 87u16,
-    MixerInfo3 = 88u16,
-    MixerInfo4 = 89u16,
-    HotWaterActive = 94u16,
-    StatusCompressor = 97u16,
-    AntiLegionellaDay = 257u16,
-    Aufheizoptimierung = 259u16,
-    BuildingInsulation = 268u16,
-    HeatingCurve = 270u16,
-    RoomSensorAdaptation = 271u16,
-    MaxAufheizvorverlegung = 272u16,
-    SlopeOffset = 273u16,
-    OperatingMode = 274u16,
-    HeatingCurveAdaption = 277u16,
-    HeatLimitHeatingMode = 278u16,
-    HeatLimitReducingMode = 279u16,
-    Screed = 282u16,
-    VacationBeginDay = 283u16,
-    VacationBeginMonth = 284u16,
-    VacationBeginYear = 285u16,
-    VacationEndDay = 286u16,
-    VacationEndMonth = 287u16,
-    VacationEndYear = 288u16,
-    DateDay = 290u16,
-    DateMonth = 291u16,
-    DateYear = 292u16,
-    TimeHour = 293u16,
-    TimeMinute = 294u16,
-    FeedTempHeatingMode = 297u16,
-    FeedTempReducingMode = 298u16,
-    MinFeedTemp = 299u16,
-    Absenkoptimierung = 302u16,
-    MaxMixerValvePump = 303u16,
-    MinMixerValvePump = 304u16,
-    MixerPumpPwm = 305u16,
-    RoomTempAbsent = 317u16,
-    HotWaterTempTarget3 = 318u16,
-    WeatherCompensated = 321u16,
-    LoadHotWater = 324u16,
-    GeraeteKennung = 328u16,
-    MaxHotWaterLoadingTime = 384u16,
-    CirculationPumpControl = 386u16,
-    VersionMajor = 409u16,
-    VersionMinor = 410u16,
-    VolumeFlow = 474u16,
-    Absent = 492u16,
-    VersionPatch = 587u16,
-    FeedTempCoolingMode = 989u16,
-    ProgrammableOutput = 1161u16,
-    AntiLegionellaTemp = 1415u16,
-    CirculationPumpInterval = 1630u16,
-    VminA1 = 1633u16,
-    ExtPowerHotWater = 1640u16,
-    ExtPowerStage1 = 1641u16,
-    ExtPowerStage2 = 1642u16,
-    HeatingSupportPower = 1643u16,
-    HeatingSupport = 1644u16,
-    HeatingSupportHysteresis = 1645u16,
-    HeatingSupportMaxTemp = 1646u16,
-    HtNtFunction = 1647u16,
-    HtNtContact = 1648u16,
-    AuxSwitchingFunction = 1649u16,
-    AuxWaitTime = 1650u16,
-    AuxSwitchingThresholdTdhw = 1651u16,
-    RoomThermostat = 1656u16,
-    InterlinkFunction = 1657u16,
-    MinPumpPower = 1662u16,
-    MaxPumpPower = 1663u16,
-    WpModHystDurchfluss = 1666u16,
-    WpSpreizungHzBetrieb = 1667u16,
-    WpSpreizungWwBetrieb = 1668u16,
-    WpVerzZeitPumpe = 1669u16,
-    VminWp = 1672u16,
-    WpStartMaxTemp = 1676u16,
-    HotWaterHysteresis = 1681u16,
-    WaitingTimeExtHeatGenerator = 1682u16,
-    SmartGrid = 1683u16,
-    SmartGridMode = 1684u16,
-    VentilationFunction = 1685u16,
-    QuietMode = 1686u16,
-    WpInnengeraet = 1689u16,
-    WpAussengeraet = 1690u16,
-    Mix3uvdhw = 1691u16,
-    EnergyHpCooling = 1702u16,
-    EnergyHpHeating = 1703u16,
-    InterlinkTempIncrease = 1696u16,
-    InterlinkTempReduction = 1697u16,
-    RuntimePump = 1700u16,
-    RuntimeCompressor = 1701u16,
-    Glycol = 1744u16,
-    HpPowerLimitation = 1745u16,
-    ExtHeatSource = 1746u16,
-    BivalenceFunction = 1747u16,
-    BivalenceTemp = 1748u16,
-    PumpDtHeating = 1755u16,
-    PumpDtCooling = 1756u16,
-    HeatingSystem = 1757u16,
-    PumpLimit = 1761u16,
-    FeedTempOvershoot = 1762u16,
-    ContinuousHeating = 1763u16,
-    ComfortHeating = 1765u16,
-    FuncBurnerBlockingContact = 1766u16,
-    Emergency = 1767u16,
-    WaterPressureTarget = 1829u16,
-    WaterMaxPressureLoss = 1830u16,
-    WaterPressureMax = 1831u16,
-    WaterPressureMin = 1832u16,
-    EnergyExtHotWater = 2332u16,
-    EnergyExtHeating = 2336u16,
-    EnergyHotWater = 2348u16,
-    EnergyHpTotal = 2352u16,
-    Mystery093c = 2364u16,
-    WaterSensors = 2401u16,
-    FrostProtectionTemp = 2560u16,
-    HotWaterTempTarget2 = 2566u16,
-    AverageOutsideTemp = 2572u16,
-    Zeitmaster = 2591u16,
-    OutsideTempCorrection = 3103u16,
-    HolidayBeginDay = 4944u16,
-    HolidayBeginMonth = 4945u16,
-    HolidayBeginYear = 4946u16,
-    HolidayEndDay = 4947u16,
-    HolidayEndMonth = 4948u16,
-    HolidayEndYear = 4949u16,
-    TempManualOperation = 4951u16,
-    Party = 4952u16,
-    CoolingSetpointCorrection = 4953u16,
-    StartCoolingOutsideTemp = 4955u16,
-    MaxCoolingOutsideTemp = 4956u16,
-    TargetFlowCoolingStart = 4957u16,
-    TargetFlowCoolingMax = 4958u16,
-    FeedTempLowerLimit = 4963u16,
-    FehlerAktuell = 5000u16,
-    StartKuehlenAussentempHzk0 = 5045u16,
-    HcAuto1 = 5120u16,
-    HcAuto1Mon1 = 5136u16,
-    HcAuto1Mon2 = 5137u16,
-    HcAuto1Mon3 = 5138u16,
-    HcAuto1Tue1 = 5152u16,
-    HcAuto1Tue2 = 5153u16,
-    HcAuto1Tue3 = 5154u16,
-    HcAuto1Wed1 = 5168u16,
-    HcAuto1Wed2 = 5169u16,
-    HcAuto1Wed3 = 5170u16,
-    HcAuto1Thu1 = 5184u16,
-    HcAuto1Thu2 = 5185u16,
-    HcAuto1Thu3 = 5186u16,
-    HcAuto1Fri1 = 5200u16,
-    HcAuto1Fri2 = 5201u16,
-    HcAuto1Fri3 = 5202u16,
-    HcAuto1Sat1 = 5216u16,
-    HcAuto1Sat2 = 5217u16,
-    HcAuto1Sat3 = 5218u16,
-    HcAuto1Sun1 = 5232u16,
-    HcAuto1Sun2 = 5233u16,
-    HcAuto1Sun3 = 5234u16,
-    HcAuto1MonFri1 = 5248u16,
-    HcAuto1MonFri2 = 5249u16,
-    HcAuto1MonFri3 = 5250u16,
-    HcAuto1SatSun1 = 5264u16,
-    HcAuto1SatSun2 = 5265u16,
-    HcAuto1SatSun3 = 5266u16,
-    HcAuto1MonSun1 = 5280u16,
-    HcAuto1MonSun2 = 5281u16,
-    HcAuto1MonSun3 = 5282u16,
-    HcAuto1MonThu1 = 5296u16,
-    HcAuto1MonThu2 = 5297u16,
-    HcAuto1MonThu3 = 5298u16,
-    HcAuto2 = 5376u16,
-    HcAuto2Mon1 = 5392u16,
-    HcAuto2Mon2 = 5393u16,
-    HcAuto2Mon3 = 5394u16,
-    HcAuto2Tue1 = 5408u16,
-    HcAuto2Tue2 = 5409u16,
-    HcAuto2Tue3 = 5410u16,
-    HcAuto2Wed1 = 5424u16,
-    HcAuto2Wed2 = 5425u16,
-    HcAuto2Wed3 = 5426u16,
-    HcAuto2Thu1 = 5440u16,
-    HcAuto2Thu2 = 5441u16,
-    HcAuto2Thu3 = 5442u16,
-    HcAuto2Fri1 = 5456u16,
-    HcAuto2Fri2 = 5457u16,
-    HcAuto2Fri3 = 5458u16,
-    HcAuto2Sat1 = 5472u16,
-    HcAuto2Sat2 = 5473u16,
-    HcAuto2Sat3 = 5474u16,
-    HcAuto2Sun1 = 5488u16,
-    HcAuto2Sun2 = 5489u16,
-    HcAuto2Sun3 = 5490u16,
-    HcAuto2MonFri1 = 5504u16,
-    HcAuto2MonFri2 = 5505u16,
-    HcAuto2MonFri3 = 5506u16,
-    HcAuto2SatSun1 = 5520u16,
-    HcAuto2SatSun2 = 5521u16,
-    HcAuto2SatSun3 = 5522u16,
-    HcAuto2MonSun1 = 5536u16,
-    HcAuto2MonSun2 = 5537u16,
-    HcAuto2MonSun3 = 5538u16,
-    HcAuto2MonThu1 = 5552u16,
-    HcAuto2MonThu2 = 5553u16,
-    HcAuto2MonThu3 = 5554u16,
-    DhwAuto1 = 5888u16,
-    DhwAuto1Mon1 = 5904u16,
-    DhwAuto1Mon2 = 5905u16,
-    DhwAuto1Mon3 = 5906u16,
-    DhwAuto1Tue1 = 5920u16,
-    DhwAuto1Tue2 = 5921u16,
-    DhwAuto1Tue3 = 5922u16,
-    DhwAuto1Wed1 = 5936u16,
-    DhwAuto1Wed2 = 5937u16,
-    DhwAuto1Wed3 = 5938u16,
-    DhwAuto1Thu1 = 5952u16,
-    DhwAuto1Thu2 = 5953u16,
-    DhwAuto1Thu3 = 5954u16,
-    DhwAuto1Fri1 = 5968u16,
-    DhwAuto1Fri2 = 5969u16,
-    DhwAuto1Fri3 = 5970u16,
-    DhwAuto1Sat1 = 5984u16,
-    DhwAuto1Sat2 = 5985u16,
-    DhwAuto1Sat3 = 5986u16,
-    DhwAuto1Sun1 = 6000u16,
-    DhwAuto1Sun2 = 6001u16,
-    DhwAuto1Sun3 = 6002u16,
-    DhwAuto1MonFri1 = 6016u16,
-    DhwAuto1MonFri2 = 6017u16,
-    DhwAuto1MonFri3 = 6018u16,
-    DhwAuto1SatSun1 = 6032u16,
-    DhwAuto1SatSun2 = 6033u16,
-    DhwAuto1SatSun3 = 6034u16,
-    DhwAuto1MonSun1 = 6048u16,
-    DhwAuto1MonSun2 = 6049u16,
-    DhwAuto1MonSun3 = 6050u16,
-    DhwAuto1MonTue1 = 6064u16,
-    DhwAuto1MonTue2 = 6065u16,
-    DhwAuto1MonTue3 = 6066u16,
-    DhwAuto2 = 6144u16,
-    DhwAuto2Mon1 = 6160u16,
-    DhwAuto2Mon2 = 6161u16,
-    DhwAuto2Mon3 = 6162u16,
-    DhwAuto2Tue1 = 6176u16,
-    DhwAuto2Tue2 = 6177u16,
-    DhwAuto2Tue3 = 6178u16,
-    DhwAuto2Wed1 = 6192u16,
-    DhwAuto2Wed2 = 6193u16,
-    DhwAuto2Wed3 = 6194u16,
-    DhwAuto2Thu1 = 6208u16,
-    DhwAuto2Thu2 = 6209u16,
-    DhwAuto2Thu3 = 6210u16,
-    DhwAuto2Fri1 = 6224u16,
-    DhwAuto2Fri2 = 6225u16,
-    DhwAuto2Fri3 = 6226u16,
-    DhwAuto2Sat1 = 6240u16,
-    DhwAuto2Sat2 = 6241u16,
-    DhwAuto2Sat3 = 6242u16,
-    DhwAuto2Sun1 = 6256u16,
-    DhwAuto2Sun2 = 6257u16,
-    DhwAuto2Sun3 = 6258u16,
-    DhwAuto2MonFri1 = 6272u16,
-    DhwAuto2MonFri2 = 6273u16,
-    DhwAuto2MonFri3 = 6274u16,
-    DhwAuto2SatSun1 = 6288u16,
-    DhwAuto2SatSun2 = 6289u16,
-    DhwAuto2SatSun3 = 6290u16,
-    DhwAuto2MonSun1 = 6304u16,
-    DhwAuto2MonSun2 = 6305u16,
-    DhwAuto2MonSun3 = 6306u16,
-    DhwAuto2MonTue1 = 6320u16,
-    DhwAuto2MonTue2 = 6321u16,
-    DhwAuto2MonTue3 = 6322u16,
-    CirculationMon1 = 6672u16,
-    CirculationMon2 = 6673u16,
-    CirculationMon3 = 6674u16,
-    CirculationTue1 = 6688u16,
-    CirculationTue2 = 6689u16,
-    CirculationTue3 = 6690u16,
-    CirculationWed1 = 6704u16,
-    CirculationWed2 = 6705u16,
-    CirculationWed3 = 6706u16,
-    CirculationThu1 = 6720u16,
-    CirculationThu2 = 6721u16,
-    CirculationThu3 = 6722u16,
-    CirculationFri1 = 6736u16,
-    CircuatlionFri2 = 6737u16,
-    CirculationFri3 = 6738u16,
-    CirculationSat1 = 6752u16,
-    CirculationSat2 = 6753u16,
-    CirculationSat3 = 6754u16,
-    CirculationSun1 = 6768u16,
-    CirculationSun2 = 6769u16,
-    CirculationSun3 = 6770u16,
-    HotWaterBlockingTime = 20031u16,
-    VminGcu = 49309u16,
-    SonderfktSchaltkontakt = 49329u16,
-    WartezeitSonderfkt = 49330u16,
-    SchaltschwelleTdhw = 49331u16,
-    MysteryC0b4 = 49332u16,
-    OutsideTempSensor = 49348u16,
-    Mode = 49398u16,
-    PwmSignal = 49399u16,
-    ExternalRequest = 49400u16,
-    BuhCurrentOutput = 49401u16,
-    RoomThermostatInterlink = 49402u16,
-    Mix3uvb1 = 49403u16,
-    FeedTempPhx = 49404u16,
-    FeedTempBuh = 49406u16,
-    V = 49409u16,
-    TTvbh1 = 49410u16,
-    RefrigerantTemp = 49411u16,
-    TR = 49412u16,
-    OutdoorTempOpt = 49413u16,
-    TDhw = 49414u16,
-    PwmPump = 49420u16,
-    TAu = 49526u16,
-    StatusHeatingSupport = 49529u16,
-    TTvbh = 49599u16,
-    SwitchTempHc = 49603u16,
-    EnergyElectrical01Low = 49771u16,
-    EnergyElectrical01High = 49772u16,
-    EnergyElectrical02Low = 49773u16,
-    EnergyElectrical02High = 49774u16,
-    EnergyElectrical03Low = 49775u16,
-    EnergyElectrical03High = 49776u16,
-    EnergyElectrical04Low = 49777u16,
-    EnergyElectrical04High = 49778u16,
-    EnergyElectrical05Low = 49779u16,
-    EnergyElectrical05High = 49780u16,
-    EnergyElectrical06Low = 49781u16,
-    EnergyElectrical06High = 49782u16,
-    EnergyElectrical07Low = 49783u16,
-    EnergyElectrical07High = 49784u16,
-    EnergyElectrical08Low = 49785u16,
-    EnergyElectrical08High = 49786u16,
-    EnergyElectrical09Low = 49787u16,
-    EnergyElectrical09High = 49788u16,
-    EnergyElectrical10Low = 49789u16,
-    EnergyElectrical10High = 49790u16,
-    EnergyElectrical11Low = 49791u16,
-    EnergyElectrical11High = 49792u16,
-    EnergyElectrical12Low = 49793u16,
-    EnergyElectrical12High = 49794u16,
-    EnergyHpCooling01Low = 49795u16,
-    EnergyHpCooling01High = 49796u16,
-    EnergyHpCooling02Low = 49797u16,
-    EnergyHpCooling02High = 49798u16,
-    EnergyHpCooling03Low = 49799u16,
-    EnergyHpCooling03High = 49800u16,
-    EnergyHpCooling04Low = 49801u16,
-    EnergyHpCooling04High = 49802u16,
-    EnergyHpCooling05Low = 49803u16,
-    EnergyHpCooling05High = 49804u16,
-    EnergyHpCooling06Low = 49805u16,
-    EnergyHpCooling06High = 49806u16,
-    EnergyHpCooling07Low = 49807u16,
-    EnergyHpCooling07High = 49808u16,
-    EnergyHpCooling08Low = 49809u16,
-    EnergyHpCooling08High = 49810u16,
-    EnergyHpCooling09Low = 49811u16,
-    EnergyHpCooling09High = 49812u16,
-    EnergyHpCooling10Low = 49813u16,
-    EnergyHpCooling10High = 49814u16,
-    EnergyHpCooling11Low = 49815u16,
-    EnergyHpCooling11High = 49816u16,
-    EnergyHpCooling12Low = 49817u16,
-    EnergyHpCooling12High = 49818u16,
-    EnergyHpHeating01Low = 49819u16,
-    EnergyHpHeating01High = 49820u16,
-    EnergyHpHeating02Low = 49821u16,
-    EnergyHpHeating02High = 49822u16,
-    EnergyHpHeating03Low = 49823u16,
-    EnergyHpHeating03High = 49824u16,
-    EnergyHpHeating04Low = 49825u16,
-    EnergyHpHeating04High = 49826u16,
-    EnergyHpHeating05Low = 49827u16,
-    EnergyHpHeating05High = 49828u16,
-    EnergyHpHeating06Low = 49829u16,
-    EnergyHpHeating06High = 49830u16,
-    EnergyHpHeating07Low = 49831u16,
-    EnergyHpHeating07High = 49832u16,
-    EnergyHpHeating08Low = 49833u16,
-    EnergyHpHeating08High = 49834u16,
-    EnergyHpHeating09Low = 49835u16,
-    EnergyHpHeating19High = 49836u16,
-    EnergyHpHeating10Low = 49837u16,
-    EnergyHpHeating10High = 49838u16,
-    EnergyHpHeating11Low = 49839u16,
-    EnergyHpHeating11High = 49840u16,
-    EnergyHpHeating12Low = 49841u16,
-    EnergyHpHeating12High = 49842u16,
-    EnergyHotWater01Low = 49843u16,
-    EnergyHotWater01High = 49844u16,
-    EnergyHotWater02Low = 49845u16,
-    EnergyHotWater02High = 49846u16,
-    EnergyHotWater03Low = 49847u16,
-    EnergyHotWater03High = 49848u16,
-    EnergyHotWater04Low = 49849u16,
-    EnergyHotWater04High = 49850u16,
-    EnergyHotWater05Low = 49851u16,
-    EnergyHotWater05High = 49852u16,
-    EnergyHotWater06Low = 49853u16,
-    EnergyHotWater06High = 49854u16,
-    EnergyHotWater07Low = 49855u16,
-    EnergyHotWater07High = 49856u16,
-    EnergyHotWater08Low = 49857u16,
-    EnergyHotWater08High = 49858u16,
-    EnergyHotWater09Low = 49859u16,
-    EnergyHotWater09High = 49860u16,
-    EnergyHotWater10Low = 49861u16,
-    EnergyHotWater10High = 49862u16,
-    EnergyHotWater11Low = 49863u16,
-    EnergyHotWater11High = 49864u16,
-    EnergyHotWater12Low = 49865u16,
-    EnergyHotWater12High = 49866u16,
-    EnergyHpTotal01Low = 49867u16,
-    EnergyHpTotal01High = 49868u16,
-    EnergyHpTotal02Low = 49869u16,
-    EnergyHpTotal02High = 49870u16,
-    EnergyHpTotal03Low = 49871u16,
-    EnergyHpTotal03High = 49872u16,
-    EnergyHpTotal04Low = 49873u16,
-    EnergyHpTotal04High = 49874u16,
-    EnergyHpTotal05Low = 49875u16,
-    EnergyHpTotal05High = 49876u16,
-    EnergyHpTotal06Low = 49877u16,
-    EnergyHpTotal06High = 49878u16,
-    EnergyHpTotal07Low = 49879u16,
-    EnergyHpTotal07High = 49880u16,
-    EnergyHpTotal08Low = 49881u16,
-    EnergyHpTotal08High = 49882u16,
-    EnergyHpTotal09Low = 49883u16,
-    EnergyHpTotal09High = 49884u16,
-    EnergyHpTotal10Low = 49885u16,
-    EnergyHpTotal10High = 49886u16,
-    EnergyHpTotal11Low = 49887u16,
-    EnergyHpTotal11High = 49888u16,
-    EnergyHpTotal12Low = 49889u16,
-    EnergyHpTotal12High = 49890u16,
-    SolarFunction = 49910u16,
-    EnergyElectrical = 49914u16,
-    OutdoorUnit = 49996u16,
-    IndoorUnit = 49997u16,
-    G1AntilegStartZeit = 64847u16,
-    StatusHeatCirculationPump = 64940u16,
-    AntiLegionellaTime = 65012u16,
+    #[serde(rename = "FEED_TEMPERATURE_TARGET")]
+    FeedTemperatureTarget = 0x0002,
+    #[serde(rename = "HOT_WATER_TEMP_TARGET")]
+    HotWaterTempTarget = 0x0003,
+    #[serde(rename = "FEED_TEMP_HC_TARGET")]
+    FeedTempHcTarget = 0x0004,
+    #[serde(rename = "ROOM_TEMP_TARGET_1")]
+    RoomTempTarget1 = 0x0005,
+    #[serde(rename = "ROOM_TEMP_TARGET_2")]
+    RoomTempTarget2 = 0x0006,
+    #[serde(rename = "ROOM_TEMP_TARGET_3")]
+    RoomTempTarget3 = 0x0007,
+    #[serde(rename = "REDUCE_ROOM_TEMP")]
+    ReduceRoomTemp = 0x0008,
+    #[serde(rename = "OUTSIDE_TEMP")]
+    OutsideTemp = 0x000c,
+    #[serde(rename = "FEED_TEMPERATURE_CURRENT")]
+    FeedTemperatureCurrent = 0x000d,
+    #[serde(rename = "HOT_WATER_TEMP_CURRENT")]
+    HotWaterTempCurrent = 0x000e,
+    #[serde(rename = "FEED_TEMP_HC_CURRENT")]
+    FeedTempHcCurrent = 0x000f,
+    #[serde(rename = "MYSTERY_0010")]
+    Mystery0010 = 0x0010,
+    #[serde(rename = "RAUMISTTEMP")]
+    Raumisttemp = 0x0011,
+    #[serde(rename = "VERSTELLTE_RAUMSOLLTEMP")]
+    VerstellteRaumsolltemp = 0x0012,
+    #[serde(rename = "HOT_WATER_TEMP_TARGET_1")]
+    HotWaterTempTarget1 = 0x0013,
+    #[serde(rename = "RETURN_FLOW_TEMP")]
+    ReturnFlowTemp = 0x0016,
+    #[serde(rename = "WATER_PRESSURE")]
+    WaterPressure = 0x001c,
+    #[serde(rename = "MAX_FEED_TEMP")]
+    MaxFeedTemp = 0x0028,
+    #[serde(rename = "MIXER_PUMP_STATUS")]
+    MixerPumpStatus = 0x0052,
+    #[serde(rename = "MIXER_INFO_1")]
+    MixerInfo1 = 0x0056,
+    #[serde(rename = "MIXER_INFO_2")]
+    MixerInfo2 = 0x0057,
+    #[serde(rename = "MIXER_INFO_3")]
+    MixerInfo3 = 0x0058,
+    #[serde(rename = "MIXER_INFO_4")]
+    MixerInfo4 = 0x0059,
+    #[serde(rename = "HOT_WATER_ACTIVE")]
+    HotWaterActive = 0x005e,
+    #[serde(rename = "STATUS_COMPRESSOR")]
+    StatusCompressor = 0x0061,
+    #[serde(rename = "ANTI_LEGIONELLA_DAY")]
+    AntiLegionellaDay = 0x0101,
+    #[serde(rename = "AUFHEIZOPTIMIERUNG")]
+    Aufheizoptimierung = 0x0103,
+    #[serde(rename = "BUILDING_INSULATION")]
+    BuildingInsulation = 0x010c,
+    #[serde(rename = "HEATING_CURVE")]
+    HeatingCurve = 0x010e,
+    #[serde(rename = "ROOM_SENSOR_ADAPTATION")]
+    RoomSensorAdaptation = 0x010f,
+    #[serde(rename = "MAX_AUFHEIZVORVERLEGUNG")]
+    MaxAufheizvorverlegung = 0x0110,
+    #[serde(rename = "SLOPE_OFFSET")]
+    SlopeOffset = 0x0111,
+    #[serde(rename = "OPERATING_MODE")]
+    OperatingMode = 0x0112,
+    #[serde(rename = "HEATING_CURVE_ADAPTION")]
+    HeatingCurveAdaption = 0x0115,
+    #[serde(rename = "HEAT_LIMIT_HEATING_MODE")]
+    HeatLimitHeatingMode = 0x0116,
+    #[serde(rename = "HEAT_LIMIT_REDUCING_MODE")]
+    HeatLimitReducingMode = 0x0117,
+    #[serde(rename = "SCREED")]
+    Screed = 0x011a,
+    #[serde(rename = "VACATION_BEGIN_DAY")]
+    VacationBeginDay = 0x011b,
+    #[serde(rename = "VACATION_BEGIN_MONTH")]
+    VacationBeginMonth = 0x011c,
+    #[serde(rename = "VACATION_BEGIN_YEAR")]
+    VacationBeginYear = 0x011d,
+    #[serde(rename = "VACATION_END_DAY")]
+    VacationEndDay = 0x011e,
+    #[serde(rename = "VACATION_END_MONTH")]
+    VacationEndMonth = 0x011f,
+    #[serde(rename = "VACATION_END_YEAR")]
+    VacationEndYear = 0x0120,
+    #[serde(rename = "DATE_DAY")]
+    DateDay = 0x0122,
+    #[serde(rename = "DATE_MONTH")]
+    DateMonth = 0x0123,
+    #[serde(rename = "DATE_YEAR")]
+    DateYear = 0x0124,
+    #[serde(rename = "TIME_HOUR")]
+    TimeHour = 0x0125,
+    #[serde(rename = "TIME_MINUTE")]
+    TimeMinute = 0x0126,
+    #[serde(rename = "FEED_TEMP_HEATING_MODE")]
+    FeedTempHeatingMode = 0x0129,
+    #[serde(rename = "FEED_TEMP_REDUCING_MODE")]
+    FeedTempReducingMode = 0x012a,
+    #[serde(rename = "MIN_FEED_TEMP")]
+    MinFeedTemp = 0x012b,
+    #[serde(rename = "ABSENKOPTIMIERUNG")]
+    Absenkoptimierung = 0x012e,
+    #[serde(rename = "MAX_MIXER_VALVE_PUMP")]
+    MaxMixerValvePump = 0x012f,
+    #[serde(rename = "MIN_MIXER_VALVE_PUMP")]
+    MinMixerValvePump = 0x0130,
+    #[serde(rename = "MIXER_PUMP_PWM")]
+    MixerPumpPwm = 0x0131,
+    #[serde(rename = "ROOM_TEMP_ABSENT")]
+    RoomTempAbsent = 0x013d,
+    #[serde(rename = "HOT_WATER_TEMP_TARGET_3")]
+    HotWaterTempTarget3 = 0x013e,
+    #[serde(rename = "WEATHER_COMPENSATED")]
+    WeatherCompensated = 0x0141,
+    #[serde(rename = "LOAD_HOT_WATER")]
+    LoadHotWater = 0x0144,
+    #[serde(rename = "GERAETE_KENNUNG")]
+    GeraeteKennung = 0x0148,
+    #[serde(rename = "MAX_HOT_WATER_LOADING_TIME")]
+    MaxHotWaterLoadingTime = 0x0180,
+    #[serde(rename = "CIRCULATION_PUMP_CONTROL")]
+    CirculationPumpControl = 0x0182,
+    #[serde(rename = "VERSION_MAJOR")]
+    VersionMajor = 0x0199,
+    #[serde(rename = "VERSION_MINOR")]
+    VersionMinor = 0x019a,
+    #[serde(rename = "VOLUME_FLOW")]
+    VolumeFlow = 0x01da,
+    #[serde(rename = "ABSENT")]
+    Absent = 0x01ec,
+    #[serde(rename = "VERSION_PATCH")]
+    VersionPatch = 0x024b,
+    #[serde(rename = "FEED_TEMP_COOLING_MODE")]
+    FeedTempCoolingMode = 0x03dd,
+    #[serde(rename = "PROGRAMMABLE_OUTPUT")]
+    ProgrammableOutput = 0x0489,
+    #[serde(rename = "ANTI_LEGIONELLA_TEMP")]
+    AntiLegionellaTemp = 0x0587,
+    #[serde(rename = "CIRCULATION_PUMP_INTERVAL")]
+    CirculationPumpInterval = 0x065e,
+    #[serde(rename = "VMIN_A1")]
+    VminA1 = 0x0661,
+    #[serde(rename = "EXT_POWER_HOT_WATER")]
+    ExtPowerHotWater = 0x0668,
+    #[serde(rename = "EXT_POWER_STAGE_1")]
+    ExtPowerStage1 = 0x0669,
+    #[serde(rename = "EXT_POWER_STAGE_2")]
+    ExtPowerStage2 = 0x066a,
+    #[serde(rename = "HEATING_SUPPORT_POWER")]
+    HeatingSupportPower = 0x066b,
+    #[serde(rename = "HEATING_SUPPORT")]
+    HeatingSupport = 0x066c,
+    #[serde(rename = "HEATING_SUPPORT_HYSTERESIS")]
+    HeatingSupportHysteresis = 0x066d,
+    #[serde(rename = "HEATING_SUPPORT_MAX_TEMP")]
+    HeatingSupportMaxTemp = 0x066e,
+    #[serde(rename = "HT_NT_FUNCTION")]
+    HtNtFunction = 0x066f,
+    #[serde(rename = "HT_NT_CONTACT")]
+    HtNtContact = 0x0670,
+    #[serde(rename = "AUX_SWITCHING_FUNCTION")]
+    AuxSwitchingFunction = 0x0671,
+    #[serde(rename = "AUX_WAIT_TIME")]
+    AuxWaitTime = 0x0672,
+    #[serde(rename = "AUX_SWITCHING_THRESHOLD_TDHW")]
+    AuxSwitchingThresholdTdhw = 0x0673,
+    #[serde(rename = "ROOM_THERMOSTAT")]
+    RoomThermostat = 0x0678,
+    #[serde(rename = "INTERLINK_FUNCTION")]
+    InterlinkFunction = 0x0679,
+    #[serde(rename = "MIN_PUMP_POWER")]
+    MinPumpPower = 0x067e,
+    #[serde(rename = "MAX_PUMP_POWER")]
+    MaxPumpPower = 0x067f,
+    #[serde(rename = "WP_MOD_HYST_DURCHFLUSS")]
+    WpModHystDurchfluss = 0x0682,
+    #[serde(rename = "WP_SPREIZUNG_HZ_BETRIEB")]
+    WpSpreizungHzBetrieb = 0x0683,
+    #[serde(rename = "WP_SPREIZUNG_WW_BETRIEB")]
+    WpSpreizungWwBetrieb = 0x0684,
+    #[serde(rename = "WP_VERZ_ZEIT_PUMPE")]
+    WpVerzZeitPumpe = 0x0685,
+    #[serde(rename = "VMIN_WP")]
+    VminWp = 0x0688,
+    #[serde(rename = "WP_START_MAX_TEMP")]
+    WpStartMaxTemp = 0x068c,
+    #[serde(rename = "HOT_WATER_HYSTERESIS")]
+    HotWaterHysteresis = 0x0691,
+    #[serde(rename = "WAITING_TIME_EXT_HEAT_GENERATOR")]
+    WaitingTimeExtHeatGenerator = 0x0692,
+    #[serde(rename = "SMART_GRID")]
+    SmartGrid = 0x0693,
+    #[serde(rename = "SMART_GRID_MODE")]
+    SmartGridMode = 0x0694,
+    #[serde(rename = "VENTILATION_FUNCTION")]
+    VentilationFunction = 0x0695,
+    #[serde(rename = "QUIET_MODE")]
+    QuietMode = 0x0696,
+    #[serde(rename = "WP_INNENGERAET")]
+    WpInnengeraet = 0x0699,
+    #[serde(rename = "WP_AUSSENGERAET")]
+    WpAussengeraet = 0x069a,
+    #[serde(rename = "MIX_3UVDHW")]
+    Mix3uvdhw = 0x069b,
+    #[serde(rename = "ENERGY_HP_COOLING")]
+    EnergyHpCooling = 0x06A6,
+    #[serde(rename = "ENERGY_HP_HEATING")]
+    EnergyHpHeating = 0x06A7,
+    #[serde(rename = "INTERLINK_TEMP_INCREASE")]
+    InterlinkTempIncrease = 0x06a0,
+    #[serde(rename = "INTERLINK_TEMP_REDUCTION")]
+    InterlinkTempReduction = 0x06a1,
+    #[serde(rename = "RUNTIME_PUMP")]
+    RuntimePump = 0x06a4,
+    #[serde(rename = "RUNTIME_COMPRESSOR")]
+    RuntimeCompressor = 0x06a5,
+    #[serde(rename = "GLYCOL")]
+    Glycol = 0x06d0,
+    #[serde(rename = "HP_POWER_LIMITATION")]
+    HpPowerLimitation = 0x06d1,
+    #[serde(rename = "EXT_HEAT_SOURCE")]
+    ExtHeatSource = 0x06d2,
+    #[serde(rename = "BIVALENCE_FUNCTION")]
+    BivalenceFunction = 0x06d3,
+    #[serde(rename = "BIVALENCE_TEMP")]
+    BivalenceTemp = 0x06d4,
+    #[serde(rename = "PUMP_DT_HEATING")]
+    PumpDtHeating = 0x06db,
+    #[serde(rename = "PUMP_DT_COOLING")]
+    PumpDtCooling = 0x06dc,
+    #[serde(rename = "HEATING_SYSTEM")]
+    HeatingSystem = 0x06dd,
+    #[serde(rename = "PUMP_LIMIT")]
+    PumpLimit = 0x06e1,
+    #[serde(rename = "FEED_TEMP_OVERSHOOT")]
+    FeedTempOvershoot = 0x06e2,
+    #[serde(rename = "CONTINUOUS_HEATING")]
+    ContinuousHeating = 0x06e3,
+    #[serde(rename = "COMFORT_HEATING")]
+    ComfortHeating = 0x06e5,
+    #[serde(rename = "FUNC_BURNER_BLOCKING_CONTACT")]
+    FuncBurnerBlockingContact = 0x06e6,
+    #[serde(rename = "EMERGENCY")]
+    Emergency = 0x06e7,
+    #[serde(rename = "WATER_PRESSURE_TARGET")]
+    WaterPressureTarget = 0x0725,
+    #[serde(rename = "WATER_MAX_PRESSURE_LOSS")]
+    WaterMaxPressureLoss = 0x0726,
+    #[serde(rename = "WATER_PRESSURE_MAX")]
+    WaterPressureMax = 0x0727,
+    #[serde(rename = "WATER_PRESSURE_MIN")]
+    WaterPressureMin = 0x0728,
+    #[serde(rename = "ENERGY_EXT_HOT_WATER")]
+    EnergyExtHotWater = 0x091c,
+    #[serde(rename = "ENERGY_EXT_HEATING")]
+    EnergyExtHeating = 0x0920,
+    #[serde(rename = "ENERGY_HOT_WATER")]
+    EnergyHotWater = 0x092c,
+    #[serde(rename = "ENERGY_HP_TOTAL")]
+    EnergyHpTotal = 0x0930,
+    #[serde(rename = "MYSTERY_093C")]
+    Mystery093c = 0x093c,
+    #[serde(rename = "WATER_SENSORS")]
+    WaterSensors = 0x0961,
+    #[serde(rename = "FROST_PROTECTION_TEMP")]
+    FrostProtectionTemp = 0x0a00,
+    #[serde(rename = "HOT_WATER_TEMP_TARGET_2")]
+    HotWaterTempTarget2 = 0x0a06,
+    #[serde(rename = "AVERAGE_OUTSIDE_TEMP")]
+    AverageOutsideTemp = 0x0a0c,
+    #[serde(rename = "ZEITMASTER")]
+    Zeitmaster = 0x0a1f,
+    #[serde(rename = "OUTSIDE_TEMP_CORRECTION")]
+    OutsideTempCorrection = 0x0c1f,
+    #[serde(rename = "HOLIDAY_BEGIN_DAY")]
+    HolidayBeginDay = 0x1350,
+    #[serde(rename = "HOLIDAY_BEGIN_MONTH")]
+    HolidayBeginMonth = 0x1351,
+    #[serde(rename = "HOLIDAY_BEGIN_YEAR")]
+    HolidayBeginYear = 0x1352,
+    #[serde(rename = "HOLIDAY_END_DAY")]
+    HolidayEndDay = 0x1353,
+    #[serde(rename = "HOLIDAY_END_MONTH")]
+    HolidayEndMonth = 0x1354,
+    #[serde(rename = "HOLIDAY_END_YEAR")]
+    HolidayEndYear = 0x1355,
+    #[serde(rename = "TEMP_MANUAL_OPERATION")]
+    TempManualOperation = 0x1357,
+    #[serde(rename = "PARTY")]
+    Party = 0x1358,
+    #[serde(rename = "COOLING_SETPOINT_CORRECTION")]
+    CoolingSetpointCorrection = 0x1359,
+    #[serde(rename = "START_COOLING_OUTSIDE_TEMP")]
+    StartCoolingOutsideTemp = 0x135b,
+    #[serde(rename = "MAX_COOLING_OUTSIDE_TEMP")]
+    MaxCoolingOutsideTemp = 0x135c,
+    #[serde(rename = "TARGET_FLOW_COOLING_START")]
+    TargetFlowCoolingStart = 0x135d,
+    #[serde(rename = "TARGET_FLOW_COOLING_MAX")]
+    TargetFlowCoolingMax = 0x135e,
+    #[serde(rename = "FEED_TEMP_LOWER_LIMIT")]
+    FeedTempLowerLimit = 0x1363,
+    #[serde(rename = "FEHLER_AKTUELL")]
+    FehlerAktuell = 0x1388,
+    #[serde(rename = "START_KUEHLEN_AUSSENTEMP_HZK0")]
+    StartKuehlenAussentempHzk0 = 0x13b5,
+    #[serde(rename = "HC_AUTO_1")]
+    HcAuto1 = 0x1400,
+    #[serde(rename = "HC_AUTO_1_MON_1")]
+    HcAuto1Mon1 = 0x1410,
+    #[serde(rename = "HC_AUTO_1_MON_2")]
+    HcAuto1Mon2 = 0x1411,
+    #[serde(rename = "HC_AUTO_1_MON_3")]
+    HcAuto1Mon3 = 0x1412,
+    #[serde(rename = "HC_AUTO_1_TUE_1")]
+    HcAuto1Tue1 = 0x1420,
+    #[serde(rename = "HC_AUTO_1_TUE_2")]
+    HcAuto1Tue2 = 0x1421,
+    #[serde(rename = "HC_AUTO_1_TUE_3")]
+    HcAuto1Tue3 = 0x1422,
+    #[serde(rename = "HC_AUTO_1_WED_1")]
+    HcAuto1Wed1 = 0x1430,
+    #[serde(rename = "HC_AUTO_1_WED_2")]
+    HcAuto1Wed2 = 0x1431,
+    #[serde(rename = "HC_AUTO_1_WED_3")]
+    HcAuto1Wed3 = 0x1432,
+    #[serde(rename = "HC_AUTO_1_THU_1")]
+    HcAuto1Thu1 = 0x1440,
+    #[serde(rename = "HC_AUTO_1_THU_2")]
+    HcAuto1Thu2 = 0x1441,
+    #[serde(rename = "HC_AUTO_1_THU_3")]
+    HcAuto1Thu3 = 0x1442,
+    #[serde(rename = "HC_AUTO_1_FRI_1")]
+    HcAuto1Fri1 = 0x1450,
+    #[serde(rename = "HC_AUTO_1_FRI_2")]
+    HcAuto1Fri2 = 0x1451,
+    #[serde(rename = "HC_AUTO_1_FRI_3")]
+    HcAuto1Fri3 = 0x1452,
+    #[serde(rename = "HC_AUTO_1_SAT_1")]
+    HcAuto1Sat1 = 0x1460,
+    #[serde(rename = "HC_AUTO_1_SAT_2")]
+    HcAuto1Sat2 = 0x1461,
+    #[serde(rename = "HC_AUTO_1_SAT_3")]
+    HcAuto1Sat3 = 0x1462,
+    #[serde(rename = "HC_AUTO_1_SUN_1")]
+    HcAuto1Sun1 = 0x1470,
+    #[serde(rename = "HC_AUTO_1_SUN_2")]
+    HcAuto1Sun2 = 0x1471,
+    #[serde(rename = "HC_AUTO_1_SUN_3")]
+    HcAuto1Sun3 = 0x1472,
+    #[serde(rename = "HC_AUTO_1_MON_FRI_1")]
+    HcAuto1MonFri1 = 0x1480,
+    #[serde(rename = "HC_AUTO_1_MON_FRI_2")]
+    HcAuto1MonFri2 = 0x1481,
+    #[serde(rename = "HC_AUTO_1_MON_FRI_3")]
+    HcAuto1MonFri3 = 0x1482,
+    #[serde(rename = "HC_AUTO_1_SAT_SUN_1")]
+    HcAuto1SatSun1 = 0x1490,
+    #[serde(rename = "HC_AUTO_1_SAT_SUN_2")]
+    HcAuto1SatSun2 = 0x1491,
+    #[serde(rename = "HC_AUTO_1_SAT_SUN_3")]
+    HcAuto1SatSun3 = 0x1492,
+    #[serde(rename = "HC_AUTO_1_MON_SUN_1")]
+    HcAuto1MonSun1 = 0x14a0,
+    #[serde(rename = "HC_AUTO_1_MON_SUN_2")]
+    HcAuto1MonSun2 = 0x14a1,
+    #[serde(rename = "HC_AUTO_1_MON_SUN_3")]
+    HcAuto1MonSun3 = 0x14a2,
+    #[serde(rename = "HC_AUTO_1_MON_THU_1")]
+    HcAuto1MonThu1 = 0x14b0,
+    #[serde(rename = "HC_AUTO_1_MON_THU_2")]
+    HcAuto1MonThu2 = 0x14b1,
+    #[serde(rename = "HC_AUTO_1_MON_THU_3")]
+    HcAuto1MonThu3 = 0x14b2,
+    #[serde(rename = "HC_AUTO_2")]
+    HcAuto2 = 0x1500,
+    #[serde(rename = "HC_AUTO_2_MON_1")]
+    HcAuto2Mon1 = 0x1510,
+    #[serde(rename = "HC_AUTO_2_MON_2")]
+    HcAuto2Mon2 = 0x1511,
+    #[serde(rename = "HC_AUTO_2_MON_3")]
+    HcAuto2Mon3 = 0x1512,
+    #[serde(rename = "HC_AUTO_2_TUE_1")]
+    HcAuto2Tue1 = 0x1520,
+    #[serde(rename = "HC_AUTO_2_TUE_2")]
+    HcAuto2Tue2 = 0x1521,
+    #[serde(rename = "HC_AUTO_2_TUE_3")]
+    HcAuto2Tue3 = 0x1522,
+    #[serde(rename = "HC_AUTO_2_WED_1")]
+    HcAuto2Wed1 = 0x1530,
+    #[serde(rename = "HC_AUTO_2_WED_2")]
+    HcAuto2Wed2 = 0x1531,
+    #[serde(rename = "HC_AUTO_2_WED_3")]
+    HcAuto2Wed3 = 0x1532,
+    #[serde(rename = "HC_AUTO_2_THU_1")]
+    HcAuto2Thu1 = 0x1540,
+    #[serde(rename = "HC_AUTO_2_THU_2")]
+    HcAuto2Thu2 = 0x1541,
+    #[serde(rename = "HC_AUTO_2_THU_3")]
+    HcAuto2Thu3 = 0x1542,
+    #[serde(rename = "HC_AUTO_2_FRI_1")]
+    HcAuto2Fri1 = 0x1550,
+    #[serde(rename = "HC_AUTO_2_FRI_2")]
+    HcAuto2Fri2 = 0x1551,
+    #[serde(rename = "HC_AUTO_2_FRI_3")]
+    HcAuto2Fri3 = 0x1552,
+    #[serde(rename = "HC_AUTO_2_SAT_1")]
+    HcAuto2Sat1 = 0x1560,
+    #[serde(rename = "HC_AUTO_2_SAT_2")]
+    HcAuto2Sat2 = 0x1561,
+    #[serde(rename = "HC_AUTO_2_SAT_3")]
+    HcAuto2Sat3 = 0x1562,
+    #[serde(rename = "HC_AUTO_2_SUN_1")]
+    HcAuto2Sun1 = 0x1570,
+    #[serde(rename = "HC_AUTO_2_SUN_2")]
+    HcAuto2Sun2 = 0x1571,
+    #[serde(rename = "HC_AUTO_2_SUN_3")]
+    HcAuto2Sun3 = 0x1572,
+    #[serde(rename = "HC_AUTO_2_MON_FRI_1")]
+    HcAuto2MonFri1 = 0x1580,
+    #[serde(rename = "HC_AUTO_2_MON_FRI_2")]
+    HcAuto2MonFri2 = 0x1581,
+    #[serde(rename = "HC_AUTO_2_MON_FRI_3")]
+    HcAuto2MonFri3 = 0x1582,
+    #[serde(rename = "HC_AUTO_2_SAT_SUN_1")]
+    HcAuto2SatSun1 = 0x1590,
+    #[serde(rename = "HC_AUTO_2_SAT_SUN_2")]
+    HcAuto2SatSun2 = 0x1591,
+    #[serde(rename = "HC_AUTO_2_SAT_SUN_3")]
+    HcAuto2SatSun3 = 0x1592,
+    #[serde(rename = "HC_AUTO_2_MON_SUN_1")]
+    HcAuto2MonSun1 = 0x15a0,
+    #[serde(rename = "HC_AUTO_2_MON_SUN_2")]
+    HcAuto2MonSun2 = 0x15a1,
+    #[serde(rename = "HC_AUTO_2_MON_SUN_3")]
+    HcAuto2MonSun3 = 0x15a2,
+    #[serde(rename = "HC_AUTO_2_MON_THU_1")]
+    HcAuto2MonThu1 = 0x15b0,
+    #[serde(rename = "HC_AUTO_2_MON_THU_2")]
+    HcAuto2MonThu2 = 0x15b1,
+    #[serde(rename = "HC_AUTO_2_MON_THU_3")]
+    HcAuto2MonThu3 = 0x15b2,
+    #[serde(rename = "DHW_AUTO_1")]
+    DhwAuto1 = 0x1700,
+    #[serde(rename = "DHW_AUTO_1_MON_1")]
+    DhwAuto1Mon1 = 0x1710,
+    #[serde(rename = "DHW_AUTO_1_MON_2")]
+    DhwAuto1Mon2 = 0x1711,
+    #[serde(rename = "DHW_AUTO_1_MON_3")]
+    DhwAuto1Mon3 = 0x1712,
+    #[serde(rename = "DHW_AUTO_1_TUE_1")]
+    DhwAuto1Tue1 = 0x1720,
+    #[serde(rename = "DHW_AUTO_1_TUE_2")]
+    DhwAuto1Tue2 = 0x1721,
+    #[serde(rename = "DHW_AUTO_1_TUE_3")]
+    DhwAuto1Tue3 = 0x1722,
+    #[serde(rename = "DHW_AUTO_1_WED_1")]
+    DhwAuto1Wed1 = 0x1730,
+    #[serde(rename = "DHW_AUTO_1_WED_2")]
+    DhwAuto1Wed2 = 0x1731,
+    #[serde(rename = "DHW_AUTO_1_WED_3")]
+    DhwAuto1Wed3 = 0x1732,
+    #[serde(rename = "DHW_AUTO_1_THU_1")]
+    DhwAuto1Thu1 = 0x1740,
+    #[serde(rename = "DHW_AUTO_1_THU_2")]
+    DhwAuto1Thu2 = 0x1741,
+    #[serde(rename = "DHW_AUTO_1_THU_3")]
+    DhwAuto1Thu3 = 0x1742,
+    #[serde(rename = "DHW_AUTO_1_FRI_1")]
+    DhwAuto1Fri1 = 0x1750,
+    #[serde(rename = "DHW_AUTO_1_FRI_2")]
+    DhwAuto1Fri2 = 0x1751,
+    #[serde(rename = "DHW_AUTO_1_FRI_3")]
+    DhwAuto1Fri3 = 0x1752,
+    #[serde(rename = "DHW_AUTO_1_SAT_1")]
+    DhwAuto1Sat1 = 0x1760,
+    #[serde(rename = "DHW_AUTO_1_SAT_2")]
+    DhwAuto1Sat2 = 0x1761,
+    #[serde(rename = "DHW_AUTO_1_SAT_3")]
+    DhwAuto1Sat3 = 0x1762,
+    #[serde(rename = "DHW_AUTO_1_SUN_1")]
+    DhwAuto1Sun1 = 0x1770,
+    #[serde(rename = "DHW_AUTO_1_SUN_2")]
+    DhwAuto1Sun2 = 0x1771,
+    #[serde(rename = "DHW_AUTO_1_SUN_3")]
+    DhwAuto1Sun3 = 0x1772,
+    #[serde(rename = "DHW_AUTO_1_MON_FRI_1")]
+    DhwAuto1MonFri1 = 0x1780,
+    #[serde(rename = "DHW_AUTO_1_MON_FRI_2")]
+    DhwAuto1MonFri2 = 0x1781,
+    #[serde(rename = "DHW_AUTO_1_MON_FRI_3")]
+    DhwAuto1MonFri3 = 0x1782,
+    #[serde(rename = "DHW_AUTO_1_SAT_SUN_1")]
+    DhwAuto1SatSun1 = 0x1790,
+    #[serde(rename = "DHW_AUTO_1_SAT_SUN_2")]
+    DhwAuto1SatSun2 = 0x1791,
+    #[serde(rename = "DHW_AUTO_1_SAT_SUN_3")]
+    DhwAuto1SatSun3 = 0x1792,
+    #[serde(rename = "DHW_AUTO_1_MON_SUN_1")]
+    DhwAuto1MonSun1 = 0x17a0,
+    #[serde(rename = "DHW_AUTO_1_MON_SUN_2")]
+    DhwAuto1MonSun2 = 0x17a1,
+    #[serde(rename = "DHW_AUTO_1_MON_SUN_3")]
+    DhwAuto1MonSun3 = 0x17a2,
+    #[serde(rename = "DHW_AUTO_1_MON_TUE_1")]
+    DhwAuto1MonTue1 = 0x17b0,
+    #[serde(rename = "DHW_AUTO_1_MON_TUE_2")]
+    DhwAuto1MonTue2 = 0x17b1,
+    #[serde(rename = "DHW_AUTO_1_MON_TUE_3")]
+    DhwAuto1MonTue3 = 0x17b2,
+    #[serde(rename = "DHW_AUTO_2")]
+    DhwAuto2 = 0x1800,
+    #[serde(rename = "DHW_AUTO_2_MON_1")]
+    DhwAuto2Mon1 = 0x1810,
+    #[serde(rename = "DHW_AUTO_2_MON_2")]
+    DhwAuto2Mon2 = 0x1811,
+    #[serde(rename = "DHW_AUTO_2_MON_3")]
+    DhwAuto2Mon3 = 0x1812,
+    #[serde(rename = "DHW_AUTO_2_TUE_1")]
+    DhwAuto2Tue1 = 0x1820,
+    #[serde(rename = "DHW_AUTO_2_TUE_2")]
+    DhwAuto2Tue2 = 0x1821,
+    #[serde(rename = "DHW_AUTO_2_TUE_3")]
+    DhwAuto2Tue3 = 0x1822,
+    #[serde(rename = "DHW_AUTO_2_WED_1")]
+    DhwAuto2Wed1 = 0x1830,
+    #[serde(rename = "DHW_AUTO_2_WED_2")]
+    DhwAuto2Wed2 = 0x1831,
+    #[serde(rename = "DHW_AUTO_2_WED_3")]
+    DhwAuto2Wed3 = 0x1832,
+    #[serde(rename = "DHW_AUTO_2_THU_1")]
+    DhwAuto2Thu1 = 0x1840,
+    #[serde(rename = "DHW_AUTO_2_THU_2")]
+    DhwAuto2Thu2 = 0x1841,
+    #[serde(rename = "DHW_AUTO_2_THU_3")]
+    DhwAuto2Thu3 = 0x1842,
+    #[serde(rename = "DHW_AUTO_2_FRI_1")]
+    DhwAuto2Fri1 = 0x1850,
+    #[serde(rename = "DHW_AUTO_2_FRI_2")]
+    DhwAuto2Fri2 = 0x1851,
+    #[serde(rename = "DHW_AUTO_2_FRI_3")]
+    DhwAuto2Fri3 = 0x1852,
+    #[serde(rename = "DHW_AUTO_2_SAT_1")]
+    DhwAuto2Sat1 = 0x1860,
+    #[serde(rename = "DHW_AUTO_2_SAT_2")]
+    DhwAuto2Sat2 = 0x1861,
+    #[serde(rename = "DHW_AUTO_2_SAT_3")]
+    DhwAuto2Sat3 = 0x1862,
+    #[serde(rename = "DHW_AUTO_2_SUN_1")]
+    DhwAuto2Sun1 = 0x1870,
+    #[serde(rename = "DHW_AUTO_2_SUN_2")]
+    DhwAuto2Sun2 = 0x1871,
+    #[serde(rename = "DHW_AUTO_2_SUN_3")]
+    DhwAuto2Sun3 = 0x1872,
+    #[serde(rename = "DHW_AUTO_2_MON_FRI_1")]
+    DhwAuto2MonFri1 = 0x1880,
+    #[serde(rename = "DHW_AUTO_2_MON_FRI_2")]
+    DhwAuto2MonFri2 = 0x1881,
+    #[serde(rename = "DHW_AUTO_2_MON_FRI_3")]
+    DhwAuto2MonFri3 = 0x1882,
+    #[serde(rename = "DHW_AUTO_2_SAT_SUN_1")]
+    DhwAuto2SatSun1 = 0x1890,
+    #[serde(rename = "DHW_AUTO_2_SAT_SUN_2")]
+    DhwAuto2SatSun2 = 0x1891,
+    #[serde(rename = "DHW_AUTO_2_SAT_SUN_3")]
+    DhwAuto2SatSun3 = 0x1892,
+    #[serde(rename = "DHW_AUTO_2_MON_SUN_1")]
+    DhwAuto2MonSun1 = 0x18a0,
+    #[serde(rename = "DHW_AUTO_2_MON_SUN_2")]
+    DhwAuto2MonSun2 = 0x18a1,
+    #[serde(rename = "DHW_AUTO_2_MON_SUN_3")]
+    DhwAuto2MonSun3 = 0x18a2,
+    #[serde(rename = "DHW_AUTO_2_MON_TUE_1")]
+    DhwAuto2MonTue1 = 0x18b0,
+    #[serde(rename = "DHW_AUTO_2_MON_TUE_2")]
+    DhwAuto2MonTue2 = 0x18b1,
+    #[serde(rename = "DHW_AUTO_2_MON_TUE_3")]
+    DhwAuto2MonTue3 = 0x18b2,
+    #[serde(rename = "CIRCULATION_MON_1")]
+    CirculationMon1 = 0x1a10,
+    #[serde(rename = "CIRCULATION_MON_2")]
+    CirculationMon2 = 0x1a11,
+    #[serde(rename = "CIRCULATION_MON_3")]
+    CirculationMon3 = 0x1a12,
+    #[serde(rename = "CIRCULATION_TUE_1")]
+    CirculationTue1 = 0x1a20,
+    #[serde(rename = "CIRCULATION_TUE_2")]
+    CirculationTue2 = 0x1a21,
+    #[serde(rename = "CIRCULATION_TUE_3")]
+    CirculationTue3 = 0x1a22,
+    #[serde(rename = "CIRCULATION_WED_1")]
+    CirculationWed1 = 0x1a30,
+    #[serde(rename = "CIRCULATION_WED_2")]
+    CirculationWed2 = 0x1a31,
+    #[serde(rename = "CIRCULATION_WED_3")]
+    CirculationWed3 = 0x1a32,
+    #[serde(rename = "CIRCULATION_THU_1")]
+    CirculationThu1 = 0x1a40,
+    #[serde(rename = "CIRCULATION_THU_2")]
+    CirculationThu2 = 0x1a41,
+    #[serde(rename = "CIRCULATION_THU_3")]
+    CirculationThu3 = 0x1a42,
+    #[serde(rename = "CIRCULATION_FRI_1")]
+    CirculationFri1 = 0x1a50,
+    #[serde(rename = "CIRCUATLION_FRI_2")]
+    CircuatlionFri2 = 0x1a51,
+    #[serde(rename = "CIRCULATION_FRI_3")]
+    CirculationFri3 = 0x1a52,
+    #[serde(rename = "CIRCULATION_SAT_1")]
+    CirculationSat1 = 0x1a60,
+    #[serde(rename = "CIRCULATION_SAT_2")]
+    CirculationSat2 = 0x1a61,
+    #[serde(rename = "CIRCULATION_SAT_3")]
+    CirculationSat3 = 0x1a62,
+    #[serde(rename = "CIRCULATION_SUN_1")]
+    CirculationSun1 = 0x1a70,
+    #[serde(rename = "CIRCULATION_SUN_2")]
+    CirculationSun2 = 0x1a71,
+    #[serde(rename = "CIRCULATION_SUN_3")]
+    CirculationSun3 = 0x1a72,
+    #[serde(rename = "HOT_WATER_BLOCKING_TIME")]
+    HotWaterBlockingTime = 0x4e3f,
+    #[serde(rename = "VMIN_GCU")]
+    VminGcu = 0xc09d,
+    #[serde(rename = "SONDERFKT_SCHALTKONTAKT")]
+    SonderfktSchaltkontakt = 0xc0b1,
+    #[serde(rename = "WARTEZEIT_SONDERFKT")]
+    WartezeitSonderfkt = 0xc0b2,
+    #[serde(rename = "SCHALTSCHWELLE_TDHW")]
+    SchaltschwelleTdhw = 0xc0b3,
+    #[serde(rename = "MYSTERY_C0B4")]
+    MysteryC0b4 = 0xc0b4,
+    #[serde(rename = "OUTSIDE_TEMP_SENSOR")]
+    OutsideTempSensor = 0xc0c4,
+    #[serde(rename = "MODE")]
+    Mode = 0xc0f6,
+    #[serde(rename = "PWM_SIGNAL")]
+    PwmSignal = 0xc0f7,
+    #[serde(rename = "EXTERNAL_REQUEST")]
+    ExternalRequest = 0xc0f8,
+    #[serde(rename = "BUH_CURRENT_OUTPUT")]
+    BuhCurrentOutput = 0xc0f9,
+    #[serde(rename = "ROOM_THERMOSTAT_INTERLINK")]
+    RoomThermostatInterlink = 0xc0fa,
+    #[serde(rename = "MIX_3UVB1")]
+    Mix3uvb1 = 0xc0fb,
+    #[serde(rename = "FEED_TEMP_PHX")]
+    FeedTempPhx = 0xc0fc,
+    #[serde(rename = "FEED_TEMP_BUH")]
+    FeedTempBuh = 0xc0fe,
+    #[serde(rename = "V")]
+    V = 0xc101,
+    #[serde(rename = "T_TVBH1")]
+    TTvbh1 = 0xc102,
+    #[serde(rename = "REFRIGERANT_TEMP")]
+    RefrigerantTemp = 0xc103,
+    #[serde(rename = "T_R")]
+    TR = 0xc104,
+    #[serde(rename = "OUTDOOR_TEMP_OPT")]
+    OutdoorTempOpt = 0xc105,
+    #[serde(rename = "T_DHW")]
+    TDhw = 0xc106,
+    #[serde(rename = "PWM_PUMP")]
+    PwmPump = 0xc10c,
+    #[serde(rename = "T_AU")]
+    TAu = 0xc176,
+    #[serde(rename = "STATUS_HEATING_SUPPORT")]
+    StatusHeatingSupport = 0xc179,
+    #[serde(rename = "T_TVBH")]
+    TTvbh = 0xc1bf,
+    #[serde(rename = "SWITCH_TEMP_HC")]
+    SwitchTempHc = 0xc1c3,
+    #[serde(rename = "ENERGY_ELECTRICAL_01_LOW")]
+    EnergyElectrical01Low = 0xc26b,
+    #[serde(rename = "ENERGY_ELECTRICAL_01_HIGH")]
+    EnergyElectrical01High = 0xc26c,
+    #[serde(rename = "ENERGY_ELECTRICAL_02_LOW")]
+    EnergyElectrical02Low = 0xc26d,
+    #[serde(rename = "ENERGY_ELECTRICAL_02_HIGH")]
+    EnergyElectrical02High = 0xc26e,
+    #[serde(rename = "ENERGY_ELECTRICAL_03_LOW")]
+    EnergyElectrical03Low = 0xc26f,
+    #[serde(rename = "ENERGY_ELECTRICAL_03_HIGH")]
+    EnergyElectrical03High = 0xc270,
+    #[serde(rename = "ENERGY_ELECTRICAL_04_LOW")]
+    EnergyElectrical04Low = 0xc271,
+    #[serde(rename = "ENERGY_ELECTRICAL_04_HIGH")]
+    EnergyElectrical04High = 0xc272,
+    #[serde(rename = "ENERGY_ELECTRICAL_05_LOW")]
+    EnergyElectrical05Low = 0xc273,
+    #[serde(rename = "ENERGY_ELECTRICAL_05_HIGH")]
+    EnergyElectrical05High = 0xc274,
+    #[serde(rename = "ENERGY_ELECTRICAL_06_LOW")]
+    EnergyElectrical06Low = 0xc275,
+    #[serde(rename = "ENERGY_ELECTRICAL_06_HIGH")]
+    EnergyElectrical06High = 0xc276,
+    #[serde(rename = "ENERGY_ELECTRICAL_07_LOW")]
+    EnergyElectrical07Low = 0xc277,
+    #[serde(rename = "ENERGY_ELECTRICAL_07_HIGH")]
+    EnergyElectrical07High = 0xc278,
+    #[serde(rename = "ENERGY_ELECTRICAL_08_LOW")]
+    EnergyElectrical08Low = 0xc279,
+    #[serde(rename = "ENERGY_ELECTRICAL_08_HIGH")]
+    EnergyElectrical08High = 0xc27a,
+    #[serde(rename = "ENERGY_ELECTRICAL_09_LOW")]
+    EnergyElectrical09Low = 0xc27b,
+    #[serde(rename = "ENERGY_ELECTRICAL_09_HIGH")]
+    EnergyElectrical09High = 0xc27c,
+    #[serde(rename = "ENERGY_ELECTRICAL_10_LOW")]
+    EnergyElectrical10Low = 0xc27d,
+    #[serde(rename = "ENERGY_ELECTRICAL_10_HIGH")]
+    EnergyElectrical10High = 0xc27e,
+    #[serde(rename = "ENERGY_ELECTRICAL_11_LOW")]
+    EnergyElectrical11Low = 0xc27f,
+    #[serde(rename = "ENERGY_ELECTRICAL_11_HIGH")]
+    EnergyElectrical11High = 0xc280,
+    #[serde(rename = "ENERGY_ELECTRICAL_12_LOW")]
+    EnergyElectrical12Low = 0xc281,
+    #[serde(rename = "ENERGY_ELECTRICAL_12_HIGH")]
+    EnergyElectrical12High = 0xc282,
+    #[serde(rename = "ENERGY_HP_COOLING_01_LOW")]
+    EnergyHpCooling01Low = 0xc283,
+    #[serde(rename = "ENERGY_HP_COOLING_01_HIGH")]
+    EnergyHpCooling01High = 0xc284,
+    #[serde(rename = "ENERGY_HP_COOLING_02_LOW")]
+    EnergyHpCooling02Low = 0xc285,
+    #[serde(rename = "ENERGY_HP_COOLING_02_HIGH")]
+    EnergyHpCooling02High = 0xc286,
+    #[serde(rename = "ENERGY_HP_COOLING_03_LOW")]
+    EnergyHpCooling03Low = 0xc287,
+    #[serde(rename = "ENERGY_HP_COOLING_03_HIGH")]
+    EnergyHpCooling03High = 0xc288,
+    #[serde(rename = "ENERGY_HP_COOLING_04_LOW")]
+    EnergyHpCooling04Low = 0xc289,
+    #[serde(rename = "ENERGY_HP_COOLING_04_HIGH")]
+    EnergyHpCooling04High = 0xc28a,
+    #[serde(rename = "ENERGY_HP_COOLING_05_LOW")]
+    EnergyHpCooling05Low = 0xc28b,
+    #[serde(rename = "ENERGY_HP_COOLING_05_HIGH")]
+    EnergyHpCooling05High = 0xc28c,
+    #[serde(rename = "ENERGY_HP_COOLING_06_LOW")]
+    EnergyHpCooling06Low = 0xc28d,
+    #[serde(rename = "ENERGY_HP_COOLING_06_HIGH")]
+    EnergyHpCooling06High = 0xc28e,
+    #[serde(rename = "ENERGY_HP_COOLING_07_LOW")]
+    EnergyHpCooling07Low = 0xc28f,
+    #[serde(rename = "ENERGY_HP_COOLING_07_HIGH")]
+    EnergyHpCooling07High = 0xc290,
+    #[serde(rename = "ENERGY_HP_COOLING_08_LOW")]
+    EnergyHpCooling08Low = 0xc291,
+    #[serde(rename = "ENERGY_HP_COOLING_08_HIGH")]
+    EnergyHpCooling08High = 0xc292,
+    #[serde(rename = "ENERGY_HP_COOLING_09_LOW")]
+    EnergyHpCooling09Low = 0xc293,
+    #[serde(rename = "ENERGY_HP_COOLING_09_HIGH")]
+    EnergyHpCooling09High = 0xc294,
+    #[serde(rename = "ENERGY_HP_COOLING_10_LOW")]
+    EnergyHpCooling10Low = 0xc295,
+    #[serde(rename = "ENERGY_HP_COOLING_10_HIGH")]
+    EnergyHpCooling10High = 0xc296,
+    #[serde(rename = "ENERGY_HP_COOLING_11_LOW")]
+    EnergyHpCooling11Low = 0xc297,
+    #[serde(rename = "ENERGY_HP_COOLING_11_HIGH")]
+    EnergyHpCooling11High = 0xc298,
+    #[serde(rename = "ENERGY_HP_COOLING_12_LOW")]
+    EnergyHpCooling12Low = 0xc299,
+    #[serde(rename = "ENERGY_HP_COOLING_12_HIGH")]
+    EnergyHpCooling12High = 0xc29a,
+    #[serde(rename = "ENERGY_HP_HEATING_01_LOW")]
+    EnergyHpHeating01Low = 0xc29b,
+    #[serde(rename = "ENERGY_HP_HEATING_01_HIGH")]
+    EnergyHpHeating01High = 0xc29c,
+    #[serde(rename = "ENERGY_HP_HEATING_02_LOW")]
+    EnergyHpHeating02Low = 0xc29d,
+    #[serde(rename = "ENERGY_HP_HEATING_02_HIGH")]
+    EnergyHpHeating02High = 0xc29e,
+    #[serde(rename = "ENERGY_HP_HEATING_03_LOW")]
+    EnergyHpHeating03Low = 0xc29f,
+    #[serde(rename = "ENERGY_HP_HEATING_03_HIGH")]
+    EnergyHpHeating03High = 0xc2a0,
+    #[serde(rename = "ENERGY_HP_HEATING_04_LOW")]
+    EnergyHpHeating04Low = 0xc2a1,
+    #[serde(rename = "ENERGY_HP_HEATING_04_HIGH")]
+    EnergyHpHeating04High = 0xc2a2,
+    #[serde(rename = "ENERGY_HP_HEATING_05_LOW")]
+    EnergyHpHeating05Low = 0xc2a3,
+    #[serde(rename = "ENERGY_HP_HEATING_05_HIGH")]
+    EnergyHpHeating05High = 0xc2a4,
+    #[serde(rename = "ENERGY_HP_HEATING_06_LOW")]
+    EnergyHpHeating06Low = 0xc2a5,
+    #[serde(rename = "ENERGY_HP_HEATING_06_HIGH")]
+    EnergyHpHeating06High = 0xc2a6,
+    #[serde(rename = "ENERGY_HP_HEATING_07_LOW")]
+    EnergyHpHeating07Low = 0xc2a7,
+    #[serde(rename = "ENERGY_HP_HEATING_07_HIGH")]
+    EnergyHpHeating07High = 0xc2a8,
+    #[serde(rename = "ENERGY_HP_HEATING_08_LOW")]
+    EnergyHpHeating08Low = 0xc2a9,
+    #[serde(rename = "ENERGY_HP_HEATING_08_HIGH")]
+    EnergyHpHeating08High = 0xc2aa,
+    #[serde(rename = "ENERGY_HP_HEATING_09_LOW")]
+    EnergyHpHeating09Low = 0xc2ab,
+    #[serde(rename = "ENERGY_HP_HEATING_19_HIGH")]
+    EnergyHpHeating19High = 0xc2ac,
+    #[serde(rename = "ENERGY_HP_HEATING_10_LOW")]
+    EnergyHpHeating10Low = 0xc2ad,
+    #[serde(rename = "ENERGY_HP_HEATING_10_HIGH")]
+    EnergyHpHeating10High = 0xc2ae,
+    #[serde(rename = "ENERGY_HP_HEATING_11_LOW")]
+    EnergyHpHeating11Low = 0xc2af,
+    #[serde(rename = "ENERGY_HP_HEATING_11_HIGH")]
+    EnergyHpHeating11High = 0xc2b0,
+    #[serde(rename = "ENERGY_HP_HEATING_12_LOW")]
+    EnergyHpHeating12Low = 0xc2b1,
+    #[serde(rename = "ENERGY_HP_HEATING_12_HIGH")]
+    EnergyHpHeating12High = 0xc2b2,
+    #[serde(rename = "ENERGY_HOT_WATER_01_LOW")]
+    EnergyHotWater01Low = 0xc2b3,
+    #[serde(rename = "ENERGY_HOT_WATER_01_HIGH")]
+    EnergyHotWater01High = 0xc2b4,
+    #[serde(rename = "ENERGY_HOT_WATER_02_LOW")]
+    EnergyHotWater02Low = 0xc2b5,
+    #[serde(rename = "ENERGY_HOT_WATER_02_HIGH")]
+    EnergyHotWater02High = 0xc2b6,
+    #[serde(rename = "ENERGY_HOT_WATER_03_LOW")]
+    EnergyHotWater03Low = 0xc2b7,
+    #[serde(rename = "ENERGY_HOT_WATER_03_HIGH")]
+    EnergyHotWater03High = 0xc2b8,
+    #[serde(rename = "ENERGY_HOT_WATER_04_LOW")]
+    EnergyHotWater04Low = 0xc2b9,
+    #[serde(rename = "ENERGY_HOT_WATER_04_HIGH")]
+    EnergyHotWater04High = 0xc2ba,
+    #[serde(rename = "ENERGY_HOT_WATER_05_LOW")]
+    EnergyHotWater05Low = 0xc2bb,
+    #[serde(rename = "ENERGY_HOT_WATER_05_HIGH")]
+    EnergyHotWater05High = 0xc2bc,
+    #[serde(rename = "ENERGY_HOT_WATER_06_LOW")]
+    EnergyHotWater06Low = 0xc2bd,
+    #[serde(rename = "ENERGY_HOT_WATER_06_HIGH")]
+    EnergyHotWater06High = 0xc2be,
+    #[serde(rename = "ENERGY_HOT_WATER_07_LOW")]
+    EnergyHotWater07Low = 0xc2bf,
+    #[serde(rename = "ENERGY_HOT_WATER_07_HIGH")]
+    EnergyHotWater07High = 0xc2c0,
+    #[serde(rename = "ENERGY_HOT_WATER_08_LOW")]
+    EnergyHotWater08Low = 0xc2c1,
+    #[serde(rename = "ENERGY_HOT_WATER_08_HIGH")]
+    EnergyHotWater08High = 0xc2c2,
+    #[serde(rename = "ENERGY_HOT_WATER_09_LOW")]
+    EnergyHotWater09Low = 0xc2c3,
+    #[serde(rename = "ENERGY_HOT_WATER_09_HIGH")]
+    EnergyHotWater09High = 0xc2c4,
+    #[serde(rename = "ENERGY_HOT_WATER_10_LOW")]
+    EnergyHotWater10Low = 0xc2c5,
+    #[serde(rename = "ENERGY_HOT_WATER_10_HIGH")]
+    EnergyHotWater10High = 0xc2c6,
+    #[serde(rename = "ENERGY_HOT_WATER_11_LOW")]
+    EnergyHotWater11Low = 0xc2c7,
+    #[serde(rename = "ENERGY_HOT_WATER_11_HIGH")]
+    EnergyHotWater11High = 0xc2c8,
+    #[serde(rename = "ENERGY_HOT_WATER_12_LOW")]
+    EnergyHotWater12Low = 0xc2c9,
+    #[serde(rename = "ENERGY_HOT_WATER_12_HIGH")]
+    EnergyHotWater12High = 0xc2ca,
+    #[serde(rename = "ENERGY_HP_TOTAL_01_LOW")]
+    EnergyHpTotal01Low = 0xc2cb,
+    #[serde(rename = "ENERGY_HP_TOTAL_01_HIGH")]
+    EnergyHpTotal01High = 0xc2cc,
+    #[serde(rename = "ENERGY_HP_TOTAL_02_LOW")]
+    EnergyHpTotal02Low = 0xc2cd,
+    #[serde(rename = "ENERGY_HP_TOTAL_02_HIGH")]
+    EnergyHpTotal02High = 0xc2ce,
+    #[serde(rename = "ENERGY_HP_TOTAL_03_LOW")]
+    EnergyHpTotal03Low = 0xc2cf,
+    #[serde(rename = "ENERGY_HP_TOTAL_03_HIGH")]
+    EnergyHpTotal03High = 0xc2d0,
+    #[serde(rename = "ENERGY_HP_TOTAL_04_LOW")]
+    EnergyHpTotal04Low = 0xc2d1,
+    #[serde(rename = "ENERGY_HP_TOTAL_04_HIGH")]
+    EnergyHpTotal04High = 0xc2d2,
+    #[serde(rename = "ENERGY_HP_TOTAL_05_LOW")]
+    EnergyHpTotal05Low = 0xc2d3,
+    #[serde(rename = "ENERGY_HP_TOTAL_05_HIGH")]
+    EnergyHpTotal05High = 0xc2d4,
+    #[serde(rename = "ENERGY_HP_TOTAL_06_LOW")]
+    EnergyHpTotal06Low = 0xc2d5,
+    #[serde(rename = "ENERGY_HP_TOTAL_06_HIGH")]
+    EnergyHpTotal06High = 0xc2d6,
+    #[serde(rename = "ENERGY_HP_TOTAL_07_LOW")]
+    EnergyHpTotal07Low = 0xc2d7,
+    #[serde(rename = "ENERGY_HP_TOTAL_07_HIGH")]
+    EnergyHpTotal07High = 0xc2d8,
+    #[serde(rename = "ENERGY_HP_TOTAL_08_LOW")]
+    EnergyHpTotal08Low = 0xc2d9,
+    #[serde(rename = "ENERGY_HP_TOTAL_08_HIGH")]
+    EnergyHpTotal08High = 0xc2da,
+    #[serde(rename = "ENERGY_HP_TOTAL_09_LOW")]
+    EnergyHpTotal09Low = 0xc2db,
+    #[serde(rename = "ENERGY_HP_TOTAL_09_HIGH")]
+    EnergyHpTotal09High = 0xc2dc,
+    #[serde(rename = "ENERGY_HP_TOTAL_10_LOW")]
+    EnergyHpTotal10Low = 0xc2dd,
+    #[serde(rename = "ENERGY_HP_TOTAL_10_HIGH")]
+    EnergyHpTotal10High = 0xc2de,
+    #[serde(rename = "ENERGY_HP_TOTAL_11_LOW")]
+    EnergyHpTotal11Low = 0xc2df,
+    #[serde(rename = "ENERGY_HP_TOTAL_11_HIGH")]
+    EnergyHpTotal11High = 0xc2e0,
+    #[serde(rename = "ENERGY_HP_TOTAL_12_LOW")]
+    EnergyHpTotal12Low = 0xc2e1,
+    #[serde(rename = "ENERGY_HP_TOTAL_12_HIGH")]
+    EnergyHpTotal12High = 0xc2e2,
+    #[serde(rename = "SOLAR_FUNCTION")]
+    SolarFunction = 0xc2f6,
+    #[serde(rename = "ENERGY_ELECTRICAL")]
+    EnergyElectrical = 0xc2fa,
+    #[serde(rename = "OUTDOOR_UNIT")]
+    OutdoorUnit = 0xc34c,
+    #[serde(rename = "INDOOR_UNIT")]
+    IndoorUnit = 0xc34d,
+    #[serde(rename = "G1_ANTILEG_START_ZEIT")]
+    G1AntilegStartZeit = 0xfd4f,
+    #[serde(rename = "STATUS_HEAT_CIRCULATION_PUMP")]
+    StatusHeatCirculationPump = 0xfdac,
+    #[serde(rename = "ANTI_LEGIONELLA_TIME")]
+    AntiLegionellaTime = 0xfdf4,
 }
 impl ParamName {
     pub fn id(&self) -> u16 {

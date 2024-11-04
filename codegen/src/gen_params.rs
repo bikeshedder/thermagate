@@ -28,7 +28,7 @@ pub fn cmd() -> Result<()> {
         let id = u16::from_str_radix(id, 16)?;
         stream.extend(gen_param(id, param))
     }
-    stream.extend(gen_params_map(&doc.params));
+    stream.extend(gen_params_id_map(&doc.params));
     stream.extend(gen_param_name_enum(&doc.params));
 
     let file = syn::parse_file(&stream.to_string()).unwrap();
@@ -269,7 +269,7 @@ fn gen_param_enum(
     )
 }
 
-fn gen_params_map(params: &BTreeMap<String, Param>) -> TokenStream {
+fn gen_params_id_map(params: &BTreeMap<String, Param>) -> TokenStream {
     let entries = params.iter().map(|(id, param)| {
         let id = format!("0x{id}u16").parse::<Literal>().unwrap();
         let param_name = quote::format_ident!("{}", param.name.to_shouty_snake_case());
@@ -285,17 +285,22 @@ fn gen_params_map(params: &BTreeMap<String, Param>) -> TokenStream {
 fn gen_param_name_enum(params: &BTreeMap<String, Param>) -> TokenStream {
     let variants = params.iter().map(|(id, param)| {
         let name = quote::format_ident!("{}", param.name.to_upper_camel_case());
-        let id = u16::from_str_radix(id, 16).unwrap();
-        quote! { #name = #id }
+        let id = format!("0x{id}").parse::<Literal>().unwrap();
+        let rename = param.name.to_shouty_snake_case();
+        quote! {
+            #[serde(rename=#rename)]
+            #name = #id
+        }
     });
     let matches = params.iter().map(|(_, param)| {
         let variant_name = quote::format_ident!("{}", param.name.to_upper_camel_case());
         let param_name = quote::format_ident!("{}", param.name.to_shouty_snake_case());
-        quote! { Self::#variant_name => &#param_name }
+        quote! {
+            Self::#variant_name => &#param_name
+        }
     });
     quote! {
         #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-        #[serde(rename_all="SCREAMING_SNAKE_CASE")]
         #[repr(u16)]
         pub enum ParamName {
             #( #variants ),*
