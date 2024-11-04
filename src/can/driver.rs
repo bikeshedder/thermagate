@@ -88,13 +88,21 @@ impl CanDriver {
     pub fn send(&self, msg: Message) -> Result<(), TrySendError<Message>> {
         self.send_tx.try_send(msg)
     }
-    pub async fn get<P: DecodeParam>(&self, dev: Device, param: &P) -> Result<P::Value, GetError> {
+    pub async fn get<P: DecodeParam>(
+        &self,
+        dev: Device,
+        param: &P,
+    ) -> Result<Option<P::Value>, GetError> {
         let msg = self.get_raw(dev, param).await?;
-        param.decode(msg.data).ok_or(GetError::DecodeError)
+        Ok(param.decode(msg.data))
     }
-    pub async fn get_any(&self, dev: Device, param: &dyn Param) -> Result<AnyValue, GetError> {
+    pub async fn get_any(
+        &self,
+        dev: Device,
+        param: &dyn Param,
+    ) -> Result<Option<AnyValue>, GetError> {
         let msg = self.get_raw(dev, param).await?;
-        param.decode_any(msg.data).ok_or(GetError::DecodeError)
+        Ok(param.decode_any(msg.data))
     }
     async fn get_raw(&self, dev: Device, param: &dyn Param) -> Result<ReceivedMessage, GetError> {
         let mut rx = self.rx();
@@ -132,8 +140,6 @@ pub enum GetError {
     Shutdown,
     #[error("Queue full")]
     QueueFull,
-    #[error("Decode error")]
-    DecodeError,
 }
 
 impl EventLoop {

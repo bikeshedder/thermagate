@@ -75,9 +75,6 @@ async fn query_params(config: QueryConfig, can: Arc<CanDriver>) {
                 Err(GetError::QueueFull) => {
                     warn!("Send queue is full")
                 }
-                Err(GetError::DecodeError) => {
-                    warn!("{}/{} Decode error", device.name(), param.name());
-                }
                 Ok(_) => {}
             }
         }
