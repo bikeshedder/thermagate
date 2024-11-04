@@ -8,7 +8,7 @@ interface = "can0"
 
 [mqtt]
 host = "mqtt-broker"
-port = "1883"
+port = 1883
 client_id = "thermagate"
 username = ""
 password = ""
