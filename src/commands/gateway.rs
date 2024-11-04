@@ -10,15 +10,15 @@ use rumqttc::AsyncClient;
 use serde::Serialize;
 use serde_json::json;
 use tokio::sync::{broadcast, Mutex};
-use tracing::debug;
+use tracing::{debug, warn};
 
 use crate::{
     can::{
-        driver::{CanDriver, ReceivedMessage},
+        driver::{CanDriver, GetError, ReceivedMessage},
         message::MessageType,
         param::{AnyValue, Unit},
     },
-    config::Config,
+    config::{Config, QueryConfig},
     hass::make_hass_sensor,
     utils::warn_if_err,
     web::{run_server, ParamUpdate},
@@ -56,15 +56,35 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
             debug!("{:?}", ev);
         }
     });
-    tokio::spawn(query_params(can.clone()));
+    tokio::spawn(query_params(config.query.clone(), can.clone()));
     run_server(&config.http, params, can).await;
     Ok(())
 }
 
-async fn query_params(_can: Arc<CanDriver>) {
-    // This function is supposed to query parameters in periodic intervals.
-    // As of now the gateway just listens to the CAN bus and provides access
-    // to all the variables read by RoCon G1.
+async fn query_params(config: QueryConfig, can: Arc<CanDriver>) {
+    let params = config
+        .params
+        .iter()
+        .map(|entry| (entry.device, entry.param.param()))
+        .collect::<Vec<_>>();
+    loop {
+        for &(device, param) in params.iter() {
+            debug!("Requesting {}/{}", device.name(), param.name());
+            match can.get_any(device, param).await {
+                Err(GetError::Shutdown) => return,
+                Err(GetError::QueueFull) => {
+                    warn!("Send queue is full")
+                }
+                Err(GetError::DecodeError) => {
+                    warn!("{}/{} Decode error", device.name(), param.name());
+                }
+                Ok(_) => {}
+            }
+        }
+        // XXX It would be nicer to implement a proper scheduler that doesn't
+        // just loop and sleep.
+        tokio::time::sleep(config.interval).await;
+    }
 }
 
 async fn recv_params(

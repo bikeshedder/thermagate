@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, fs::File, io::Write};
 
 use anyhow::Result;
-use heck::ToShoutySnakeCase;
+use heck::{ToShoutySnakeCase, ToUpperCamelCase};
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use rust_decimal::Decimal;
@@ -15,6 +15,7 @@ pub fn cmd() -> Result<()> {
 
     let mut stream = quote! {
         use rust_decimal_macros::dec;
+        use serde::{Serialize, Deserialize};
         use super::{
             enums,
             param::{
@@ -28,6 +29,7 @@ pub fn cmd() -> Result<()> {
         stream.extend(gen_param(id, param))
     }
     stream.extend(gen_params_map(&doc.params));
+    stream.extend(gen_param_name_enum(&doc.params));
 
     let file = syn::parse_file(&stream.to_string()).unwrap();
 
@@ -277,6 +279,37 @@ fn gen_params_map(params: &BTreeMap<String, Param>) -> TokenStream {
         pub static PARAMS: phf::Map<u16, &dyn Param> = phf::phf_map! {
             #( #entries ),*
         };
+    }
+}
+
+fn gen_param_name_enum(params: &BTreeMap<String, Param>) -> TokenStream {
+    let variants = params.iter().map(|(id, param)| {
+        let name = quote::format_ident!("{}", param.name.to_upper_camel_case());
+        let id = u16::from_str_radix(id, 16).unwrap();
+        quote! { #name = #id }
+    });
+    let matches = params.iter().map(|(_, param)| {
+        let variant_name = quote::format_ident!("{}", param.name.to_upper_camel_case());
+        let param_name = quote::format_ident!("{}", param.name.to_shouty_snake_case());
+        quote! { Self::#variant_name => &#param_name }
+    });
+    quote! {
+        #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+        #[serde(rename_all="SCREAMING_SNAKE_CASE")]
+        #[repr(u16)]
+        pub enum ParamName {
+            #( #variants ),*
+        }
+        impl ParamName {
+            pub fn id(&self) -> u16 {
+                *self as u16
+            }
+            pub fn param(&self) -> &dyn Param {
+                match self {
+                    #( #matches ),*
+                }
+            }
+        }
     }
 }
 
