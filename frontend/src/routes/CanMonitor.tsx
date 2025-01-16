@@ -13,7 +13,6 @@ import {
 	TableContainer,
 	TableHead,
 	TableRow,
-	Typography,
 } from "@suid/material";
 import { For, Show, createSignal, onCleanup } from "solid-js";
 import { Portal } from "solid-js/web";
@@ -21,6 +20,7 @@ import { DeviceFilter } from "../components/DeviceFilter";
 import { ValueDisplay } from "../components/ValueDisplay";
 import { useSocket } from "../contexts/socket";
 import { CanMessage, Device, type MessageType, Value } from "../schema";
+import { ParameterFilter } from "../components/ParameterFilter";
 
 const MESSAGE_TYPE_COLORS: Record<
 	MessageType,
@@ -38,7 +38,7 @@ function DeviceName(props: { device: Device }) {
 	return <Show
 		when={props.device.name != "Other"}
 		fallback={<code>{props.device.id.toString(16).padStart(4, "0")}</code>}>
-			{props.device.name}
+		{props.device.name}
 	</Show>
 }
 
@@ -48,6 +48,7 @@ export function CanMonitor() {
 	const [pause, setPause] = createSignal<boolean>(false);
 	const [filterSender, setFilterSender] = createSignal<string[]>([]);
 	const [filterReceiver, setFilterReceiver] = createSignal<string[]>([]);
+	const [filterParameters, setFilterParameters] = createSignal<string[]>([]);
 	const canListener = (rawMessage) => {
 		const res = CanMessage.safeParse(rawMessage);
 		if (!res.success) {
@@ -65,6 +66,11 @@ export function CanMonitor() {
 		}
 		if (filterReceiver().length) {
 			if (!filterReceiver().includes(msg.receiver.name)) {
+				return;
+			}
+		}
+		if (filterParameters().length) {
+			if (!filterParameters().includes(msg.param.name)) {
 				return;
 			}
 		}
@@ -96,7 +102,7 @@ export function CanMonitor() {
 			</Portal>
 			<Portal mount={document.getElementById("portal")}>
 				<Card>
-					<IconButton onClick={() => setMessages([])} size="large" sx={{ p: 2 }} color="error"><Delete/></IconButton>
+					<IconButton onClick={() => setMessages([])} size="large" sx={{ p: 2 }} color="error"><Delete /></IconButton>
 					<DeviceFilter
 						label="Sender"
 						devices={filterSender()}
@@ -106,6 +112,11 @@ export function CanMonitor() {
 						label="Receiver"
 						devices={filterReceiver()}
 						setDevices={setFilterReceiver}
+					/>
+					<ParameterFilter
+						label="Parameters"
+						parameters={filterParameters()}
+						setParameters={setFilterParameters}
 					/>
 				</Card>
 			</Portal>
@@ -134,8 +145,8 @@ export function CanMonitor() {
 												.join(" ")}
 										</code>
 									</TableCell>
-									<TableCell><DeviceName device={msg.sender}/></TableCell>
-									<TableCell><DeviceName device={msg.receiver}/></TableCell>
+									<TableCell><DeviceName device={msg.sender} /></TableCell>
+									<TableCell><DeviceName device={msg.receiver} /></TableCell>
 									<TableCell>
 										<Chip
 											color={MESSAGE_TYPE_COLORS[msg.type]}

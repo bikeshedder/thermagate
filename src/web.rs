@@ -22,6 +22,7 @@ use crate::{
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
         param::AnyValue,
+        params::PARAMS,
     },
     commands::gateway::Params,
     config::HttpConfig,
@@ -55,6 +56,7 @@ pub async fn run_server(config: &HttpConfig, params_data: Params, can: Arc<CanDr
     tokio::spawn(param_sender(params_data.tx.subscribe(), io.clone()));
 
     let app = Router::new() //
+        .route("/api/v1/master_data", get(get_master_data))
         .route("/api/v1/params", get(params))
         .route("/api/v1/can_monitor", get(can_monitor))
         .with_state(AppState {
@@ -173,6 +175,28 @@ async fn param_sender(mut rx: broadcast::Receiver<Arc<ParamUpdate>>, io: SocketI
     while let Ok(update) = rx.recv().await {
         warn_if_err(io.emit("param", &update), "io.emit(\"param\", ...) failed");
     }
+}
+
+#[derive(Debug, Serialize)]
+struct MasterData {
+    params: Vec<MasterDataParam>,
+}
+
+#[derive(Debug, Serialize)]
+struct MasterDataParam {
+    name: String,
+}
+
+async fn get_master_data(state: State<AppState>) -> impl IntoResponse {
+    let config = MasterData {
+        params: PARAMS
+            .values()
+            .map(|param| MasterDataParam {
+                name: param.name().into(),
+            })
+            .collect(),
+    };
+    Json(config)
 }
 
 async fn params(state: State<AppState>) -> impl IntoResponse {
