@@ -78,8 +78,11 @@ pub enum Device {
     G1 = 0x69d,
     /// This is the address used by the control panel when communicating with HC2
     RoCon2 = 0x69e,
-    /// This is the address used by this project
-    GW = 0x666,
+    /// This is the address used by this project. Experiments have shown that
+    /// only addresses in the range of 0x680 and 0x6ff are allowed to perform
+    /// any SET operations on other devices. This software uses 0x6fe as 0x6ff
+    /// is probably the broadcast address for this device category.
+    TG = 0x6fe,
     #[num_enum(catch_all)]
     Other(u16),
 }

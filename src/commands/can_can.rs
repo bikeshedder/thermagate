@@ -12,7 +12,7 @@ use crate::config::Config;
 
 pub fn get<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option<P::Value> {
     let req = Message {
-        sender: Device::GW,
+        sender: Device::TG,
         receiver: dev,
         param: param.id(),
         r#type: MessageType::Request,
@@ -27,7 +27,7 @@ pub fn get<P: DecodeParam>(socket: &CanSocket, dev: Device, param: &P) -> Option
         let Ok(msg) = Message::try_from(&data_frame) else {
             continue;
         };
-        if msg.receiver != Device::GW {
+        if msg.receiver != Device::TG {
             /*
             println!(
                 "{:02x?} {:20} {:02x?} {}",

@@ -24,7 +24,7 @@ const MenuProps = {
 const names = [
 	"RoCon",
 	"RoCon2",
-	"GW",
+	"TG",
 	"G1",
 	"HG1",
 	"HC1",

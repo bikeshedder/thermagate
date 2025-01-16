@@ -107,7 +107,7 @@ impl CanDriver {
     async fn get_raw(&self, dev: Device, param: &dyn Param) -> Result<ReceivedMessage, GetError> {
         let mut rx = self.rx();
         let req = Message {
-            sender: Device::GW,
+            sender: Device::TG,
             receiver: dev,
             param: param.id(),
             r#type: MessageType::Request,
@@ -119,7 +119,7 @@ impl CanDriver {
         })?;
         // FIXME add timeout
         while let Ok(msg) = rx.recv().await {
-            if msg.receiver != Device::GW {
+            if msg.receiver != Device::TG {
                 continue;
             }
             if msg.sender != req.receiver {
