@@ -25,9 +25,10 @@ import { CanMonitor } from "./routes/CanMonitor";
 import { createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Monitor, TableView, Tune } from "@suid/icons-material";
+import { CONFIG } from "./config";
 
 export default function App() {
-	const socket = io("ws://192.168.178.43:4000/");
+	const socket = io(CONFIG.WEBSOCKET_URL);
 	const [showDrawer, setShowDrawer] = createSignal<boolean>(false);
 	return (
 		<>
