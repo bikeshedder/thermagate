@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use thermagate::{
-    commands::{can_can, can_monitor, default_config, gateway},
+    commands::{can_can, can_monitor, default_config, gateway, set_param},
     config::Config,
 };
 use tracing::Level;
@@ -24,6 +24,7 @@ enum Command {
     CheckConfig,
     Gateway,
     CanCan,
+    SetParam(set_param::Args),
 }
 
 #[tokio::main]
@@ -48,5 +49,6 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Command::CheckConfig => Ok(()),
         Command::Gateway => gateway::cmd(config).await,
         Command::CanCan => can_can::cmd(config).await,
+        Command::SetParam(args) => set_param::cmd(config, args).await,
     }
 }

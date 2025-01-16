@@ -1,4 +1,7 @@
-use std::fmt::{self, Debug};
+use std::{
+    fmt::{self, Debug},
+    str::FromStr,
+};
 
 use rust_decimal::Decimal;
 use serde::Serialize;
@@ -165,6 +168,10 @@ pub trait Param: Sync + Debug {
         None
     }
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue>;
+    fn encode_str(&self, s: &str) -> Option<[u8; 2]> {
+        // FIXME remove this default implementation
+        todo!();
+    }
 }
 
 pub trait DecodeParam: Param {
@@ -325,6 +332,15 @@ impl Param for DecParam {
     fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
         self.decode(data).map(AnyValue::Dec)
     }
+    fn encode_str(&self, s: &str) -> Option<[u8; 2]> {
+        let mut dec = Decimal::from_str(s).unwrap();
+        if dec.scale() != self.scale {
+            panic!("Invalid scale");
+        }
+        dec.set_scale(0).unwrap();
+        let v: u16 = dec.try_into().unwrap();
+        Some([(v >> 8) as u8, (v >> 0) as u8])
+    }
 }
 
 impl DecodeParam for DecParam {
@@ -463,4 +479,12 @@ fn decode_i16(data: [u8; 2]) -> Option<i16> {
     } else {
         Some(v)
     }
+}
+
+#[test]
+fn test_decparam_encode_str() {
+    use super::params::MAX_FEED_TEMP;
+    assert_eq!(MAX_FEED_TEMP.encode_str("25.0"), Some([0x00, 0xFA]));
+    assert_eq!(MAX_FEED_TEMP.encode_str("25.5"), Some([0x00, 0xFF]));
+    assert_eq!(MAX_FEED_TEMP.encode_str("25.6"), Some([0x01, 0x00]));
 }

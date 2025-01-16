@@ -14,6 +14,7 @@ pub fn cmd() -> Result<()> {
     let doc = crate::csv::read("../data/params.csv")?;
 
     let mut stream = quote! {
+        use clap::ValueEnum;
         use rust_decimal_macros::dec;
         use serde::{Serialize, Deserialize};
         use super::{
@@ -289,6 +290,7 @@ fn gen_param_name_enum(params: &BTreeMap<String, Param>) -> TokenStream {
         let rename = param.name.to_shouty_snake_case();
         quote! {
             #[serde(rename=#rename)]
+            #[clap(name=#rename)]
             #name = #id
         }
     });
@@ -300,7 +302,7 @@ fn gen_param_name_enum(params: &BTreeMap<String, Param>) -> TokenStream {
         }
     });
     quote! {
-        #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+        #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize, ValueEnum)]
         #[repr(u16)]
         pub enum ParamName {
             #( #variants ),*
