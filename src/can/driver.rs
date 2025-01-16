@@ -35,7 +35,7 @@ pub struct CanDriver {
     // FIXME add accessor for this status so that borrowing
     // the driver mutable doesn't render this inaccessable.
     state_rx: watch::Receiver<BusState>,
-    send_tx: mpsc::Sender<Message>,
+    send_tx: mpsc::Sender<SendMsg>,
 }
 
 struct EventLoop {
@@ -43,15 +43,21 @@ struct EventLoop {
     keep_running: AtomicBool,
     tx: broadcast::Sender<ReceivedMessage>,
     bus_state: watch::Sender<BusState>,
-    send_rx: Mutex<mpsc::Receiver<Message>>,
+    send_rx: Mutex<mpsc::Receiver<SendMsg>>,
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, Eq, PartialEq)]
 pub enum BusState {
     Connecting,
     Connected,
     Error(String),
     Disconnected,
+    Shutdown,
+}
+
+enum SendMsg {
+    Message(Message),
+    Shutdown,
 }
 
 #[derive(Clone)]
@@ -82,11 +88,20 @@ impl CanDriver {
     pub fn rx(&self) -> broadcast::Receiver<ReceivedMessage> {
         self.tx.subscribe()
     }
-    pub fn status(&self) -> BusState {
+    pub fn state(&self) -> BusState {
         self.state_rx.borrow().clone()
     }
+    pub async fn wait_for_state(&self, state: BusState) {
+        let _ = self.state_rx.clone().wait_for(|s| *s == state).await;
+    }
     pub fn send(&self, msg: Message) -> Result<(), TrySendError<Message>> {
-        self.send_tx.try_send(msg)
+        self.send_tx
+            .try_send(SendMsg::Message(msg))
+            .map_err(|e| match e {
+                TrySendError::Full(SendMsg::Message(m)) => TrySendError::Full(m),
+                TrySendError::Closed(SendMsg::Message(m)) => TrySendError::Closed(m),
+                _ => unreachable!(),
+            })
     }
     pub async fn get<P: DecodeParam>(
         &self,
@@ -132,6 +147,10 @@ impl CanDriver {
         }
         unreachable!()
     }
+    pub async fn shutdown(&self) {
+        let _ = self.send_tx.send(SendMsg::Shutdown).await;
+        self.wait_for_state(BusState::Shutdown).await;
+    }
 }
 
 #[derive(Error, Debug)]
@@ -156,11 +175,20 @@ impl EventLoop {
                             }
                         },
                         res = self.sender(sink) => {
-                            if let Err(e) = res {
-                                warn!("CAN bus send error: {e:?}");
+                            match res {
+                                Ok(_) => {
+                                    // The sender task only returns when the user
+                                    // has requested a shutdown and all messages until
+                                    // this point have been sent.
+                                    break;
+                                }
+                                Err(e) => {
+                                    warn!("CAN bus send error: {e:?}");
+                                }
                             }
                         },
                     }
+                    self.bus_state.send_replace(BusState::Disconnected);
                 }
                 Err(e) => {
                     if self.keep_running.load(Ordering::Relaxed) {
@@ -175,7 +203,7 @@ impl EventLoop {
                 }
             }
         }
-        self.bus_state.send_replace(BusState::Disconnected);
+        self.bus_state.send_replace(BusState::Shutdown);
     }
     pub async fn receiver(&self, mut socket: SplitStream<CanSocket>) -> Result<(), CanError> {
         while let Some(Ok(frame)) = socket.next().await {
@@ -201,9 +229,14 @@ impl EventLoop {
             .try_lock()
             .expect("Multiple sender tasks running");
         while let Some(message) = send_rx.recv().await {
-            socket
-                .send(CanFrame::Data(CanDataFrame::from(message)))
-                .await?;
+            match message {
+                SendMsg::Message(message) => {
+                    socket
+                        .send(CanFrame::Data(CanDataFrame::from(message)))
+                        .await?
+                }
+                SendMsg::Shutdown => break,
+            }
         }
         Ok(())
     }
