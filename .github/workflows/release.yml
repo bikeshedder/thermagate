@@ -40,13 +40,14 @@ jobs:
         with:
           name: frontend
           path: frontend/dist
-      - run: rustup install 1.82
-      - run: rustup default 1.82
+      - run: rustup install 1.84
+      - run: rustup default 1.84
       - run: cargo build --release
+      - run: mv target/release/thermagate thermagate-amd64
       - uses: actions/upload-artifact@v4
         with:
           name: thermagate-amd64
-          path: target/release/thermagate
+          path: thermagate-amd64
 
   build-armv7:
     name: Build ARMv7 binary
@@ -58,14 +59,15 @@ jobs:
         with:
           name: frontend
           path: frontend/dist
-      - run: rustup install 1.82
-      - run: rustup default 1.82
+      - run: rustup install 1.84
+      - run: rustup default 1.84
       - run: cargo install cross
       - run: cross build --release --target armv7-unknown-linux-musleabihf
+      - run: mv target/armv7-unknown-linux-musleabihf/release/thermagate thermagate-armv7
       - uses: actions/upload-artifact@v4
         with:
           name: thermagate-armv7
-          path: target/armv7-unknown-linux-musleabihf/release/thermagate
+          path: thermagate-armv7
 
   release:
     name: "Create release"
@@ -75,19 +77,21 @@ jobs:
     runs-on: "ubuntu-24.04"
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            README.md
+            CHANGELOG.md
+            COPYING
       - uses: actions/download-artifact@v4
         with:
           pattern: thermagate-*
+          merge-multiple: true
       - run: tree
-      - run: mv thermagate-amd64/thermagate thermagate-armv7/thermagate-amd64
-      - run: mv thermagate-armv7/thermagate thermagate-armv7/thermagate-armv7
+      - run: echo tag_name=${{ github.ref == 'refs/heads/main' && 'latest' || github.ref_name }}
+      - run: echo prerelease=${{ github.ref == 'refs/heads/main' }}
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref == 'refs/heads/main' && 'latest' || github.ref_name }}
           prerelease: ${{ github.ref == 'refs/heads/main' }}
-          files: |
-            "thermagate-*/thermagate-*"
-            README.md
-            CHANGELOG.md
-            COPYING
+          files: "*"
