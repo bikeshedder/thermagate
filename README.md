@@ -20,17 +20,7 @@ While this software is useful on its own it really shines when combined with a M
 
 ## Installation instructions
 
-As of now no binary release exists, yet. You need to build the code yourself:
-
-1. Clone this repository
-2. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
-3. Run `cargo build --release` to build the binary or `cargo run` to run command directly.
-
-If you do want to build on your local workstation and just create a binary that can be run on a Raspberry PI or similar device you can also use [`cross`](https://crates.io/crates/cross) for cross compiling the binary.
-
-1. `cargo install cross`
-2. `cross build --release --target armv7-unknown-linux-musleabihf`
-3. Copy the binary `target/armv7-unknown-linux-musleabihf/release/thermagate` to the target device.
+A GitHub action takes care of building binaries for both Linux AMD64 and Linux ARMv7. You can find the releases in the [Releases](https://github.com/bikeshedder/thermagate/releases) section of this project.
 
 ## Configuration file
 
@@ -51,6 +41,20 @@ Please see [ROTEX RoCon G1 Gateway](./docs/ROTEX_RoCon_G1_Gateway.md) on how to 
 While the gateway software can be installed parallel to the existing gateway software I highly recommend replacing the system entirely for reasons outlined in the document.
 
 If you want to keep the existing gateway software for future reference you can also open the BeagleBone Black case and replace the SD card. This is also an option if some future update provided by Daikin disables the login shell or changes the password of the root user.
+
+## Building from source
+
+As of now no binary release exists, yet. You need to build the code yourself:
+
+1. Clone this repository
+2. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
+3. Run `cargo build --release` to build the binary or `cargo run` to run command directly.
+
+If you do want to build on your local workstation and just create a binary that can be run on a Raspberry PI or similar device you can also use [`cross`](https://crates.io/crates/cross) for cross compiling the binary.
+
+1. `cargo install cross`
+2. `cross build --release --target armv7-unknown-linux-musleabihf`
+3. Copy the binary `target/armv7-unknown-linux-musleabihf/release/thermagate` to the target device.
 
 ## Raspberry PI 4 configuration
 
