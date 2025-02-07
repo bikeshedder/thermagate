@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/devcontainers/base:debian-12
 #RUN userdel ubuntu && usermod -u 1000 vscode
 
-ARG NODE_VERSION=20.16.0
-ARG RUST_VERSION=1.80.0
+ARG NODE_VERSION=22.13.1
+ARG RUST_VERSION=1.84.1
 
 # Add extra APT repositories
 #COPY apt/ /etc/apt/

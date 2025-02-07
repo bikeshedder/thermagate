@@ -165,7 +165,8 @@ async fn can_sender(mut rx: broadcast::Receiver<ReceivedMessage>, io: SocketIo) 
                         None
                     },
                 },
-            ),
+            )
+            .await,
             "io.emit(\"can\", ...) failed",
         );
     }
@@ -173,7 +174,10 @@ async fn can_sender(mut rx: broadcast::Receiver<ReceivedMessage>, io: SocketIo) 
 
 async fn param_sender(mut rx: broadcast::Receiver<Arc<ParamUpdate>>, io: SocketIo) {
     while let Ok(update) = rx.recv().await {
-        warn_if_err(io.emit("param", &update), "io.emit(\"param\", ...) failed");
+        warn_if_err(
+            io.emit("param", &update).await,
+            "io.emit(\"param\", ...) failed",
+        );
     }
 }
 
