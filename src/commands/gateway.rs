@@ -22,6 +22,7 @@ use crate::{
     hass::make_hass_sensor,
     utils::warn_if_err,
     web::{run_server, ParamUpdate},
+    RECONNECT_DELAY,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -52,8 +53,14 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
         config.mqtt.clone(),
     ));
     tokio::spawn(async move {
-        while let Ok(ev) = mqtt_event_loop.poll().await {
-            debug!("{:?}", ev);
+        loop {
+            match mqtt_event_loop.poll().await {
+                Ok(ev) => debug!("{:?}", ev),
+                Err(e) => {
+                    warn!("MQTT error: {:?}", e);
+                    tokio::time::sleep(RECONNECT_DELAY).await;
+                }
+            }
         }
     });
     tokio::spawn(query_params(config.query.clone(), can.clone()));

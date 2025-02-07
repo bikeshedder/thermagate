@@ -1,7 +1,6 @@
 use std::{
     ops::Deref,
     sync::atomic::{AtomicBool, Ordering},
-    time::Duration,
 };
 
 use futures_util::{
@@ -21,7 +20,10 @@ use tokio::{
 };
 use tracing::warn;
 
-use crate::can::{device::Device, message::MessageType};
+use crate::{
+    can::{device::Device, message::MessageType},
+    RECONNECT_DELAY,
+};
 
 use super::{
     message::Message,
@@ -196,7 +198,8 @@ impl EventLoop {
                             format!("Could not open CAN bus device {}: {}", self.device, e);
                         warn!("{message}");
                         self.bus_state.send_replace(BusState::Error(message));
-                        sleep(Duration::from_secs(5)).await;
+
+                        sleep(RECONNECT_DELAY).await;
                     } else {
                         return;
                     }
