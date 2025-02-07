@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Automatic reconnect to MQTT broker.
 
+### Removed
+
+- Obsolete `can-can` command.
+
 ## [0.1.0] - 2025-01-17
 
 ### Added
