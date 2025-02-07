@@ -63,9 +63,9 @@ pub fn make_hass_sensor(
     b.build().unwrap()
 }
 
-pub fn make_hass_select<T: Enum>(device: CanDevice, param: &Enum16Param<T>) -> Select
+pub fn make_hass_select<T>(device: CanDevice, param: &Enum16Param<T>) -> Select
 where
-    T: From<i16> + Into<&'static str> + Sync,
+    T: Enum + From<i16> + Into<&'static str> + Sync,
 {
     let mut b = Select::builder();
     b.unique_id(format!(

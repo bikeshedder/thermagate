@@ -339,7 +339,7 @@ impl Param for DecParam {
         }
         dec.set_scale(0).unwrap();
         let v: u16 = dec.try_into().unwrap();
-        Some([(v >> 8) as u8, (v >> 0) as u8])
+        Some([(v >> 8) as u8, v as u8])
     }
 }
 
