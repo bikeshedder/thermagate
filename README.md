@@ -47,8 +47,10 @@ If you want to keep the existing gateway software for future reference you can a
 If you don't want to use the [binary release](https://github.com/bikeshedder/thermagate/releases) you can also build the code yourself:
 
 1. Clone this repository
-2. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
-3. Run `cargo build --release` to build the binary or `cargo run` to run command directly.
+2. Install [NodeJS](https://nodejs.org/) 22 LTS or newer.
+3. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
+4. Run `npm ci` and `npm run build` from inside the `frontend` directory.
+5. Run `cargo build --release` to build the binary or `cargo run` to run the code directly.
 
 If you do want to build on your local workstation and just create a binary that can be run on a Raspberry PI or similar device you can also use [`cross`](https://crates.io/crates/cross) for cross compiling the binary.
 
