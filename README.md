@@ -44,7 +44,7 @@ If you want to keep the existing gateway software for future reference you can a
 
 ## Building from source
 
-As of now no binary release exists, yet. You need to build the code yourself:
+If you don't want to use the [binary release](https://github.com/bikeshedder/thermagate/releases) you can also build the code yourself:
 
 1. Clone this repository
 2. Install Rust following the [installation instructions](https://www.rust-lang.org/learn/get-started) from rust-lang.org.
