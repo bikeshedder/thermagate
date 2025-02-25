@@ -4,14 +4,18 @@
 
 use enums_csv::read_enums;
 use error::CatalogError;
-use include_dir::include_dir;
 use param::Param;
 use params_csv::read_params;
+use rust_embed::Embed;
 
 pub mod enums_csv;
 pub mod error;
 pub mod param;
 pub mod params_csv;
+
+#[derive(Embed)]
+#[folder = "data"]
+pub struct Data;
 
 pub struct Catalog {
     pub params: Vec<Param>,
@@ -20,18 +24,15 @@ pub struct Catalog {
 impl Catalog {
     pub fn load() -> Result<Self, CatalogError> {
         // FIXME add support for loading catalog from disk
-        let data_dir = include_dir!("data");
         let enums = read_enums(
-            data_dir
-                .get_file("enums.csv")
+            &*Data::get("enums.csv")
                 .expect("File not found data/enums.csv")
-                .contents(),
+                .data,
         )?;
         let params = read_params(
-            data_dir
-                .get_file("params.csv")
+            &*Data::get("params.csv")
                 .expect("File not found: data/params.csv")
-                .contents(),
+                .data,
             enums,
         )?;
         Ok(Self { params })
