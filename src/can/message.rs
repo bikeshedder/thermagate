@@ -5,11 +5,9 @@ use serde::{Deserialize, Serialize};
 use socketcan::{CanDataFrame, EmbeddedFrame, Frame, StandardId};
 use thiserror::Error;
 
-use super::{
-    device::Device,
-    param::{AnyValue, Param},
-    params::PARAMS,
-};
+use crate::model::value::Value;
+
+use super::{device::Device, param::Param, params::PARAMS};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Message {
@@ -83,7 +81,7 @@ impl Message {
         data[6] = self.data[1];
         data
     }
-    pub fn decode_param(&self) -> Option<(&'static dyn Param, Option<AnyValue>)> {
+    pub fn decode_param(&self) -> Option<(&'static dyn Param, Option<Value>)> {
         PARAMS
             .get(&self.param)
             .map(|&p| (p, p.decode_any(self.data)))

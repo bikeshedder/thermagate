@@ -1,5 +1,8 @@
-use super::param::MultilingualStr;
-use super::r#enum::{Enum, EnumVariant};
+use crate::model::{
+    r#enum::{Enum, EnumVariant},
+    string::MultilingualStr,
+};
+
 use num_enum::FromPrimitive;
 #[derive(Debug, FromPrimitive, strum::Display, strum::IntoStaticStr)]
 #[repr(i16)]

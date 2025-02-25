@@ -16,10 +16,10 @@ use crate::{
     can::{
         driver::{CanDriver, GetError, ReceivedMessage},
         message::MessageType,
-        param::{AnyValue, Unit},
     },
     config::{Config, QueryConfig},
     hass::make_hass_sensor,
+    model::{unit::Unit, value::Value},
     utils::warn_if_err,
     web::{run_server, ParamUpdate},
     RECONNECT_DELAY,
@@ -28,7 +28,7 @@ use crate::{
 #[derive(Debug, Clone, Serialize)]
 pub enum Param {
     Loading,
-    Value(Option<AnyValue>),
+    Value(Option<Value>),
 }
 
 #[derive(Clone)]
@@ -107,18 +107,18 @@ async fn recv_params(
         }
         let mqtt_value = if let Some(value) = &value {
             match (&value, param.unit()) {
-                (AnyValue::Bool(b), _) => json!(b),
-                (AnyValue::I8(v), _) => json!(v),
-                (AnyValue::I16(v), _) => json!(v),
-                (AnyValue::Dec(v), Some(Unit::LitersPerHour)) => {
+                (Value::Bool(b), _) => json!(b),
+                (Value::I8(v), _) => json!(v),
+                (Value::I16(v), _) => json!(v),
+                (Value::Dec(v), Some(Unit::LitersPerHour)) => {
                     // Convert liters per hour to cubic meters per hour
                     json!(v.to_f64().map(|v| v / 1000f64))
                 }
-                (AnyValue::Dec(v), _) => json!(v.to_f64()),
-                (AnyValue::Enum8(_, n), _) => json!(n),
-                (AnyValue::Enum16(_, n), _) => json!(n),
-                (AnyValue::TimeRange(v), _) => json!(v.to_string()),
-                (AnyValue::Time(v), _) => json!(v.to_string()),
+                (Value::Dec(v), _) => json!(v.to_f64()),
+                (Value::Enum8(_, n), _) => json!(n),
+                (Value::Enum16(_, n), _) => json!(n),
+                (Value::TimeRange(v), _) => json!(v.to_string()),
+                (Value::Time(v), _) => json!(v.to_string()),
             }
         } else {
             json!(null)

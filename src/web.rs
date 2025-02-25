@@ -21,11 +21,11 @@ use crate::{
         self,
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
-        param::AnyValue,
         params::PARAMS,
     },
     commands::gateway::Params,
     config::HttpConfig,
+    model::value::Value,
     utils::warn_if_err,
 };
 
@@ -134,7 +134,7 @@ struct CanMessage<'a> {
     receiver: Device,
     r#type: MessageType,
     param: CanParam,
-    value: Option<AnyValue>,
+    value: Option<Value>,
 }
 
 #[derive(Debug, Serialize)]

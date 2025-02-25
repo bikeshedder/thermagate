@@ -3,10 +3,12 @@ use nrg_hass::models::{
     unit::UnitOfMeasurement,
 };
 
-use crate::can::{
-    device::Device as CanDevice,
-    param::{BoolParam, Enum16Param, Param as CanParam, Unit as CanUnit},
-    r#enum::Enum,
+use crate::{
+    can::{
+        device::Device as CanDevice,
+        param::{BoolParam, Enum16Param, Param as CanParam},
+    },
+    model::{r#enum::Enum, unit::Unit},
 };
 
 pub fn make_hass_sensor(
@@ -37,27 +39,27 @@ pub fn make_hass_sensor(
     ));
     if let Some(unit) = param.unit() {
         match unit {
-            CanUnit::DegCelsius => b
+            Unit::DegCelsius => b
                 .device_class(DeviceClass::Temperature)
                 .unit_of_measurement(UnitOfMeasurement::TempCelsius),
-            CanUnit::Kelvin => b
+            Unit::Kelvin => b
                 .device_class(DeviceClass::Temperature)
                 .unit_of_measurement(UnitOfMeasurement::TempKelvin),
-            CanUnit::KiloWatt => b
+            Unit::KiloWatt => b
                 .device_class(DeviceClass::Power)
                 .unit_of_measurement(UnitOfMeasurement::KiloWatt),
-            CanUnit::KiloWattHours => b
+            Unit::KiloWattHours => b
                 .device_class(DeviceClass::Energy)
                 .unit_of_measurement(UnitOfMeasurement::KiloWattHours),
-            CanUnit::LitersPerHour => b.unit_of_measurement(UnitOfMeasurement::CubicMetersPerHour),
-            CanUnit::Bar => b
+            Unit::LitersPerHour => b.unit_of_measurement(UnitOfMeasurement::CubicMetersPerHour),
+            Unit::Bar => b
                 .device_class(DeviceClass::Pressure)
                 .unit_of_measurement(UnitOfMeasurement::Bar),
-            CanUnit::Hours => b.unit_of_measurement(UnitOfMeasurement::Hours),
-            CanUnit::Percent => b.unit_of_measurement(UnitOfMeasurement::Percentage),
-            CanUnit::Ampere => b.unit_of_measurement(UnitOfMeasurement::Ampere),
-            CanUnit::Minutes => b.unit_of_measurement(UnitOfMeasurement::Minutes),
-            CanUnit::Seconds => b.unit_of_measurement(UnitOfMeasurement::Seconds),
+            Unit::Hours => b.unit_of_measurement(UnitOfMeasurement::Hours),
+            Unit::Percent => b.unit_of_measurement(UnitOfMeasurement::Percentage),
+            Unit::Ampere => b.unit_of_measurement(UnitOfMeasurement::Ampere),
+            Unit::Minutes => b.unit_of_measurement(UnitOfMeasurement::Minutes),
+            Unit::Seconds => b.unit_of_measurement(UnitOfMeasurement::Seconds),
         };
     }
     b.build().unwrap()
