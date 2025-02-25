@@ -40,8 +40,8 @@ jobs:
         with:
           name: frontend
           path: frontend/dist
-      - run: rustup install 1.84
-      - run: rustup default 1.84
+      - run: rustup install 1.85
+      - run: rustup default 1.85
       - run: cargo build --release
       - run: mv target/release/thermagate thermagate-amd64
       - uses: actions/upload-artifact@v4
@@ -59,8 +59,8 @@ jobs:
         with:
           name: frontend
           path: frontend/dist
-      - run: rustup install 1.84
-      - run: rustup default 1.84
+      - run: rustup install 1.85
+      - run: rustup default 1.85
       - run: cargo install cross
       - run: cross build --release --target armv7-unknown-linux-musleabihf
       - run: mv target/armv7-unknown-linux-musleabihf/release/thermagate thermagate-armv7
