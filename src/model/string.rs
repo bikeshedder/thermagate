@@ -1,5 +1,7 @@
-#[derive(Debug, Clone, Default)]
+use internment::Intern;
+
+#[derive(Debug, Clone)]
 pub struct MultilingualString {
-    pub de: String,
-    pub en: String,
+    pub de: Intern<String>,
+    pub en: Intern<String>,
 }

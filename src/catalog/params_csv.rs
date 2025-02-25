@@ -5,16 +5,17 @@ use num_traits::Num;
 use serde::{de, Deserialize, Deserializer};
 
 use crate::{
-    can::param::CanParam,
-    catalog::param::{EnumParam, I16Param, I8Param, TimeParam, TimeRangeParam},
-    model::{r#enum::EnumVariant, string::MultilingualString, unit::Unit, value::Value},
+    catalog::{
+        param::{EnumParam, I16Param, I8Param, TimeParam, TimeRangeParam},
+        Catalog,
+    },
+    model::{r#enum::EnumVariant, string::MultilingualString, unit::Unit},
 };
 
 use super::{
     enums_csv::EnumsCsv,
     error::CatalogError,
     param::{BoolParam, DecParam, Param, ParamType},
-    Catalog,
 };
 
 #[derive(Debug, serde::Deserialize)]
@@ -68,10 +69,10 @@ pub fn read_params(reader: impl Read, enums: EnumsCsv) -> Result<Vec<Param>, Cat
         let param = Param {
             // FIXME proper error handling
             id: parse_id(&row.id),
-            name: row.name,
+            name: row.name.into(),
             label: MultilingualString {
-                de: row.label_de,
-                en: row.label_en,
+                de: row.label_de.into(),
+                en: row.label_en.into(),
             },
             r#type: type_from_parts(
                 row.r#type,
@@ -262,37 +263,44 @@ fn get_default_enum_value<T: Clone>(
     }
     variants
         .iter()
-        .find(|v| v.code == code)
+        .find(|v| &*v.code == code)
         .ok_or_else(|| CatalogError::UnknownEnumVariant(code.to_owned()))
         .map(|v| Some(v.clone()))
 }
 
-#[test]
-fn test_enum8_decode() {
-    let catalog = Catalog::load().unwrap();
-    let param = catalog.param_by_name("operating_mode").unwrap();
-    assert_eq!(
-        param.decode([1, 0]),
-        Some(Value::Enum8(1, Some("Standby".into()))),
-    );
-    assert_eq!(
-        param.decode([11, 0]),
-        Some(Value::Enum8(11, Some("Auto1".into()))),
-    );
-    assert_eq!(param.decode([99, 0]), Some(Value::Enum8(99, None)),);
-}
+#[cfg(test)]
+mod tests {
+    use crate::can::param::CanParam;
+    use crate::catalog::Catalog;
+    use crate::model::value::Value;
 
-#[test]
-fn test_enum16_decode() {
-    let catalog = Catalog::load().unwrap();
-    let param = catalog.param_by_name("mode").unwrap();
-    assert_eq!(
-        param.decode([0, 0]),
-        Some(Value::Enum16(0, Some("NoRequest".into()))),
-    );
-    assert_eq!(
-        param.decode([0, 1]),
-        Some(Value::Enum16(1, Some("Heating".into()))),
-    );
-    assert_eq!(param.decode([0, 99]), Some(Value::Enum16(99, None)),);
+    #[test]
+    fn test_enum8_decode() {
+        let catalog = Catalog::load().unwrap();
+        let param = catalog.param_by_name("operating_mode").unwrap();
+        assert_eq!(
+            param.decode([1, 0]),
+            Some(Value::Enum8(1, Some(String::from("Standby").into()))),
+        );
+        assert_eq!(
+            param.decode([11, 0]),
+            Some(Value::Enum8(11, Some(String::from("Auto1").into()))),
+        );
+        assert_eq!(param.decode([99, 0]), Some(Value::Enum8(99, None)),);
+    }
+
+    #[test]
+    fn test_enum16_decode() {
+        let catalog = Catalog::load().unwrap();
+        let param = catalog.param_by_name("mode").unwrap();
+        assert_eq!(
+            param.decode([0, 0]),
+            Some(Value::Enum16(0, Some(String::from("NoRequest").into()))),
+        );
+        assert_eq!(
+            param.decode([0, 1]),
+            Some(Value::Enum16(1, Some(String::from("Heating").into()))),
+        );
+        assert_eq!(param.decode([0, 99]), Some(Value::Enum16(99, None)),);
+    }
 }

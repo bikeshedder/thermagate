@@ -3,6 +3,7 @@ use std::{
     sync::Arc,
 };
 
+use internment::Intern;
 use nrg_hass::{config::HomeAssistantConfig, discovery::announce, state::publish_state};
 use nrg_mqtt::config::MqttConfig;
 use num_traits::ToPrimitive;
@@ -34,7 +35,7 @@ pub enum Param {
 
 #[derive(Clone)]
 pub struct Params {
-    pub values: Arc<Mutex<HashMap<String, HashMap<String, Param>>>>,
+    pub values: Arc<Mutex<HashMap<String, HashMap<Intern<String>, Param>>>>,
     pub tx: broadcast::Sender<Arc<ParamUpdate>>,
 }
 
@@ -147,7 +148,7 @@ async fn recv_params(
                     .await
                     .entry(message.receiver.to_string())
                     .or_default()
-                    .entry(param.name.clone())
+                    .entry(param.name)
                 {
                     e.insert(Param::Loading);
                     let sensor = make_hass_sensor(
@@ -169,7 +170,7 @@ async fn recv_params(
                     .await
                     .entry(message.sender.to_string())
                     .or_default()
-                    .insert(param.name.clone(), Param::Value(value.clone()));
+                    .insert(param.name, Param::Value(value.clone()));
                 let sensor = make_hass_sensor(
                     message.sender,
                     param,

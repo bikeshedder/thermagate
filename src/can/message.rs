@@ -259,7 +259,7 @@ mod tests {
         let catalog = Catalog::load().unwrap();
         assert_eq!(
             msg.decode_param(&catalog).unwrap().1,
-            Some(Value::Enum8(11, Some("Auto1".into())))
+            Some(Value::Enum8(11, Some(String::from("Auto1").into())))
         );
     }
 }
