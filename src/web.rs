@@ -7,6 +7,7 @@ use axum::{
     routing::get,
     Json, Router,
 };
+use internment::Intern;
 use rust_embed::Embed;
 use serde::Serialize;
 use socketcan::EmbeddedFrame;
@@ -116,20 +117,20 @@ impl From<can::device::Device> for Device {
 #[derive(Serialize)]
 pub struct CanParam {
     pub id: u16,
-    pub name: Option<String>,
+    pub name: Option<Intern<String>>,
 }
 
 #[derive(Debug, Serialize)]
 pub struct Param {
     pub id: u16,
-    pub name: String,
+    pub name: Intern<String>,
 }
 
 impl From<&CatalogParam> for Param {
     fn from(value: &CatalogParam) -> Self {
         Self {
             id: value.id,
-            name: value.name.clone(),
+            name: value.name,
         }
     }
 }
@@ -168,7 +169,7 @@ async fn can_sender(
                     r#type: msg.r#type,
                     param: CanParam {
                         id: msg.param,
-                        name: p_v.as_ref().map(|(p, _)| p.name.clone()),
+                        name: p_v.as_ref().map(|(p, _)| p.name),
                     },
                     value: if matches!(msg.r#type, MessageType::Response | MessageType::Set) {
                         p_v.and_then(|(_, v)| v)
@@ -199,7 +200,7 @@ struct MasterData {
 
 #[derive(Debug, Serialize)]
 struct MasterDataParam {
-    name: String,
+    name: Intern<String>,
 }
 
 async fn get_master_data(state: State<AppState>) -> impl IntoResponse {
@@ -209,9 +210,7 @@ async fn get_master_data(state: State<AppState>) -> impl IntoResponse {
             .catalog
             .params
             .iter()
-            .map(|param| MasterDataParam {
-                name: param.name.clone(),
-            })
+            .map(|param| MasterDataParam { name: param.name })
             .collect(),
     };
     Json(config)

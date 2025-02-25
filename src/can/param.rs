@@ -3,12 +3,9 @@ use std::str::FromStr;
 use rust_decimal::Decimal;
 
 use crate::{
-    catalog::{
-        param::{
-            BoolParam, DecParam, EnumParam, I16Param, I8Param, Param, ParamType, TimeParam,
-            TimeRangeParam,
-        },
-        Catalog,
+    catalog::param::{
+        BoolParam, DecParam, EnumParam, I16Param, I8Param, Param, ParamType, TimeParam,
+        TimeRangeParam,
     },
     model::{time::Time, time_range::TimeRange, value::Value},
 };
@@ -90,7 +87,7 @@ impl CanParam for EnumParam<u8> {
             .variants
             .iter()
             .find(|v| v.value == value)
-            .map(|v| v.code.clone());
+            .map(|v| v.code);
         Some(Value::Enum8(value, code))
     }
 }
@@ -152,11 +149,17 @@ fn decode_u16(data: [u8; 2]) -> u16 {
     ((data[0] as u16) << 8) + (data[1] as u16)
 }
 
-#[test]
-fn test_decparam_encode_str() {
-    let catalog = Catalog::load().unwrap();
-    let param = catalog.param_by_name("max_feed_temp").unwrap();
-    assert_eq!(param.encode_str("25.0"), Some([0x00, 0xFA]));
-    assert_eq!(param.encode_str("25.5"), Some([0x00, 0xFF]));
-    assert_eq!(param.encode_str("25.6"), Some([0x01, 0x00]));
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::catalog::Catalog;
+
+    #[test]
+    fn test_decparam_encode_str() {
+        let catalog = Catalog::load().unwrap();
+        let param = catalog.param_by_name("max_feed_temp").unwrap();
+        assert_eq!(param.encode_str("25.0"), Some([0x00, 0xFA]));
+        assert_eq!(param.encode_str("25.5"), Some([0x00, 0xFF]));
+        assert_eq!(param.encode_str("25.6"), Some([0x01, 0x00]));
+    }
 }

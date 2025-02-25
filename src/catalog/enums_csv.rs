@@ -1,5 +1,6 @@
 use std::{collections::HashMap, io};
 
+use internment::Intern;
 use serde::Deserialize;
 
 use crate::model::{r#enum::EnumVariant, string::MultilingualString};
@@ -18,11 +19,11 @@ pub struct Row {
 impl Into<EnumVariant<u16>> for Row {
     fn into(self) -> EnumVariant<u16> {
         EnumVariant {
-            code: self.code,
+            code: self.code.into(),
             value: self.value,
             label: MultilingualString {
-                de: self.label_de,
-                en: self.label_en,
+                de: Intern::new(self.label_de),
+                en: Intern::new(self.label_en),
             },
         }
     }
@@ -32,14 +33,14 @@ impl TryInto<EnumVariant<u8>> for Row {
     type Error = CatalogError;
     fn try_into(self) -> Result<EnumVariant<u8>, Self::Error> {
         Ok(EnumVariant {
-            code: self.code,
+            code: self.code.into(),
             value: self
                 .value
                 .try_into()
                 .map_err(|_| CatalogError::InvalidEnum8Value(self.value))?,
             label: MultilingualString {
-                de: self.label_de,
-                en: self.label_en,
+                de: Intern::new(self.label_de),
+                en: Intern::new(self.label_en),
             },
         })
     }

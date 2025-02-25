@@ -60,8 +60,8 @@ pub fn make_hass_sensor(
 
 pub fn make_hass_select(device: CanDevice, param: &Param) -> Option<Select> {
     let options: Vec<String> = match &param.r#type {
-        ParamType::Enum8(p) => p.variants.iter().map(|v| v.code.clone()).collect(),
-        ParamType::Enum16(p) => p.variants.iter().map(|v| v.code.clone()).collect(),
+        ParamType::Enum8(p) => p.variants.iter().map(|v| (*v.code).clone()).collect(),
+        ParamType::Enum16(p) => p.variants.iter().map(|v| (*v.code).clone()).collect(),
         _ => return None,
     };
     let mut b = Select::builder();

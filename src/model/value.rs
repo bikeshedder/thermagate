@@ -1,5 +1,6 @@
 use std::fmt;
 
+use internment::Intern;
 use rust_decimal::Decimal;
 use serde::Serialize;
 
@@ -11,8 +12,8 @@ pub enum Value {
     I8(i8),
     I16(i16),
     Dec(Decimal),
-    Enum8(u8, Option<String>),
-    Enum16(u16, Option<String>),
+    Enum8(u8, Option<Intern<String>>),
+    Enum16(u16, Option<Intern<String>>),
     TimeRange(TimeRange),
     Time(Time),
 }

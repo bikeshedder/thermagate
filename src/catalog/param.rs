@@ -1,3 +1,4 @@
+use internment::Intern;
 use rust_decimal::Decimal;
 
 use crate::model::{
@@ -7,7 +8,7 @@ use crate::model::{
 #[derive(Debug)]
 pub struct Param {
     pub id: u16,
-    pub name: String,
+    pub name: Intern<String>,
     pub label: MultilingualString,
     pub read: bool,
     pub write: bool,
