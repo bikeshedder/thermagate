@@ -1,8 +1,10 @@
+use crate::model::{string::MultilingualStr, time::Time, time_range::TimeRange, unit::Unit};
+
 use super::{
     enums,
     param::{
-        BoolParam, DecParam, Enum16Param, Enum8Param, I16Param, I8Param, MultilingualStr, Param,
-        Time, TimeParam, TimeRange, TimeRangeParam, Unit,
+        BoolParam, DecParam, Enum16Param, Enum8Param, I16Param, I8Param, Param, TimeParam,
+        TimeRangeParam,
     },
 };
 use clap::ValueEnum;

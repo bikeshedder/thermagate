@@ -1,13 +1,15 @@
-use std::{
-    fmt::{self, Debug},
-    str::FromStr,
-};
+use std::{fmt::Debug, str::FromStr};
 
 use rust_decimal::Decimal;
-use serde::Serialize;
-use strum::EnumMessage;
 
-use super::r#enum::{Enum, EnumVariant};
+use crate::model::{
+    r#enum::{Enum, EnumVariant},
+    string::MultilingualStr,
+    time::Time,
+    time_range::TimeRange,
+    unit::Unit,
+    value::Value,
+};
 
 #[derive(Debug, Default)]
 pub struct BoolParam {
@@ -89,46 +91,6 @@ pub struct TimeParam {
     pub default: Option<Time>,
 }
 
-#[derive(Debug, Clone, Serialize)]
-pub struct Time {
-    hour: u8,
-    minute: u8,
-}
-
-impl Time {
-    pub const fn new(hour: u8, minute: u8) -> Option<Self> {
-        if hour > 24 {
-            return None;
-        }
-        if !matches!(minute, 0 | 15 | 30 | 45) {
-            return None;
-        }
-        if hour == 24 && minute != 0 {
-            return None;
-        }
-        Some(Self { hour, minute })
-    }
-    #[track_caller]
-    pub const fn new_const(hour: u8, minute: u8) -> Self {
-        match Self::new(hour, minute) {
-            Some(time) => time,
-            None => panic!("Invalid time"),
-        }
-    }
-    pub fn hour(&self) -> u8 {
-        self.hour
-    }
-    pub fn minute(&self) -> u8 {
-        self.minute
-    }
-}
-
-impl fmt::Display for Time {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:02}:{:02}", self.hour, self.minute)
-    }
-}
-
 #[derive(Debug)]
 pub struct TimeRangeParam {
     pub id: u16,
@@ -137,24 +99,6 @@ pub struct TimeRangeParam {
     pub read: bool,
     pub write: bool,
     pub default: Option<TimeRange>,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub struct TimeRange {
-    pub start: Time,
-    pub end: Time,
-}
-
-impl fmt::Display for TimeRange {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} - {}", self.start, self.end)
-    }
-}
-
-#[derive(Debug, Copy, Clone, Default)]
-pub struct MultilingualStr {
-    pub de: &'static str,
-    pub en: &'static str,
 }
 
 pub trait Param: Sync + Debug {
@@ -167,7 +111,7 @@ pub trait Param: Sync + Debug {
     fn choices(&self) -> Option<&'static [EnumVariant]> {
         None
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue>;
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value>;
     fn encode_str(&self, s: &str) -> Option<[u8; 2]> {
         // FIXME remove this default implementation
         todo!();
@@ -177,71 +121,6 @@ pub trait Param: Sync + Debug {
 pub trait DecodeParam: Param {
     type Value;
     fn decode(&self, data: [u8; 2]) -> Option<Self::Value>;
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub enum AnyValue {
-    Bool(bool),
-    I8(i8),
-    I16(i16),
-    Dec(Decimal),
-    Enum8(i8, Option<&'static str>),
-    Enum16(i16, Option<&'static str>),
-    TimeRange(TimeRange),
-    Time(Time),
-}
-
-impl fmt::Display for AnyValue {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            AnyValue::Bool(v) => write!(f, "{}", v),
-            AnyValue::I8(v) => write!(f, "{}", v),
-            AnyValue::I16(v) => write!(f, "{}", v),
-            AnyValue::Dec(v) => write!(f, "{}", v),
-            AnyValue::Enum8(v, n) => {
-                if let Some(n) = n {
-                    write!(f, "{}", n)
-                } else {
-                    write!(f, "{}", v)
-                }
-            }
-            AnyValue::Enum16(v, n) => {
-                if let Some(n) = n {
-                    write!(f, "{}", n)
-                } else {
-                    write!(f, "{}", v)
-                }
-            }
-            AnyValue::TimeRange(v) => write!(f, "{}", v),
-            AnyValue::Time(v) => write!(f, "{}", v),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, EnumMessage)]
-pub enum Unit {
-    #[strum(message = "°C")]
-    DegCelsius,
-    #[strum(message = "K")]
-    Kelvin,
-    #[strum(message = "kW")]
-    KiloWatt,
-    #[strum(message = "kWh")]
-    KiloWattHours,
-    #[strum(message = "l/h")]
-    LitersPerHour,
-    #[strum(message = "bar")]
-    Bar,
-    #[strum(message = "h")]
-    Hours,
-    #[strum(message = "%")]
-    Percent,
-    #[strum(message = "A")]
-    Ampere,
-    #[strum(message = "min")]
-    Minutes,
-    #[strum(message = "s")]
-    Seconds,
 }
 
 impl Param for BoolParam {
@@ -254,8 +133,8 @@ impl Param for BoolParam {
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::Bool)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::Bool)
     }
 }
 
@@ -279,8 +158,8 @@ impl Param for I8Param {
     fn unit(&self) -> Option<Unit> {
         self.unit
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::I8)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::I8)
     }
 }
 
@@ -304,8 +183,8 @@ impl Param for I16Param {
     fn unit(&self) -> Option<Unit> {
         self.unit
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::I16)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::I16)
     }
 }
 
@@ -329,8 +208,8 @@ impl Param for DecParam {
     fn unit(&self) -> Option<Unit> {
         self.unit
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::Dec)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::Dec)
     }
     fn encode_str(&self, s: &str) -> Option<[u8; 2]> {
         let mut dec = Decimal::from_str(s).unwrap();
@@ -366,8 +245,8 @@ where
     fn choices(&self) -> Option<&'static [EnumVariant]> {
         Some(T::VARIANTS)
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        decode_i8(data).map(|v| AnyValue::Enum8(v, Some(T::from(v.into()).into())))
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        decode_i8(data).map(|v| Value::Enum8(v, Some(T::from(v.into()).into())))
     }
 }
 
@@ -397,8 +276,8 @@ where
     fn choices(&self) -> Option<&'static [EnumVariant]> {
         Some(T::VARIANTS)
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        decode_i16(data).map(|v| AnyValue::Enum16(v, Some(T::from(v).into())))
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        decode_i16(data).map(|v| Value::Enum16(v, Some(T::from(v).into())))
     }
 }
 
@@ -422,8 +301,8 @@ impl Param for TimeParam {
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::Time)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::Time)
     }
 }
 
@@ -444,8 +323,8 @@ impl Param for TimeRangeParam {
     fn label(&self) -> MultilingualStr {
         self.label
     }
-    fn decode_any(&self, data: [u8; 2]) -> Option<AnyValue> {
-        self.decode(data).map(AnyValue::TimeRange)
+    fn decode_any(&self, data: [u8; 2]) -> Option<Value> {
+        self.decode(data).map(Value::TimeRange)
     }
 }
 

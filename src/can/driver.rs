@@ -22,12 +22,13 @@ use tracing::warn;
 
 use crate::{
     can::{device::Device, message::MessageType},
+    model::value::Value,
     RECONNECT_DELAY,
 };
 
 use super::{
     message::Message,
-    param::{AnyValue, DecodeParam, Param},
+    param::{DecodeParam, Param},
 };
 
 const CHANNEL_BUFFER: usize = 100;
@@ -113,11 +114,7 @@ impl CanDriver {
         let msg = self.get_raw(dev, param).await?;
         Ok(param.decode(msg.data))
     }
-    pub async fn get_any(
-        &self,
-        dev: Device,
-        param: &dyn Param,
-    ) -> Result<Option<AnyValue>, GetError> {
+    pub async fn get_any(&self, dev: Device, param: &dyn Param) -> Result<Option<Value>, GetError> {
         let msg = self.get_raw(dev, param).await?;
         Ok(param.decode_any(msg.data))
     }
