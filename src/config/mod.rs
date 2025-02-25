@@ -9,7 +9,7 @@ use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
 use serde_with::{serde_as, DurationSeconds};
 
-use crate::can::{device::Device, params::ParamName};
+use crate::{can::device::Device, catalog::param::Param};
 
 pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 
@@ -60,5 +60,5 @@ pub struct QueryConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QueryParam {
     pub device: Device,
-    pub param: ParamName,
+    pub param: String,
 }

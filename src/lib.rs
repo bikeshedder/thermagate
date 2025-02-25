@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 pub mod can;
+pub mod catalog;
 pub mod commands;
 pub mod config;
 pub mod hass;

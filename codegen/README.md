@@ -1,3 +1,0 @@
-- Rotex G1 sources
-- [fhemHPSU](https://github.com/ahermann86/fhemHPSU/blob/main/commands_hpsu.json)
-- [iobroker.canbus](https://github.com/crycode-de/ioBroker.canbus/blob/master/well-known-messages/configs/rotex-hpsu-latest.json)

@@ -5,14 +5,14 @@ use serde::Serialize;
 
 use super::{time::Time, time_range::TimeRange};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize)]
 pub enum Value {
     Bool(bool),
     I8(i8),
     I16(i16),
     Dec(Decimal),
-    Enum8(i8, Option<&'static str>),
-    Enum16(i16, Option<&'static str>),
+    Enum8(u8, Option<String>),
+    Enum16(u16, Option<String>),
     TimeRange(TimeRange),
     Time(Time),
 }

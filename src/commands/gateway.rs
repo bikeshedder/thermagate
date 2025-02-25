@@ -17,6 +17,7 @@ use crate::{
         driver::{CanDriver, GetError, ReceivedMessage},
         message::MessageType,
     },
+    catalog::Catalog,
     config::{Config, QueryConfig},
     hass::make_hass_sensor,
     model::{unit::Unit, value::Value},
@@ -33,11 +34,12 @@ pub enum Param {
 
 #[derive(Clone)]
 pub struct Params {
-    pub values: Arc<Mutex<HashMap<String, HashMap<&'static str, Param>>>>,
+    pub values: Arc<Mutex<HashMap<String, HashMap<String, Param>>>>,
     pub tx: broadcast::Sender<Arc<ParamUpdate>>,
 }
 
-pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::error::Error>> {
+    let catalog = Arc::new(catalog);
     let can = Arc::new(CanDriver::new(&config.can.interface));
     let (params_tx, _) = broadcast::channel(100); // FIXME size?
     let params: Params = Params {
@@ -51,6 +53,7 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
         mqtt,
         config.hass.clone(),
         config.mqtt.clone(),
+        catalog.clone(),
     ));
     tokio::spawn(async move {
         loop {
@@ -63,21 +66,33 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     });
-    tokio::spawn(query_params(config.query.clone(), can.clone()));
-    run_server(&config.http, params, can).await;
+    tokio::spawn(query_params(
+        config.query.clone(),
+        catalog.clone(),
+        can.clone(),
+    ));
+    run_server(&config.http, catalog.clone(), params, can).await;
     Ok(())
 }
 
-async fn query_params(config: QueryConfig, can: Arc<CanDriver>) {
+async fn query_params(config: QueryConfig, catalog: Arc<Catalog>, can: Arc<CanDriver>) {
     let params = config
         .params
         .iter()
-        .map(|entry| (entry.device, entry.param.param()))
+        .map(|entry| {
+            (
+                entry.device,
+                catalog
+                    .param_by_name(&entry.param)
+                    // FIXME implement proper error handling/config parsing
+                    .expect("Unknown parameter"),
+            )
+        })
         .collect::<Vec<_>>();
     loop {
         for &(device, param) in params.iter() {
-            debug!("Requesting {}/{}", device.name(), param.name());
-            match can.get_any(device, param).await {
+            debug!("Requesting {}/{}", device.name(), param.name);
+            match can.get(device, param).await {
                 Err(GetError::Shutdown) => return,
                 Err(GetError::QueueFull) => {
                     warn!("Send queue is full")
@@ -97,9 +112,10 @@ async fn recv_params(
     mqtt: AsyncClient,
     hass_cfg: HomeAssistantConfig,
     mqtt_cfg: MqttConfig,
+    catalog: Arc<Catalog>,
 ) {
     while let Ok(message) = rx.recv().await {
-        let Some((param, value)) = message.decode_param() else {
+        let Some((param, value)) = message.decode_param(&catalog) else {
             continue;
         };
         if message.sender.is_other() {
@@ -131,7 +147,7 @@ async fn recv_params(
                     .await
                     .entry(message.receiver.to_string())
                     .or_default()
-                    .entry(param.name())
+                    .entry(param.name.clone())
                 {
                     e.insert(Param::Loading);
                     let sensor = make_hass_sensor(
@@ -153,7 +169,7 @@ async fn recv_params(
                     .await
                     .entry(message.sender.to_string())
                     .or_default()
-                    .insert(param.name(), Param::Value(value.clone()));
+                    .insert(param.name.clone(), Param::Value(value.clone()));
                 let sensor = make_hass_sensor(
                     message.sender,
                     param,

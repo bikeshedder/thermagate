@@ -5,10 +5,11 @@ use socketcan::EmbeddedFrame;
 use crate::can::device::Device;
 use crate::can::driver::CanDriver;
 use crate::can::message::MessageType;
-use crate::can::params::PARAMS;
+use crate::can::param::CanParam;
+use crate::catalog::Catalog;
 use crate::config::Config;
 
-pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::error::Error>> {
     let driver = CanDriver::new(&config.can.interface);
     let mut rx = driver.rx();
 
@@ -63,10 +64,10 @@ pub async fn cmd(config: Config) -> Result<(), Box<dyn std::error::Error>> {
             || msg.r#type == MessageType::Response
             || msg.r#type == MessageType::Set
         {
-            if let Some(p) = PARAMS.get(&msg.param) {
-                print!("{} ", style(&p.name()).magenta());
+            if let Some(p) = catalog.param_by_id(msg.param) {
+                print!("{} ", style(&p.name).magenta());
                 if msg.r#type == MessageType::Response || msg.r#type == MessageType::Set {
-                    let decoded_data = p.decode_any(msg.data);
+                    let decoded_data = p.decode(msg.data);
                     if let Some(decoded_data) = decoded_data {
                         print!("= {} ", style(decoded_data).bold());
                     } else {
