@@ -1,12 +1,20 @@
-use std::path::Path;
+use std::io::Read;
 
-use anyhow::Result;
+use itertools::Itertools;
 use num_traits::Num;
 use serde::{de, Deserialize, Deserializer};
 
-use crate::model::{
-    BoolParam, DecParam, Document, EnumParam, I16Param, I8Param, Label, Param, TimeParam,
-    TimeRangeParam, Type, Unit,
+use crate::{
+    can::param::CanParam,
+    catalog::param::{EnumParam, I16Param, I8Param, TimeParam, TimeRangeParam},
+    model::{r#enum::EnumVariant, string::MultilingualString, unit::Unit, value::Value},
+};
+
+use super::{
+    enums_csv::EnumsCsv,
+    error::CatalogError,
+    param::{BoolParam, DecParam, Param, ParamType},
+    Catalog,
 };
 
 #[derive(Debug, serde::Deserialize)]
@@ -50,16 +58,18 @@ struct ParamRow {
     write: bool,
 }
 
-pub fn read(filename: impl AsRef<Path>) -> Result<Document> {
+pub fn read_params(reader: impl Read, enums: EnumsCsv) -> Result<Vec<Param>, CatalogError> {
     let mut csv = csv::ReaderBuilder::new()
         .has_headers(true)
-        .from_path(filename)?;
-    let mut doc = Document::default();
+        .from_reader(reader);
+    let mut params = Vec::new();
     for result in csv.deserialize::<ParamRow>() {
         let row = result?;
         let param = Param {
+            // FIXME proper error handling
+            id: parse_id(&row.id),
             name: row.name,
-            label: Label {
+            label: MultilingualString {
                 de: row.label_de,
                 en: row.label_en,
             },
@@ -69,19 +79,14 @@ pub fn read(filename: impl AsRef<Path>) -> Result<Document> {
                 row.scale,
                 row.values.as_str(),
                 row.default.as_str(),
-            ),
+                &enums,
+            )?,
             read: row.read,
             write: row.write,
         };
-        if doc
-            .params
-            .insert(row.id.strip_prefix("0x").unwrap().to_owned(), param)
-            .is_some()
-        {
-            panic!("Duplicate param: {}", row.id);
-        }
+        params.push(param)
     }
-    Ok(doc)
+    Ok(params)
 }
 
 fn type_from_parts(
@@ -90,14 +95,15 @@ fn type_from_parts(
     scale: Option<u32>,
     values: &str,
     default: &str,
-) -> Type {
-    match r#type {
-        TypeName::Bool => Type::Bool(BoolParam {
+    enums: &EnumsCsv,
+) -> Result<ParamType, CatalogError> {
+    Ok(match r#type {
+        TypeName::Bool => ParamType::Bool(BoolParam {
             default: parse_bool(default),
         }),
         TypeName::Dec => {
             let (min, max) = parse_range(values);
-            Type::Dec(DecParam {
+            ParamType::Dec(DecParam {
                 unit,
                 scale: scale
                     .map(|s| match s {
@@ -115,7 +121,7 @@ fn type_from_parts(
         TypeName::I8 => {
             assert_eq!(scale, None);
             let (min, max) = parse_range(values);
-            Type::I8(I8Param {
+            ParamType::I8(I8Param {
                 unit,
                 min,
                 max,
@@ -125,7 +131,7 @@ fn type_from_parts(
         TypeName::I16 => {
             assert_eq!(scale, None);
             let (min, max) = parse_range(values);
-            Type::I16(I16Param {
+            ParamType::I16(I16Param {
                 unit,
                 min,
                 max,
@@ -135,45 +141,50 @@ fn type_from_parts(
         TypeName::Enum8 => {
             assert_eq!(scale, None);
             assert_eq!(unit, None);
-            Type::Enum8(EnumParam {
-                r#enum: values.to_owned(),
-                default: None,
-                /* TODO
-                default: match default {
-                    "" => None,
-                    x => Some(x.parse().unwrap()),
-                },
-                 */
+            let variants: Vec<EnumVariant<u8>> = enums
+                .enums
+                .get(values)
+                .ok_or_else(|| CatalogError::UnknownEnum(values.to_owned()))?
+                .iter()
+                .map(|v| v.clone().try_into())
+                .try_collect()?;
+            ParamType::Enum8(EnumParam::<u8> {
+                default: get_default_enum_value(&variants, default)?,
+                variants: variants,
             })
         }
         TypeName::Enum16 => {
             assert_eq!(scale, None);
             assert_eq!(unit, None);
-            Type::Enum16(EnumParam {
-                r#enum: values.to_owned(),
-                default: None,
-                /* TODO
-                default: match default {
-                    "" => None,
-                    x => Some(x.parse().unwrap()),
-                },
-                 */
+            let variants = enums
+                .enums
+                .get(values)
+                .ok_or_else(|| CatalogError::UnknownEnum(values.to_owned()))?
+                .iter()
+                .map(|v| v.clone().into())
+                .collect::<Vec<_>>();
+            ParamType::Enum16(EnumParam {
+                default: get_default_enum_value(&variants, default)?,
+                variants: variants,
             })
         }
         TypeName::TimeRange => {
             assert_eq!(unit, None);
             assert_eq!(values, "");
-            Type::TimeRange(TimeRangeParam {
+            ParamType::TimeRange(TimeRangeParam {
+                default: None,
+                /*
                 default: match default {
                     "" => None,
                     x => Some(x.parse().unwrap()),
                 },
+                */
             })
         }
         TypeName::Time => {
             assert_eq!(unit, None);
             assert_eq!(values, "");
-            Type::Time(TimeParam {
+            ParamType::Time(TimeParam {
                 default: None,
                 // FIXME
                 /*
@@ -184,7 +195,12 @@ fn type_from_parts(
                  */
             })
         }
-    }
+    })
+}
+
+fn parse_id(s: &str) -> u16 {
+    assert!(s.starts_with("0x"));
+    u16::from_str_radix(&s[2..], 16).unwrap()
 }
 
 fn parse_opt_num<T: Num>(s: &str) -> Option<T> {
@@ -235,4 +251,48 @@ where
             &"TRUE or FALSE",
         )),
     }
+}
+
+fn get_default_enum_value<T: Clone>(
+    variants: &[EnumVariant<T>],
+    code: &str,
+) -> Result<Option<EnumVariant<T>>, CatalogError> {
+    if code == "" {
+        return Ok(None);
+    }
+    variants
+        .iter()
+        .find(|v| v.code == code)
+        .ok_or_else(|| CatalogError::UnknownEnumVariant(code.to_owned()))
+        .map(|v| Some(v.clone()))
+}
+
+#[test]
+fn test_enum8_decode() {
+    let catalog = Catalog::load().unwrap();
+    let param = catalog.param_by_name("operating_mode").unwrap();
+    assert_eq!(
+        param.decode([1, 0]),
+        Some(Value::Enum8(1, Some("Standby".into()))),
+    );
+    assert_eq!(
+        param.decode([11, 0]),
+        Some(Value::Enum8(11, Some("Auto1".into()))),
+    );
+    assert_eq!(param.decode([99, 0]), Some(Value::Enum8(99, None)),);
+}
+
+#[test]
+fn test_enum16_decode() {
+    let catalog = Catalog::load().unwrap();
+    let param = catalog.param_by_name("mode").unwrap();
+    assert_eq!(
+        param.decode([0, 0]),
+        Some(Value::Enum16(0, Some("NoRequest".into()))),
+    );
+    assert_eq!(
+        param.decode([0, 1]),
+        Some(Value::Enum16(1, Some("Heating".into()))),
+    );
+    assert_eq!(param.decode([0, 99]), Some(Value::Enum16(99, None)),);
 }

@@ -21,8 +21,8 @@ use crate::{
         self,
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
-        params::PARAMS,
     },
+    catalog::{param::Param as CatalogParam, Catalog},
     commands::gateway::Params,
     config::HttpConfig,
     model::value::Value,
@@ -35,11 +35,17 @@ struct Assets;
 
 #[derive(Clone)]
 struct AppState {
+    pub catalog: Arc<Catalog>,
     pub params: Params,
     pub can: Arc<CanDriver>,
 }
 
-pub async fn run_server(config: &HttpConfig, params_data: Params, can: Arc<CanDriver>) {
+pub async fn run_server(
+    config: &HttpConfig,
+    catalog: Arc<Catalog>,
+    params_data: Params,
+    can: Arc<CanDriver>,
+) {
     let (io_svc, io) = SocketIo::new_svc();
     io.ns("/", {
         let params_data = params_data.clone();
@@ -52,7 +58,7 @@ pub async fn run_server(config: &HttpConfig, params_data: Params, can: Arc<CanDr
         }
     });
 
-    tokio::spawn(can_sender(can.rx(), io.clone()));
+    tokio::spawn(can_sender(catalog.clone(), can.rx(), io.clone()));
     tokio::spawn(param_sender(params_data.tx.subscribe(), io.clone()));
 
     let app = Router::new() //
@@ -60,6 +66,7 @@ pub async fn run_server(config: &HttpConfig, params_data: Params, can: Arc<CanDr
         .route("/api/v1/params", get(params))
         .route("/api/v1/can_monitor", get(can_monitor))
         .with_state(AppState {
+            catalog: catalog.clone(),
             can: can.clone(),
             params: params_data,
         })
@@ -109,20 +116,20 @@ impl From<can::device::Device> for Device {
 #[derive(Serialize)]
 pub struct CanParam {
     pub id: u16,
-    pub name: Option<&'static str>,
+    pub name: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
 pub struct Param {
     pub id: u16,
-    pub name: &'static str,
+    pub name: String,
 }
 
-impl From<&dyn can::param::Param> for Param {
-    fn from(value: &dyn can::param::Param) -> Self {
+impl From<&CatalogParam> for Param {
+    fn from(value: &CatalogParam) -> Self {
         Self {
-            id: value.id(),
-            name: value.name(),
+            id: value.id,
+            name: value.name.clone(),
         }
     }
 }
@@ -144,9 +151,13 @@ pub struct ParamUpdate {
     pub value: crate::commands::gateway::Param,
 }
 
-async fn can_sender(mut rx: broadcast::Receiver<ReceivedMessage>, io: SocketIo) {
+async fn can_sender(
+    catalog: Arc<Catalog>,
+    mut rx: broadcast::Receiver<ReceivedMessage>,
+    io: SocketIo,
+) {
     while let Ok(msg) = rx.recv().await {
-        let p_v = msg.decode_param();
+        let p_v = msg.decode_param(&catalog);
         warn_if_err(
             io.emit(
                 "can",
@@ -157,7 +168,7 @@ async fn can_sender(mut rx: broadcast::Receiver<ReceivedMessage>, io: SocketIo) 
                     r#type: msg.r#type,
                     param: CanParam {
                         id: msg.param,
-                        name: p_v.as_ref().map(|(p, _)| p.name()),
+                        name: p_v.as_ref().map(|(p, _)| p.name.clone()),
                     },
                     value: if matches!(msg.r#type, MessageType::Response | MessageType::Set) {
                         p_v.and_then(|(_, v)| v)
@@ -192,11 +203,14 @@ struct MasterDataParam {
 }
 
 async fn get_master_data(state: State<AppState>) -> impl IntoResponse {
+    // XXX add caching
     let config = MasterData {
-        params: PARAMS
-            .values()
+        params: state
+            .catalog
+            .params
+            .iter()
             .map(|param| MasterDataParam {
-                name: param.name().into(),
+                name: param.name.clone(),
             })
             .collect(),
     };

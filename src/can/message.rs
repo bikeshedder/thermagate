@@ -5,9 +5,12 @@ use serde::{Deserialize, Serialize};
 use socketcan::{CanDataFrame, EmbeddedFrame, Frame, StandardId};
 use thiserror::Error;
 
-use crate::model::value::Value;
+use crate::{
+    catalog::{param::Param, Catalog},
+    model::value::Value,
+};
 
-use super::{device::Device, param::Param, params::PARAMS};
+use super::{device::Device, param::CanParam};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Message {
@@ -81,10 +84,9 @@ impl Message {
         data[6] = self.data[1];
         data
     }
-    pub fn decode_param(&self) -> Option<(&'static dyn Param, Option<Value>)> {
-        PARAMS
-            .get(&self.param)
-            .map(|&p| (p, p.decode_any(self.data)))
+    pub fn decode_param<'a>(&self, catalog: &'a Catalog) -> Option<(&'a Param, Option<Value>)> {
+        let param = catalog.param_by_id(self.param)?;
+        Some((param, param.decode(self.data)))
     }
 }
 
@@ -240,5 +242,24 @@ mod tests {
         // 0xfa-format just like the RoCon interface.
         //assert_eq!(msg.compose(), data);
         assert_eq!(msg.compose(), [0x36, 0x00, 0xfa, 0, 0xfe, 1, 0]);
+    }
+
+    #[test]
+    fn test_operating_mode_response() {
+        let id = 0x0180;
+        let data = [0xd2, 0x7e, 0xfa, 0x01, 0x12, 0x0b, 0x00];
+        let msg = Message {
+            sender: Device::HG1,
+            receiver: Device::TG,
+            r#type: MessageType::Response,
+            param: 0x0112,
+            data: [0x0b, 0x00],
+        };
+        assert_eq!(Message::parse(id, data), msg);
+        let catalog = Catalog::load().unwrap();
+        assert_eq!(
+            msg.decode_param(&catalog).unwrap().1,
+            Some(Value::Enum8(11, Some("Auto1".into())))
+        );
     }
 }

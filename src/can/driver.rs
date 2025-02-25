@@ -22,14 +22,12 @@ use tracing::warn;
 
 use crate::{
     can::{device::Device, message::MessageType},
+    catalog::param::Param,
     model::value::Value,
     RECONNECT_DELAY,
 };
 
-use super::{
-    message::Message,
-    param::{DecodeParam, Param},
-};
+use super::{message::Message, param::CanParam};
 
 const CHANNEL_BUFFER: usize = 100;
 
@@ -106,24 +104,16 @@ impl CanDriver {
                 _ => unreachable!(),
             })
     }
-    pub async fn get<P: DecodeParam>(
-        &self,
-        dev: Device,
-        param: &P,
-    ) -> Result<Option<P::Value>, GetError> {
+    pub async fn get(&self, dev: Device, param: &Param) -> Result<Option<Value>, GetError> {
         let msg = self.get_raw(dev, param).await?;
         Ok(param.decode(msg.data))
     }
-    pub async fn get_any(&self, dev: Device, param: &dyn Param) -> Result<Option<Value>, GetError> {
-        let msg = self.get_raw(dev, param).await?;
-        Ok(param.decode_any(msg.data))
-    }
-    async fn get_raw(&self, dev: Device, param: &dyn Param) -> Result<ReceivedMessage, GetError> {
+    async fn get_raw(&self, dev: Device, param: &Param) -> Result<ReceivedMessage, GetError> {
         let mut rx = self.rx();
         let req = Message {
             sender: Device::TG,
             receiver: dev,
-            param: param.id(),
+            param: param.id,
             r#type: MessageType::Request,
             data: [0, 0],
         };

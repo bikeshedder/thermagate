@@ -4,7 +4,7 @@ use serde::Serialize;
 
 use super::time::Time;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Eq, PartialEq)]
 pub struct TimeRange {
     pub start: Time,
     pub end: Time,

@@ -1,5 +1,6 @@
 use clap::{Parser, Subcommand};
 use thermagate::{
+    catalog::Catalog,
     commands::{can_monitor, default_config, gateway, set_param},
     config::Config,
 };
@@ -42,11 +43,20 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let config = Config::load(&args.config_file)?;
 
+    let catalog = Catalog::load()?;
+
+    for param in &config.query.params {
+        if catalog.param_by_name(&param.param).is_none() {
+            // XXX Add better error handling
+            panic!("Unknown query param in config: {}", param.param);
+        }
+    }
+
     match args.command {
-        Command::CanMonitor => can_monitor::cmd(config).await,
+        Command::CanMonitor => can_monitor::cmd(config, catalog).await,
         Command::DefaultConfig => unreachable!(),
         Command::CheckConfig => Ok(()),
-        Command::Gateway => gateway::cmd(config).await,
-        Command::SetParam(args) => set_param::cmd(config, args).await,
+        Command::Gateway => gateway::cmd(config, catalog).await,
+        Command::SetParam(args) => set_param::cmd(config, catalog, args).await,
     }
 }
