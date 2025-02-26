@@ -5,7 +5,6 @@ use num_enum::{FromPrimitive, IntoPrimitive};
 use serde::{Deserialize, Serialize};
 use strum::{AsRefStr, IntoStaticStr};
 
-///
 #[derive(
     Debug,
     Clone,

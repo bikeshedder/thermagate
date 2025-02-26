@@ -2,13 +2,10 @@ use std::io::Read;
 
 use itertools::Itertools;
 use num_traits::Num;
-use serde::{de, Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, de};
 
 use crate::{
-    catalog::{
-        param::{EnumParam, I16Param, I8Param, TimeParam, TimeRangeParam},
-        Catalog,
-    },
+    catalog::param::{EnumParam, I8Param, I16Param, TimeParam, TimeRangeParam},
     model::{r#enum::EnumVariant, string::MultilingualString, unit::Unit},
 };
 
@@ -151,7 +148,7 @@ fn type_from_parts(
                 .try_collect()?;
             ParamType::Enum8(EnumParam::<u8> {
                 default: get_default_enum_value(&variants, default)?,
-                variants: variants,
+                variants,
             })
         }
         TypeName::Enum16 => {
@@ -166,7 +163,7 @@ fn type_from_parts(
                 .collect::<Vec<_>>();
             ParamType::Enum16(EnumParam {
                 default: get_default_enum_value(&variants, default)?,
-                variants: variants,
+                variants,
             })
         }
         TypeName::TimeRange => {
@@ -258,12 +255,12 @@ fn get_default_enum_value<T: Clone>(
     variants: &[EnumVariant<T>],
     code: &str,
 ) -> Result<Option<EnumVariant<T>>, CatalogError> {
-    if code == "" {
+    if code.is_empty() {
         return Ok(None);
     }
     variants
         .iter()
-        .find(|v| &*v.code == code)
+        .find(|v| *v.code == code)
         .ok_or_else(|| CatalogError::UnknownEnumVariant(code.to_owned()))
         .map(|v| Some(v.clone()))
 }

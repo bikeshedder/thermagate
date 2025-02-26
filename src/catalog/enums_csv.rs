@@ -16,14 +16,14 @@ pub struct Row {
     pub label_de: String,
 }
 
-impl Into<EnumVariant<u16>> for Row {
-    fn into(self) -> EnumVariant<u16> {
+impl From<Row> for EnumVariant<u16> {
+    fn from(val: Row) -> Self {
         EnumVariant {
-            code: self.code.into(),
-            value: self.value,
+            code: val.code.into(),
+            value: val.value,
             label: MultilingualString {
-                de: Intern::new(self.label_de),
-                en: Intern::new(self.label_en),
+                de: Intern::new(val.label_de),
+                en: Intern::new(val.label_en),
             },
         }
     }

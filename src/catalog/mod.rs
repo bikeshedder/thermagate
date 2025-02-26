@@ -43,6 +43,6 @@ impl Catalog {
     }
     pub fn param_by_name(&self, name: &str) -> Option<&Param> {
         // TODO replace this by a HashMap lookup
-        self.params.iter().find(|p| &*p.name == name)
+        self.params.iter().find(|p| *p.name == name)
     }
 }

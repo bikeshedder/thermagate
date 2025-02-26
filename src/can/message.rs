@@ -6,7 +6,7 @@ use socketcan::{CanDataFrame, EmbeddedFrame, Frame, StandardId};
 use thiserror::Error;
 
 use crate::{
-    catalog::{param::Param, Catalog},
+    catalog::{Catalog, param::Param},
     model::value::Value,
 };
 

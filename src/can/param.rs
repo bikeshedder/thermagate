@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 
 use crate::{
     catalog::param::{
-        BoolParam, DecParam, EnumParam, I16Param, I8Param, Param, ParamType, TimeParam,
+        BoolParam, DecParam, EnumParam, I8Param, I16Param, Param, ParamType, TimeParam,
         TimeRangeParam,
     },
     model::{time::Time, time_range::TimeRange, value::Value},
@@ -99,7 +99,7 @@ impl CanParam for EnumParam<u16> {
             .variants
             .iter()
             .find(|v| v.value == value)
-            .map(|v| v.code.clone());
+            .map(|v| v.code);
         Some(Value::Enum16(value, code))
     }
 }
@@ -125,20 +125,12 @@ impl CanParam for TimeRangeParam {
 
 fn decode_i8(data: [u8; 2]) -> Option<i8> {
     let v = data[0] as i8;
-    if v == i8::MIN {
-        None
-    } else {
-        Some(v)
-    }
+    if v == i8::MIN { None } else { Some(v) }
 }
 
 fn decode_i16(data: [u8; 2]) -> Option<i16> {
     let v = ((data[0] as i16) << 8) + (data[1] as i16);
-    if v == i16::MIN {
-        None
-    } else {
-        Some(v)
-    }
+    if v == i16::MIN { None } else { Some(v) }
 }
 
 fn decode_u8(data: [u8; 2]) -> u8 {

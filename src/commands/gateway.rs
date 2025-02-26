@@ -1,5 +1,5 @@
 use std::{
-    collections::{hash_map::Entry, HashMap},
+    collections::{HashMap, hash_map::Entry},
     sync::Arc,
 };
 
@@ -10,10 +10,11 @@ use num_traits::ToPrimitive;
 use rumqttc::AsyncClient;
 use serde::Serialize;
 use serde_json::json;
-use tokio::sync::{broadcast, Mutex};
+use tokio::sync::{Mutex, broadcast};
 use tracing::{debug, warn};
 
 use crate::{
+    RECONNECT_DELAY,
     can::{
         driver::{CanDriver, GetError, ReceivedMessage},
         message::MessageType,
@@ -23,8 +24,7 @@ use crate::{
     hass::make_hass_sensor,
     model::{unit::Unit, value::Value},
     utils::warn_if_err,
-    web::{run_server, ParamUpdate},
-    RECONNECT_DELAY,
+    web::{ParamUpdate, run_server},
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -33,9 +33,11 @@ pub enum Param {
     Value(Option<Value>),
 }
 
+type Values = HashMap<String, HashMap<Intern<String>, Param>>;
+
 #[derive(Clone)]
 pub struct Params {
-    pub values: Arc<Mutex<HashMap<String, HashMap<Intern<String>, Param>>>>,
+    pub values: Arc<Mutex<Values>>,
     pub tx: broadcast::Sender<Arc<ParamUpdate>>,
 }
 

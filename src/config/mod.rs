@@ -1,15 +1,15 @@
 use std::{net::SocketAddr, time::Duration};
 
 use figment::{
-    providers::{Format, Toml},
     Figment,
+    providers::{Format, Toml},
 };
 use nrg_hass::config::HomeAssistantConfig;
 use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DurationSeconds};
+use serde_with::{DurationSeconds, serde_as};
 
-use crate::{can::device::Device, catalog::param::Param};
+use crate::can::device::Device;
 
 pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 

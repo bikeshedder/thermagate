@@ -1,19 +1,19 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::State,
-    http::{header, StatusCode, Uri},
-    response::{sse, Html, IntoResponse, Sse},
-    routing::get,
     Json, Router,
+    extract::State,
+    http::{StatusCode, Uri, header},
+    response::{Html, IntoResponse, Sse, sse},
+    routing::get,
 };
 use internment::Intern;
 use rust_embed::Embed;
 use serde::Serialize;
 use socketcan::EmbeddedFrame;
-use socketioxide::{extract::SocketRef, SocketIo};
+use socketioxide::{SocketIo, extract::SocketRef};
 use tokio::sync::broadcast;
-use tokio_stream::{wrappers::BroadcastStream, StreamExt};
+use tokio_stream::{StreamExt, wrappers::BroadcastStream};
 use tower_http::cors::CorsLayer;
 use tracing::{info, warn};
 
@@ -23,7 +23,7 @@ use crate::{
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
     },
-    catalog::{param::Param as CatalogParam, Catalog},
+    catalog::{Catalog, param::Param as CatalogParam},
     commands::gateway::Params,
     config::HttpConfig,
     model::value::Value,

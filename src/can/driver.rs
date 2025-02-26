@@ -4,27 +4,27 @@ use std::{
 };
 
 use futures_util::{
-    stream::{SplitSink, SplitStream},
     SinkExt, StreamExt,
+    stream::{SplitSink, SplitStream},
 };
 use serde::Serialize;
-use socketcan::{tokio::CanSocket, CanDataFrame, CanError, CanFrame};
+use socketcan::{CanDataFrame, CanError, CanFrame, tokio::CanSocket};
 use thiserror::Error;
 use tokio::{
     sync::{
-        broadcast,
+        Mutex, broadcast,
         mpsc::{self, error::TrySendError},
-        watch, Mutex,
+        watch,
     },
     time::sleep,
 };
 use tracing::warn;
 
 use crate::{
+    RECONNECT_DELAY,
     can::{device::Device, message::MessageType},
     catalog::param::Param,
     model::value::Value,
-    RECONNECT_DELAY,
 };
 
 use super::{message::Message, param::CanParam};
