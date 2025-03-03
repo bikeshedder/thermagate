@@ -13,8 +13,10 @@ jobs:
 
   test:
     name: Run tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
+    - run: rustup install 1.85
+    - run: rustup default 1.85
     - uses: actions/checkout@v4
     - run: mkdir frontend/dist
     - name: Build
