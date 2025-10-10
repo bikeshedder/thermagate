@@ -90,6 +90,12 @@ impl CanParam for EnumParam<u8> {
             .map(|v| v.code);
         Some(Value::Enum8(value, code))
     }
+    fn encode_str(&self, s: &str) -> Option<[u8; 2]> {
+        self.variants
+            .iter()
+            .find(|v| v.code.as_ref() == s)
+            .map(|v| [v.value, 0])
+    }
 }
 
 impl CanParam for EnumParam<u16> {
