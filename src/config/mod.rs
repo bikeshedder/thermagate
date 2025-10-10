@@ -15,6 +15,7 @@ pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
+    pub log: LogConfig,
     pub language: Language,
     pub http: HttpConfig,
     pub can: CanConfig,
@@ -29,6 +30,40 @@ impl Config {
             .merge(Toml::string(DEFAULT_CONFIG))
             .merge(Toml::file(config_file))
             .extract()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LogConfig {
+    pub level: LogLevel,
+}
+
+#[derive(Debug, Copy, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum LogLevel {
+    Trace,
+    Debug,
+    #[default]
+    Info,
+    Warn,
+    Error,
+}
+
+impl From<LogLevel> for tracing::Level {
+    fn from(value: LogLevel) -> Self {
+        match value {
+            LogLevel::Trace => tracing::Level::TRACE,
+            LogLevel::Debug => tracing::Level::DEBUG,
+            LogLevel::Info => tracing::Level::INFO,
+            LogLevel::Warn => tracing::Level::WARN,
+            LogLevel::Error => tracing::Level::ERROR,
+        }
+    }
+}
+
+impl From<LogLevel> for tracing::level_filters::LevelFilter {
+    fn from(value: LogLevel) -> Self {
+        tracing::Level::from(value).into()
     }
 }
 

@@ -4,7 +4,6 @@ use thermagate::{
     commands::{can_monitor, default_config, gateway, set_param},
     config::Config,
 };
-use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
 #[derive(Debug, Parser)]
@@ -29,12 +28,6 @@ enum Command {
 
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
-        .finish();
-
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
-
     let args = Cli::parse();
 
     if matches!(args.command, Command::DefaultConfig) {
@@ -42,6 +35,12 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let config = Config::load(&args.config_file)?;
+
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(config.log.level)
+        .finish();
+
+    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
 
     let catalog = Catalog::load()?;
 

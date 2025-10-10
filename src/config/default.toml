@@ -1,5 +1,8 @@
 language = "de"
 
+[log]
+level = "info"
+
 [http]
 listen = "127.0.0.1:3000"
 
