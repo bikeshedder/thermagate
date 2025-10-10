@@ -24,11 +24,11 @@
 	// ],
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
-			"version": "1.85.0",
+			"version": "1.90.0",
 			"profile": "default"
 		},
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "22.14.0"
+			"version": "22.20.0"
 		},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},

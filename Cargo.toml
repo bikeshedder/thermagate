@@ -4,7 +4,7 @@ cargo-features = ["edition2024"]
 name = "thermagate"
 version = "0.1.1"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.90"
 authors = ["Michael P. Jung <michael.jung@terreon.de>"]
 description = "Gateway compatible with ROTEX based DAIKIN Altherma 3 heat pump"
 keywords = ["daikin", "altherma", "gateway", "heat pump"]
@@ -17,7 +17,7 @@ readme = "README.md"
 [dependencies]
 axum = { version = "0.8.1", features = ["ws", "tracing"] }
 clap = { version = "4.3.4", features = ["derive"] }
-console = "0.15.7"
+console = "0.16"
 csv = "1.3.1"
 figment = { version = "0.10.19", features = ["toml"] }
 futures-util = "0.3.28"
@@ -28,14 +28,14 @@ nrg-hass = { git = "https://github.com/bikeshedder/nrg" }
 nrg-mqtt = { git = "https://github.com/bikeshedder/nrg" }
 num-traits = "0.2.17"
 num_enum = "0.7.1"
-rumqttc = "0.24.0"
+rumqttc = "0.25"
 rust-embed = { version = "8.5.0", features = ["axum"] }
 rust_decimal = "1.33.1"
 serde = { version = "1.0.164", features = ["derive"] }
 serde_json = "1.0.96"
 serde_with = "3.11.0"
 socketcan = { version = "3.3.0", features = ["tokio"] }
-socketioxide = "0.16"
+socketioxide = "0.17"
 strum = { version = "0.27.0", features = ["derive"] }
 thiserror = "2.0"
 time = { version = "0.3.36", features = ["parsing"] }
@@ -46,7 +46,7 @@ tokio = { version = "1.28.2", features = [
     "sync",
 ] }
 tokio-stream = { version = "0.1.16", features = ["sync"] }
-toml = "0.8"
+toml = "0.9"
 tower-http = { version = "0.6.0", features = ["fs", "cors"] }
 tracing = { version = "0.1.37", features = ["async-await"] }
 tracing-subscriber = "0.3.17"
