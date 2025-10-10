@@ -61,7 +61,7 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
     tokio::spawn(async move {
         loop {
             match mqtt_event_loop.poll().await {
-                Ok(ev) => debug!("{:?}", ev),
+                Ok(_) => {}
                 Err(e) => {
                     warn!("MQTT error: {:?}", e);
                     tokio::time::sleep(RECONNECT_DELAY).await;
