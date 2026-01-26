@@ -8,6 +8,7 @@ use nrg_hass::config::HomeAssistantConfig;
 use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
 use serde_with::{DurationSeconds, serde_as};
+use thiserror::Error;
 
 use crate::can::device::Device;
 
@@ -96,4 +97,10 @@ pub struct QueryConfig {
 pub struct QueryParam {
     pub device: Device,
     pub param: String,
+}
+
+#[derive(Error, Debug)]
+pub enum ConfigError {
+    #[error("Unsupported parameter: {0}")]
+    UnsupportedParam(String),
 }

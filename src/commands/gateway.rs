@@ -1,6 +1,7 @@
 use std::{
     collections::{HashMap, hash_map::Entry},
     sync::Arc,
+    time::Duration,
 };
 
 use internment::Intern;
@@ -10,8 +11,11 @@ use num_traits::ToPrimitive;
 use rumqttc::AsyncClient;
 use serde::Serialize;
 use serde_json::json;
-use tokio::sync::{Mutex, broadcast};
-use tracing::{debug, warn};
+use tokio::{
+    sync::{Mutex, broadcast},
+    time::sleep,
+};
+use tracing::{debug, error, info, warn};
 
 use crate::{
     RECONNECT_DELAY,
@@ -20,7 +24,7 @@ use crate::{
         message::MessageType,
     },
     catalog::Catalog,
-    config::{Config, QueryConfig},
+    config::{Config, ConfigError, QueryConfig},
     hass::make_hass_sensor,
     model::{unit::Unit, value::Value},
     utils::warn_if_err,
@@ -50,14 +54,6 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
         tx: params_tx,
     };
     let (mqtt, mut mqtt_event_loop) = config.mqtt.client();
-    tokio::spawn(recv_params(
-        params.clone(),
-        can.rx(),
-        mqtt,
-        config.hass.clone(),
-        config.mqtt.clone(),
-        catalog.clone(),
-    ));
     tokio::spawn(async move {
         loop {
             match mqtt_event_loop.poll().await {
@@ -69,6 +65,47 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
             }
         }
     });
+    // announce parameters to HA via MQTT
+    info!(
+        "Announcing {} parameters to HA via MQTT",
+        config.query.params.len()
+    );
+    for param in &config.query.params {
+        params
+            .values
+            .lock()
+            .await
+            .entry(param.device.to_string())
+            .or_default()
+            .insert(Intern::from_ref(&param.param), Param::Loading);
+        let catalog_param = catalog
+            .param_by_name(&param.param)
+            .ok_or_else(|| ConfigError::UnsupportedParam(param.param.clone()))?;
+        let sensor = make_hass_sensor(
+            param.device,
+            catalog_param,
+            &config.hass.object_id,
+            &config.mqtt.topic_prefix,
+        );
+        loop {
+            info!("Announcing {}/{}", param.device.to_string(), param.param);
+            match announce(&mqtt, &config.hass, &config.hass.object_id, &sensor).await {
+                Ok(_) => break,
+                Err(e) => {
+                    error!("Failed to announce device to MQTT broker: {:?}", e);
+                    sleep(Duration::from_secs(5)).await;
+                }
+            }
+        }
+    }
+    tokio::spawn(recv_params(
+        params.clone(),
+        can.rx(),
+        mqtt,
+        config.hass.clone(),
+        config.mqtt.clone(),
+        catalog.clone(),
+    ));
     tokio::spawn(query_params(
         config.query.clone(),
         catalog.clone(),
