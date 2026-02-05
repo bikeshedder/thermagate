@@ -179,7 +179,7 @@ Diagram",label_en,label_de,type,unit,scale,values,increment,default,read,write,c
 0x1a41,circulation_thu_2,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Thursday :: Switching cycle 2,Zirkulationsprogramm :: Donnerstag :: Schaltzyklus 2,timerange,,,,,,TRUE,TRUE,
 0x1a42,circulation_thu_3,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Thursday :: Switching cycle 3,Zirkulationsprogramm :: Donnerstag :: Schaltzyklus 3,timerange,,,,,,TRUE,TRUE,
 0x1a50,circulation_fri_1,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Friday :: Switching cycle 1,Zirkulationsprogramm :: Friday :: Schaltzyklus 1,timerange,,,,,,TRUE,TRUE,
-0x1a51,circuatlion_fri_2,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Friday :: Switching cycle 2,Zirkulationsprogramm :: Friday :: Schaltzyklus 2,timerange,,,,,,TRUE,TRUE,
+0x1a51,circulation_fri_2,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Friday :: Switching cycle 2,Zirkulationsprogramm :: Friday :: Schaltzyklus 2,timerange,,,,,,TRUE,TRUE,
 0x1a52,circulation_fri_3,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Friday :: Switching cycle 3,Zirkulationsprogramm :: Friday :: Schaltzyklus 3,timerange,,,,,,TRUE,TRUE,
 0x1a60,circulation_sat_1,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Saturday :: Switching cycle 1,Zirkulationsprogramm :: Samstag :: Schaltzyklus 1,timerange,,,,,,TRUE,TRUE,
 0x1a61,circulation_sat_2,4.3.2,Time program :: Circulation Program,7.4,HG1,,,Circulation program :: Saturday :: Switching cycle 2,Zirkulationsprogramm :: Samstag :: Schaltzyklus 2,timerange,,,,,,TRUE,TRUE,
