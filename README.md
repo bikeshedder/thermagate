@@ -12,6 +12,11 @@ This is an independent project, unaffiliated with Daikin Industries, Ltd., or an
 
 This software is an original work, developed independently without reliance on or use of any third-party or proprietary code, intellectual property, or trade secrets. Any resemblance to other software is coincidental.
 
+## Screenshots
+
+<p>CAN Bus Monitor</p>
+<img src="screenshots/can-monitor.png" alt="CAN Bus Monitor">
+
 ## Prerequisites
 
 This projects requires just a CAN bus interface that is connected to your indoor unit with a bitrate of 20000. This project was designed as a single binary that can be copied either to a Raspberry PI or used as an alternative software on the RoCon G1 Gateway hardware.
