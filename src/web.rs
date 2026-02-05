@@ -23,7 +23,7 @@ use crate::{
         driver::{CanDriver, ReceivedMessage},
         message::MessageType,
     },
-    catalog::{Catalog, param::Param as CatalogParam},
+    catalog::{Catalog, pages::Page, param::Param as CatalogParam},
     commands::gateway::Params,
     config::HttpConfig,
     model::value::Value,
@@ -63,7 +63,7 @@ pub async fn run_server(
     tokio::spawn(param_sender(params_data.tx.subscribe(), io.clone()));
 
     let app = Router::new() //
-        .route("/api/v1/master_data", get(get_master_data))
+        .route("/api/v1/catalog", get(get_catalog))
         .route("/api/v1/params", get(params))
         .route("/api/v1/can_monitor", get(can_monitor))
         .with_state(AppState {
@@ -194,8 +194,9 @@ async fn param_sender(mut rx: broadcast::Receiver<Arc<ParamUpdate>>, io: SocketI
 }
 
 #[derive(Debug, Serialize)]
-struct MasterData {
+struct WebCatalog {
     params: Vec<MasterDataParam>,
+    pages: Vec<Page>,
 }
 
 #[derive(Debug, Serialize)]
@@ -203,15 +204,16 @@ struct MasterDataParam {
     name: Intern<String>,
 }
 
-async fn get_master_data(state: State<AppState>) -> impl IntoResponse {
+async fn get_catalog(state: State<AppState>) -> impl IntoResponse {
     // XXX add caching
-    let config = MasterData {
+    let config = WebCatalog {
         params: state
             .catalog
             .params
             .iter()
             .map(|param| MasterDataParam { name: param.name })
             .collect(),
+        pages: state.catalog.pages.clone(),
     };
     Json(config)
 }

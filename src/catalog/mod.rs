@@ -2,14 +2,20 @@
 //! all sorts of things which are loaded at application startup but never
 //! change. e.g. parameters, enums, pages, etc.
 
+use std::str::FromStr;
+
 use enums_csv::read_enums;
 use error::CatalogError;
+use pages::{Page, read_pages};
 use param::Param;
 use params_csv::read_params;
 use rust_embed::Embed;
 
+use crate::can::device::Device;
+
 pub mod enums_csv;
 pub mod error;
+pub mod pages;
 pub mod param;
 pub mod params_csv;
 
@@ -19,6 +25,7 @@ pub struct Data;
 
 pub struct Catalog {
     pub params: Vec<Param>,
+    pub pages: Vec<Page>,
 }
 
 impl Catalog {
@@ -35,7 +42,23 @@ impl Catalog {
                 .data,
             enums,
         )?;
-        Ok(Self { params })
+        let pages = read_pages(
+            &*Data::get("pages.json")
+                .expect("File not found: data/pages.json")
+                .data,
+        )?;
+        // TODO improve error handling and reporting
+        let catalog = Self { params, pages };
+        for page in &catalog.pages {
+            for param in &page.params {
+                Device::from_str(&param.device)
+                    .map_err(|_| CatalogError::UnknownDevice(param.device.clone()))?;
+                catalog
+                    .param_by_name(&param.param)
+                    .ok_or_else(|| CatalogError::UnknownParameter(param.param.clone()))?;
+            }
+        }
+        Ok(catalog)
     }
     pub fn param_by_id(&self, id: u16) -> Option<&Param> {
         // TODO replace this by a HashMap lookup

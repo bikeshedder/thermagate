@@ -1,4 +1,4 @@
-use std::io::Read;
+use std::io;
 
 use itertools::Itertools;
 use num_traits::Num;
@@ -56,7 +56,7 @@ struct ParamRow {
     write: bool,
 }
 
-pub fn read_params(reader: impl Read, enums: EnumsCsv) -> Result<Vec<Param>, CatalogError> {
+pub fn read_params(reader: impl io::Read, enums: EnumsCsv) -> Result<Vec<Param>, CatalogError> {
     let mut csv = csv::ReaderBuilder::new()
         .has_headers(true)
         .from_reader(reader);

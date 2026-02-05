@@ -1,0 +1,552 @@
+[
+    {
+        "path": "",
+        "params": [
+            "hg1.outside_temp",
+            "outdoor.status_compressor",
+            "hg1.operating_mode",
+            "hg1.hot_water_active"
+        ]
+    },
+    {
+        "path": "user"
+    },
+    {
+        "path": "user/room",
+        "params": [
+            "hc1.room_temp_target_1",
+            "hc1.room_temp_target_2",
+            "hc1.room_temp_target_3"
+        ]
+    },
+    {
+        "path": "user/reduce",
+        "params": [
+            "hc1.reduce_room_temp"
+        ]
+    },
+    {
+        "path": "user/absent",
+        "params": [
+            "hc1.room_temp_absent"
+        ]
+    },
+    {
+        "path": "user/hot-water",
+        "params": [
+            "hg1.hot_water_temp_target_1",
+            "hg1.hot_water_temp_target_2",
+            "hg1.hot_water_temp_target_3"
+        ]
+    },
+    {
+        "path": "user/1x-hot-water",
+        "params": [
+            "hg1.load_hot_water"
+        ]
+    },
+    {
+        "path": "time-program"
+    },
+    {
+        "path": "time-program/party",
+        "params": [
+            "hc1.party"
+        ]
+    },
+    {
+        "path": "time-program/absent",
+        "params": [
+            "hc1.absent"
+        ]
+    },
+    {
+        "path": "time-program/vacation",
+        "params": [
+            "hc1.vacation_begin_day",
+            "hc1.vacation_begin_month",
+            "hc1.vacation_begin_year",
+            "hc1.vacation_end_day",
+            "hc1.vacation_end_month",
+            "hc1.vacation_end_year"
+        ]
+    },
+    {
+        "path": "time-program/holiday",
+        "params": [
+            "hc1.holiday_begin_day",
+            "hc1.holiday_begin_month",
+            "hc1.holiday_begin_year",
+            "hc1.holiday_end_day",
+            "hc1.holiday_end_month",
+            "hc1.holiday_end_year"
+        ]
+    },
+    {
+        "path": "time-program/heating-circuit-auto-1",
+        "params": [
+            "hc1.hc_auto_1_mon_1",
+            "hc1.hc_auto_1_mon_2",
+            "hc1.hc_auto_1_mon_3",
+            "hc1.hc_auto_1_tue_1",
+            "hc1.hc_auto_1_tue_2",
+            "hc1.hc_auto_1_tue_3",
+            "hc1.hc_auto_1_wed_1",
+            "hc1.hc_auto_1_wed_2",
+            "hc1.hc_auto_1_wed_3",
+            "hc1.hc_auto_1_thu_1",
+            "hc1.hc_auto_1_thu_2",
+            "hc1.hc_auto_1_thu_3",
+            "hc1.hc_auto_1_fri_1",
+            "hc1.hc_auto_1_fri_2",
+            "hc1.hc_auto_1_fri_3",
+            "hc1.hc_auto_1_sat_1",
+            "hc1.hc_auto_1_sat_2",
+            "hc1.hc_auto_1_sat_3",
+            "hc1.hc_auto_1_sun_1",
+            "hc1.hc_auto_1_sun_2",
+            "hc1.hc_auto_1_sun_3"
+        ]
+    },
+    {
+        "path": "time-program/heating-circuit-auto-2",
+        "params": [
+            "hc1.hc_auto_2_mon_1",
+            "hc1.hc_auto_2_mon_2",
+            "hc1.hc_auto_2_mon_3",
+            "hc1.hc_auto_2_tue_1",
+            "hc1.hc_auto_2_tue_2",
+            "hc1.hc_auto_2_tue_3",
+            "hc1.hc_auto_2_wed_1",
+            "hc1.hc_auto_2_wed_2",
+            "hc1.hc_auto_2_wed_3",
+            "hc1.hc_auto_2_thu_1",
+            "hc1.hc_auto_2_thu_2",
+            "hc1.hc_auto_2_thu_3",
+            "hc1.hc_auto_2_fri_1",
+            "hc1.hc_auto_2_fri_2",
+            "hc1.hc_auto_2_fri_3",
+            "hc1.hc_auto_2_sat_1",
+            "hc1.hc_auto_2_sat_2",
+            "hc1.hc_auto_2_sat_3",
+            "hc1.hc_auto_2_sun_1",
+            "hc1.hc_auto_2_sun_2",
+            "hc1.hc_auto_2_sun_3"
+        ]
+    },
+    {
+        "path": "time-program/hot-water-auto-1",
+        "params": [
+            "hg1.dhw_auto_1_mon_1",
+            "hg1.dhw_auto_1_mon_2",
+            "hg1.dhw_auto_1_mon_3",
+            "hg1.dhw_auto_1_tue_1",
+            "hg1.dhw_auto_1_tue_2",
+            "hg1.dhw_auto_1_tue_3",
+            "hg1.dhw_auto_1_wed_1",
+            "hg1.dhw_auto_1_wed_2",
+            "hg1.dhw_auto_1_wed_3",
+            "hg1.dhw_auto_1_thu_1",
+            "hg1.dhw_auto_1_thu_2",
+            "hg1.dhw_auto_1_thu_3",
+            "hg1.dhw_auto_1_fri_1",
+            "hg1.dhw_auto_1_fri_2",
+            "hg1.dhw_auto_1_fri_3",
+            "hg1.dhw_auto_1_sat_1",
+            "hg1.dhw_auto_1_sat_2",
+            "hg1.dhw_auto_1_sat_3",
+            "hg1.dhw_auto_1_sun_1",
+            "hg1.dhw_auto_1_sun_2",
+            "hg1.dhw_auto_1_sun_3"
+        ]
+    },
+    {
+        "path": "time-program/hot-water-auto-2",
+        "params": [
+            "hg1.dhw_auto_2_mon_1",
+            "hg1.dhw_auto_2_mon_2",
+            "hg1.dhw_auto_2_mon_3",
+            "hg1.dhw_auto_2_tue_1",
+            "hg1.dhw_auto_2_tue_2",
+            "hg1.dhw_auto_2_tue_3",
+            "hg1.dhw_auto_2_wed_1",
+            "hg1.dhw_auto_2_wed_2",
+            "hg1.dhw_auto_2_wed_3",
+            "hg1.dhw_auto_2_thu_1",
+            "hg1.dhw_auto_2_thu_2",
+            "hg1.dhw_auto_2_thu_3",
+            "hg1.dhw_auto_2_fri_1",
+            "hg1.dhw_auto_2_fri_2",
+            "hg1.dhw_auto_2_fri_3",
+            "hg1.dhw_auto_2_sat_1",
+            "hg1.dhw_auto_2_sat_2",
+            "hg1.dhw_auto_2_sat_3",
+            "hg1.dhw_auto_2_sun_1",
+            "hg1.dhw_auto_2_sun_2",
+            "hg1.dhw_auto_2_sun_3"
+        ]
+    },
+    {
+        "path": "time-program/circulation",
+        "params": [
+            "hc1.circulation_mon_1",
+            "hc1.circulation_mon_2",
+            "hc1.circulation_mon_3",
+            "hc1.circulation_tue_1",
+            "hc1.circulation_tue_2",
+            "hc1.circulation_tue_3",
+            "hc1.circulation_wed_1",
+            "hc1.circulation_wed_2",
+            "hc1.circulation_wed_3",
+            "hc1.circulation_thu_1",
+            "hc1.circulation_thu_2",
+            "hc1.circulation_thu_3",
+            "hc1.circulation_fri_1",
+            "hc1.circulation_fri_2",
+            "hc1.circulation_fri_3",
+            "hc1.circulation_sat_1",
+            "hc1.circulation_sat_2",
+            "hc1.circulation_sat_3",
+            "hc1.circulation_sun_1",
+            "hc1.circulation_sun_2",
+            "hc1.circulation_sun_3"
+        ]
+    },
+    {
+        "path": "settings/display",
+        "params": [
+            "hg1.date_day",
+            "hg1.date_month",
+            "hg1.date_year",
+            "hg1.time_hour",
+            "hg1.time_minute"
+        ]
+    },
+    {
+        "path": "settings/system",
+        "params": [
+            "outdoor.heating_system",
+            "outdoor.pump_dt_heating",
+            "outdoor.pump_dt_cooling",
+            "outdoor.glycol",
+            "outdoor.hp_power_limitation",
+            "outdoor.pump_limit"
+        ]
+    },
+    {
+        "path": "settings/ext-source",
+        "params": [
+            "outdoor.ext_heat_source",
+            "hg1.ext_power_hot_water",
+            "hg1.ext_power_stage_1",
+            "hg1.ext_power_stage_2",
+            "outdoor.bivalence_function",
+            "outdoor.bivalence_temp"
+        ]
+    },
+    {
+        "path": "settings/inputs-outputs",
+        "params": [
+            "hg1.smart_grid",
+            "hg1.smart_grid_mode",
+            "hg1.ht_nt_function",
+            "hg1.ht_nt_contact",
+            "hg1.room_thermostat",
+            "hg1.interlink_function",
+            "hg1.programmable_output",
+            "hg1.func_burner_blocking_contact",
+            "hg1.aux_switching_function",
+            "hg1.aux_wait_time",
+            "hg1.aux_switching_threshold_tdhw"
+        ]
+    },
+    {
+        "path": "settings/ism",
+        "params": [
+            "hg1.continuous_heating",
+            "hg1.heating_support",
+            "hg1.heating_support_power",
+            "hg1.heating_support_hysteresis",
+            "hg1.heating_support_max_temp",
+            "hg1.min_pump_power",
+            "hg1.max_pump_power"
+        ]
+    },
+    {
+        "path": "configuration"
+    },
+    {
+        "path": "configuration/sensors",
+        "params": [
+            "hg1.outside_temp_sensor",
+            "hg1.water_sensors",
+            "hg1.outside_temp_correction",
+            "hg1.water_pressure_min",
+            "hg1.water_pressure_max",
+            "hg1.water_pressure_target",
+            "hg1.water_max_pressure_loss"
+        ]
+    },
+    {
+        "path": "configuration/hc-config",
+        "params": [
+            "hc1.weather_compensated",
+            "hc1.frost_protection_temp",
+            "hc1.building_insulation",
+            "hc1.switch_temp_hc"
+        ]
+    },
+    {
+        "path": "configuration/heating",
+        "params": [
+            "hc1.heat_limit_heating_mode",
+            "hc1.heat_limit_reducing_mode",
+            "hc1.heating_curve",
+            "outdoor.feed_temp_overshoot",
+            "hc1.feed_temp_heating_mode",
+            "hc1.feed_temp_reducing_mode",
+            "hc1.max_feed_temp",
+            "hc1.min_feed_temp",
+            "hc1.room_sensor_adaptation",
+            "hc1.heating_curve_adaption",
+            "hg1.interlink_temp_increase",
+            "hc1.comfort_heating"
+        ]
+    },
+    {
+        "path": "configuration/cooling",
+        "params": [
+            "hc1.target_flow_cooling_start",
+            "hc1.target_flow_cooling_max",
+            "hc1.start_cooling_outside_temp",
+            "hc1.max_cooling_outside_temp",
+            "hc1.feed_temp_lower_limit",
+            "hc1.feed_temp_cooling_mode",
+            "hc1.cooling_setpoint_correction",
+            "hg1.interlink_temp_reduction"
+        ]
+    },
+    {
+        "path": "confugration/hot-water",
+        "params": [
+            "hg1.max_hot_water_loading_time",
+            "hg1.hot_water_blocking_time",
+            "hg1.hot_water_hysteresis",
+            "hg1.waiting_time_ext_heat_generator",
+            "hg1.solar_function",
+            "hg1.circulation_pump_control",
+            "hg1.circulation_pump_interval",
+            "hg1.anti_legionella_day",
+            "hg1.anti_legionella_time",
+            "hg1.anti_legionella_temp"
+        ]
+    },
+    {
+        "path": "configuration/addition",
+        "params": [
+            "hc1.screed",
+            "hg1.ventilation_function"
+        ]
+    },
+    {
+        "path": "information/current",
+        "params": [
+            "hg1.v",
+            "hg1.t_r",
+            "hg1.t_dhw",
+            "hg1.t_au"
+        ]
+    },
+    {
+        "path": "information/overview",
+        "params": [
+            "hg1.external_request",
+            "hg1.room_thermostat_interlink",
+            "hg1.quiet_mode",
+            "hg1.status_heating_support",
+            "outdoor.status_heat_circulation_pump",
+            "outdoor.pwm_pump",
+            "hg1.buh_current_output",
+            "hg1.mix_3uvdhw",
+            "hg1.mix_3uvb1"
+        ]
+    },
+    {
+        "path": "information/values",
+        "params": [
+            "hg1.feed_temperature_current",
+            "hg1.feed_temperature_target",
+            "hg1.average_outside_temp",
+            "hg1.hot_water_temp_current",
+            "hg1.hot_water_temp_target",
+            "hg1.return_flow_temp",
+            "hcm1.feed_temp_hc_current",
+            "hg1.feed_temp_hc_target",
+            "hg1.feed_temp_phx",
+            "hg1.feed_temp_buh",
+            "hg1.outdoor_temp_opt",
+            "hg1.refrigerant_temp",
+            "hg1.volume_flow",
+            "hg1.water_pressure"
+        ]
+    },
+    {
+        "path": "statistics/month/electrial-energy-total",
+        "params": [
+            "hg1.energy_electrical_01_low",
+            "hg1.energy_electrical_01_high",
+            "hg1.energy_electrical_02_low",
+            "hg1.energy_electrical_02_high",
+            "hg1.energy_electrical_03_low",
+            "hg1.energy_electrical_03_high",
+            "hg1.energy_electrical_04_low",
+            "hg1.energy_electrical_04_high",
+            "hg1.energy_electrical_05_low",
+            "hg1.energy_electrical_05_high",
+            "hg1.energy_electrical_06_low",
+            "hg1.energy_electrical_06_high",
+            "hg1.energy_electrical_07_low",
+            "hg1.energy_electrical_07_high",
+            "hg1.energy_electrical_08_low",
+            "hg1.energy_electrical_08_high",
+            "hg1.energy_electrical_09_low",
+            "hg1.energy_electrical_09_high",
+            "hg1.energy_electrical_10_low",
+            "hg1.energy_electrical_10_high",
+            "hg1.energy_electrical_11_low",
+            "hg1.energy_electrical_11_high",
+            "hg1.energy_electrical_12_low",
+            "hg1.energy_electrical_12_high"
+        ]
+    },
+    {
+        "path": "statistics/month/energy-hp-cooling",
+        "params": [
+            "hg1.energy_hp_cooling_01_low",
+            "hg1.energy_hp_cooling_01_high",
+            "hg1.energy_hp_cooling_02_low",
+            "hg1.energy_hp_cooling_02_high",
+            "hg1.energy_hp_cooling_03_low",
+            "hg1.energy_hp_cooling_03_high",
+            "hg1.energy_hp_cooling_04_low",
+            "hg1.energy_hp_cooling_04_high",
+            "hg1.energy_hp_cooling_05_low",
+            "hg1.energy_hp_cooling_05_high",
+            "hg1.energy_hp_cooling_06_low",
+            "hg1.energy_hp_cooling_06_high",
+            "hg1.energy_hp_cooling_07_low",
+            "hg1.energy_hp_cooling_07_high",
+            "hg1.energy_hp_cooling_08_low",
+            "hg1.energy_hp_cooling_08_high",
+            "hg1.energy_hp_cooling_09_low",
+            "hg1.energy_hp_cooling_09_high",
+            "hg1.energy_hp_cooling_10_low",
+            "hg1.energy_hp_cooling_10_high",
+            "hg1.energy_hp_cooling_11_low",
+            "hg1.energy_hp_cooling_11_high",
+            "hg1.energy_hp_cooling_12_low",
+            "hg1.energy_hp_cooling_12_high"
+        ]
+    },
+    {
+        "path": "statistics/month/energy-hp-heating",
+        "params": [
+            "hg1.energy_hp_heating_01_low",
+            "hg1.energy_hp_heating_01_high",
+            "hg1.energy_hp_heating_02_low",
+            "hg1.energy_hp_heating_02_high",
+            "hg1.energy_hp_heating_03_low",
+            "hg1.energy_hp_heating_03_high",
+            "hg1.energy_hp_heating_04_low",
+            "hg1.energy_hp_heating_04_high",
+            "hg1.energy_hp_heating_05_low",
+            "hg1.energy_hp_heating_05_high",
+            "hg1.energy_hp_heating_06_low",
+            "hg1.energy_hp_heating_06_high",
+            "hg1.energy_hp_heating_07_low",
+            "hg1.energy_hp_heating_07_high",
+            "hg1.energy_hp_heating_08_low",
+            "hg1.energy_hp_heating_08_high",
+            "hg1.energy_hp_heating_09_low",
+            "hg1.energy_hp_heating_19_high",
+            "hg1.energy_hp_heating_10_low",
+            "hg1.energy_hp_heating_10_high",
+            "hg1.energy_hp_heating_11_low",
+            "hg1.energy_hp_heating_11_high",
+            "hg1.energy_hp_heating_12_low",
+            "hg1.energy_hp_heating_12_high"
+        ]
+    },
+    {
+        "path": "statistics/month/energy-hp-heating",
+        "params": [
+            "hg1.energy_hot_water_01_low",
+            "hg1.energy_hot_water_01_high",
+            "hg1.energy_hot_water_02_low",
+            "hg1.energy_hot_water_02_high",
+            "hg1.energy_hot_water_03_low",
+            "hg1.energy_hot_water_03_high",
+            "hg1.energy_hot_water_04_low",
+            "hg1.energy_hot_water_04_high",
+            "hg1.energy_hot_water_05_low",
+            "hg1.energy_hot_water_05_high",
+            "hg1.energy_hot_water_06_low",
+            "hg1.energy_hot_water_06_high",
+            "hg1.energy_hot_water_07_low",
+            "hg1.energy_hot_water_07_high",
+            "hg1.energy_hot_water_08_low",
+            "hg1.energy_hot_water_08_high",
+            "hg1.energy_hot_water_09_low",
+            "hg1.energy_hot_water_09_high",
+            "hg1.energy_hot_water_10_low",
+            "hg1.energy_hot_water_10_high",
+            "hg1.energy_hot_water_11_low",
+            "hg1.energy_hot_water_11_high",
+            "hg1.energy_hot_water_12_low",
+            "hg1.energy_hot_water_12_high"
+        ]
+    },
+    {
+        "path": "statistics/month/energy-hp-total",
+        "params": [
+            "hg1.energy_hp_total_01_low",
+            "hg1.energy_hp_total_01_high",
+            "hg1.energy_hp_total_02_low",
+            "hg1.energy_hp_total_02_high",
+            "hg1.energy_hp_total_03_low",
+            "hg1.energy_hp_total_03_high",
+            "hg1.energy_hp_total_04_low",
+            "hg1.energy_hp_total_04_high",
+            "hg1.energy_hp_total_05_low",
+            "hg1.energy_hp_total_05_high",
+            "hg1.energy_hp_total_06_low",
+            "hg1.energy_hp_total_06_high",
+            "hg1.energy_hp_total_07_low",
+            "hg1.energy_hp_total_07_high",
+            "hg1.energy_hp_total_08_low",
+            "hg1.energy_hp_total_08_high",
+            "hg1.energy_hp_total_09_low",
+            "hg1.energy_hp_total_09_high",
+            "hg1.energy_hp_total_10_low",
+            "hg1.energy_hp_total_10_high",
+            "hg1.energy_hp_total_11_low",
+            "hg1.energy_hp_total_11_high",
+            "hg1.energy_hp_total_12_low",
+            "hg1.energy_hp_total_12_high"
+        ]
+    },
+    {
+        "path": "statistics/total",
+        "params": [
+            "hg1.energy_hp_cooling",
+            "hg1.energy_hp_heating",
+            "hg1.energy_hot_water",
+            "hg1.energy_hp_total",
+            "hg1.energy_electrical",
+            "hg1.energy_ext_hot_water",
+            "hg1.energy_ext_heating",
+            "hg1.runtime_compressor",
+            "hg1.runtime_pump"
+        ]
+    }
+]

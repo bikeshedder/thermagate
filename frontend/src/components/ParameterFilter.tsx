@@ -28,14 +28,14 @@ export type ParameterFilterProps = {
     setParameters(devices: string[]);
 };
 
-type Config = {
+type Catalog = {
     params: {
         name: string
     }[]
 }
 
 export function ParameterFilter(props: ParameterFilterProps) {
-    let [masterData] = createResource<Config>(async () => (await fetch(apiUrl("master_data"))).json())
+    let [masterData] = createResource<Catalog>(async () => (await fetch(apiUrl("catalog"))).json())
     let params = createMemo(() => {
         return (masterData()?.params ?? []).toSorted((a, b) => {
             if (a.name < b.name) { return -1 }

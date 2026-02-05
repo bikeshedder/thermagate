@@ -13,4 +13,13 @@ pub enum CatalogError {
 
     #[error("Invalid value for 8 bit enum: {0}")]
     InvalidEnum8Value(u16),
+
+    #[error("Invalid pages.json: {0}")]
+    InvalidPagesJson(serde_json::Error),
+
+    #[error("Unknown device: {0}")]
+    UnknownDevice(String),
+
+    #[error("Unknown parameter: {0}")]
+    UnknownParameter(String),
 }

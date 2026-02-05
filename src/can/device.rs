@@ -3,7 +3,7 @@ use std::fmt;
 use clap::ValueEnum;
 use num_enum::{FromPrimitive, IntoPrimitive};
 use serde::{Deserialize, Serialize};
-use strum::{AsRefStr, IntoStaticStr};
+use strum::{AsRefStr, EnumString, IntoStaticStr};
 
 #[derive(
     Debug,
@@ -17,10 +17,12 @@ use strum::{AsRefStr, IntoStaticStr};
     Serialize,
     Deserialize,
     IntoStaticStr,
+    EnumString,
     ValueEnum,
 )]
 #[repr(u16)]
 #[clap(rename_all = "verbatim")]
+#[strum(ascii_case_insensitive)]
 pub enum Device {
     /// Control panel
     RoCon = 0x10a,

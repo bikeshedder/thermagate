@@ -20,7 +20,7 @@ export type CanDevice = z.infer<typeof Device>
 
 export const Device = z.object({
     id: z.number(),
-    name: z.string(),
+    name: z.string().optional(),
 })
 export type Device = z.infer<typeof Device>
 
@@ -100,5 +100,5 @@ export const ParamMessage = z.object({
 export type ParamMessage = z.infer<typeof ParamMessage>
 
 
-export const ParamsMessage = z.record(z.record(ParamValue))
+export const ParamsMessage = z.record(z.string(), z.record(z.string(), ParamValue))
 export type ParamsMessage = z.infer<typeof ParamsMessage>
