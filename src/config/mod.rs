@@ -7,7 +7,7 @@ use figment::{
 use nrg_hass::config::HomeAssistantConfig;
 use nrg_mqtt::config::MqttConfig;
 use serde::{Deserialize, Serialize};
-use serde_with::{DurationSeconds, serde_as};
+use serde_with::{DurationSecondsWithFrac, serde_as};
 use thiserror::Error;
 
 use crate::can::device::Device;
@@ -88,10 +88,10 @@ pub struct CanConfig {
 #[serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QueryConfig {
-    #[serde_as(as = "DurationSeconds")]
+    #[serde_as(as = "DurationSecondsWithFrac")]
     pub interval: Duration,
     #[serde(default = "default_timeout")]
-    #[serde_as(as = "DurationSeconds")]
+    #[serde_as(as = "DurationSecondsWithFrac")]
     pub timeout: Duration,
     pub params: Vec<QueryParam>,
 }
