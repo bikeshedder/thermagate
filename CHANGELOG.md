@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-03-11
+
 - Add timeout when reading parameters. This fixes an issue where a non
   existing device or parameter would end up stalling the queries.
 
