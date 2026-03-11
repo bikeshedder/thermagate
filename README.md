@@ -4,6 +4,8 @@ This software is designed to work for the **Daikin Altherma 3 H HT ECH<sub>2</su
 
 Daikin heat pumps that don't use a CAN bus are **NOT** supported. If your heat pump does have built-in WiFi it is a newer/different model and uses a completely different communication technology.
 
+[![Discord Chat](https://img.shields.io/discord/1343615469776666747?style=for-the-badge&logo=discord&logoColor=white&label=Discord%20Chat&color=%237289D7)](https://discord.gg/vwkFcfGRmM)
+
 ## Disclaimer
 
 **⚠️ This software is provided "as is," without any warranty, including merchantability, fitness for a particular purpose, or noninfringement. The authors are not liable for any claims, damages, or liabilities. Use at your own risk.**
