@@ -24,6 +24,7 @@ name = "thermagate"
 
 [query]
 interval = 30
+timeout = 0.1
 params = [
     { device = "HG1", param = "outside_temp" },
     { device = "Outdoor", param = "status_compressor" },

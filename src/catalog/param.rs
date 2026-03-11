@@ -1,3 +1,5 @@
+use std::fmt;
+
 use internment::Intern;
 use rust_decimal::Decimal;
 
@@ -23,6 +25,12 @@ impl Param {
             ParamType::Dec(p) => p.unit,
             _ => None,
         }
+    }
+}
+
+impl fmt::Display for Param {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
     }
 }
 

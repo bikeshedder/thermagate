@@ -34,7 +34,7 @@ pub async fn cmd(
     info!("Connected.");
 
     info!("Get {} / {}...", args.device, param.name);
-    let value = can.get(args.device, param).await?;
+    let value = can.get(args.device, param, config.query.timeout).await?;
     warn!("Current value: {:?}", value);
 
     let encoded_value = param.encode_str(&args.value).unwrap();
@@ -58,7 +58,7 @@ pub async fn cmd(
     tokio::time::sleep(Duration::from_secs(1)).await;
 
     info!("Get {} / {}...", args.device, param.name);
-    let value = can.get(args.device, param).await?;
+    let value = can.get(args.device, param, config.query.timeout).await?;
     warn!("Updated value: {:?}", value);
 
     info!("Waiting for bus driver to shut down...");

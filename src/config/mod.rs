@@ -90,7 +90,14 @@ pub struct CanConfig {
 pub struct QueryConfig {
     #[serde_as(as = "DurationSeconds")]
     pub interval: Duration,
+    #[serde(default = "default_timeout")]
+    #[serde_as(as = "DurationSeconds")]
+    pub timeout: Duration,
     pub params: Vec<QueryParam>,
+}
+
+fn default_timeout() -> Duration {
+    Duration::from_millis(100)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -132,10 +132,13 @@ async fn query_params(config: QueryConfig, catalog: Arc<Catalog>, can: Arc<CanDr
     loop {
         for &(device, param) in params.iter() {
             debug!("Requesting {}/{}", device.name(), param.name);
-            match can.get(device, param).await {
+            match can.get(device, param, config.timeout).await {
                 Err(GetError::Shutdown) => return,
                 Err(GetError::QueueFull) => {
                     warn!("Send queue is full")
+                }
+                Err(GetError::Timeout) => {
+                    warn!("Timeout while getting parameter {device}.{param}");
                 }
                 Ok(_) => {}
             }

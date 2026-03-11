@@ -1,6 +1,7 @@
 use std::{
     ops::Deref,
     sync::atomic::{AtomicBool, Ordering},
+    time::Duration,
 };
 
 use futures_util::{
@@ -16,7 +17,7 @@ use tokio::{
         mpsc::{self, error::TrySendError},
         watch,
     },
-    time::sleep,
+    time::{sleep, timeout},
 };
 use tracing::warn;
 
@@ -104,11 +105,21 @@ impl CanDriver {
                 _ => unreachable!(),
             })
     }
-    pub async fn get(&self, dev: Device, param: &Param) -> Result<Option<Value>, GetError> {
-        let msg = self.get_raw(dev, param).await?;
+    pub async fn get(
+        &self,
+        dev: Device,
+        param: &Param,
+        receive_timeout: Duration,
+    ) -> Result<Option<Value>, GetError> {
+        let msg = self.get_raw(dev, param, receive_timeout).await?;
         Ok(param.decode(msg.data))
     }
-    async fn get_raw(&self, dev: Device, param: &Param) -> Result<ReceivedMessage, GetError> {
+    async fn get_raw(
+        &self,
+        dev: Device,
+        param: &Param,
+        receive_timeout: Duration,
+    ) -> Result<ReceivedMessage, GetError> {
         let mut rx = self.rx();
         let req = Message {
             sender: Device::TG,
@@ -122,19 +133,27 @@ impl CanDriver {
             TrySendError::Full(_) => GetError::QueueFull,
         })?;
         // FIXME add timeout
-        while let Ok(msg) = rx.recv().await {
-            if msg.receiver != Device::TG {
-                continue;
+        timeout(receive_timeout, async {
+            loop {
+                match rx.recv().await {
+                    Ok(msg)
+                        if msg.receiver == Device::TG
+                            && msg.sender == req.receiver
+                            && msg.param == req.param =>
+                    {
+                        break Some(msg);
+                    }
+                    Ok(_) => continue,
+                    Err(broadcast::error::RecvError::Closed) => break None,
+                    Err(broadcast::error::RecvError::Lagged(_)) => {
+                        warn!("rx.recv() lagged too far behind");
+                    }
+                }
             }
-            if msg.sender != req.receiver {
-                continue;
-            }
-            if msg.param != req.param {
-                continue;
-            }
-            return Ok(msg);
-        }
-        unreachable!()
+        })
+        .await
+        .map_err(|_| GetError::Timeout)?
+        .ok_or(GetError::Shutdown)
     }
     pub async fn shutdown(&self) {
         let _ = self.send_tx.send(SendMsg::Shutdown).await;
@@ -148,6 +167,8 @@ pub enum GetError {
     Shutdown,
     #[error("Queue full")]
     QueueFull,
+    #[error("Timeout")]
+    Timeout,
 }
 
 impl EventLoop {

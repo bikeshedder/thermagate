@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add timeout when reading parameters. This fixes an issue where a non
+  existing device or parameter would end up stalling the queries.
+
 ## [0.2.0] - 2026-02-14
 
 - Announce query parameters on gateway start
