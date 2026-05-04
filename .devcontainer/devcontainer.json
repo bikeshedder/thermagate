@@ -27,7 +27,7 @@
 			"version": "1.90.0",
 			"profile": "default"
 		},
-		"ghcr.io/devcontainers/features/node:1": {
+		"ghcr.io/devcontainers/features/node:2": {
 			"version": "22.20.0"
 		},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
