@@ -17,6 +17,7 @@ pub const DEFAULT_CONFIG: &str = include_str!("default.toml");
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     pub log: LogConfig,
+    pub features: FeaturesConfig,
     pub language: Language,
     pub http: HttpConfig,
     pub can: CanConfig,
@@ -37,6 +38,11 @@ impl Config {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LogConfig {
     pub level: LogLevel,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FeaturesConfig {
+    pub hass: bool,
 }
 
 #[derive(Debug, Copy, Clone, Default, Serialize, Deserialize)]

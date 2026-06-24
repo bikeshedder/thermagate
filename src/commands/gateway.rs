@@ -66,34 +66,36 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
         }
     });
     // announce parameters to HA via MQTT
-    info!(
-        "Announcing {} parameters to HA via MQTT",
-        config.query.params.len()
-    );
-    for param in &config.query.params {
-        params
-            .values
-            .lock()
-            .await
-            .entry(param.device.to_string())
-            .or_default()
-            .insert(Intern::from_ref(&param.param), Param::Loading);
-        let catalog_param = catalog
-            .param_by_name(&param.param)
-            .ok_or_else(|| ConfigError::UnsupportedParam(param.param.clone()))?;
-        let sensor = make_hass_sensor(
-            param.device,
-            catalog_param,
-            &config.hass.object_id,
-            &config.mqtt.topic_prefix,
+    if config.features.hass {
+        info!(
+            "Announcing {} parameters to HA via MQTT",
+            config.query.params.len()
         );
-        loop {
-            info!("Announcing {}/{}", param.device.to_string(), param.param);
-            match announce(&mqtt, &config.hass, &config.hass.object_id, &sensor).await {
-                Ok(_) => break,
-                Err(e) => {
-                    error!("Failed to announce device to MQTT broker: {:?}", e);
-                    sleep(Duration::from_secs(5)).await;
+        for param in &config.query.params {
+            params
+                .values
+                .lock()
+                .await
+                .entry(param.device.to_string())
+                .or_default()
+                .insert(Intern::from_ref(&param.param), Param::Loading);
+            let catalog_param = catalog
+                .param_by_name(&param.param)
+                .ok_or_else(|| ConfigError::UnsupportedParam(param.param.clone()))?;
+            let sensor = make_hass_sensor(
+                param.device,
+                catalog_param,
+                &config.hass.object_id,
+                &config.mqtt.topic_prefix,
+            );
+            loop {
+                info!("Announcing {}/{}", param.device.to_string(), param.param);
+                match announce(&mqtt, &config.hass, &config.hass.object_id, &sensor).await {
+                    Ok(_) => break,
+                    Err(e) => {
+                        error!("Failed to announce device to MQTT broker: {:?}", e);
+                        sleep(Duration::from_secs(5)).await;
+                    }
                 }
             }
         }
@@ -102,6 +104,7 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
         params.clone(),
         can.rx(),
         mqtt,
+        config.features.hass,
         config.hass.clone(),
         config.mqtt.clone(),
         catalog.clone(),
@@ -153,6 +156,7 @@ async fn recv_params(
     params: Params,
     mut rx: broadcast::Receiver<ReceivedMessage>,
     mqtt: AsyncClient,
+    hass_enabled: bool,
     hass_cfg: HomeAssistantConfig,
     mqtt_cfg: MqttConfig,
     catalog: Arc<Catalog>,
@@ -193,16 +197,18 @@ async fn recv_params(
                     .entry(param.name)
                 {
                     e.insert(Param::Loading);
-                    let sensor = make_hass_sensor(
-                        message.receiver,
-                        param,
-                        &hass_cfg.object_id,
-                        &mqtt_cfg.topic_prefix,
-                    );
-                    warn_if_err(
-                        announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor).await,
-                        "Failed to announce device to MQTT broker",
-                    )
+                    if hass_enabled {
+                        let sensor = make_hass_sensor(
+                            message.receiver,
+                            param,
+                            &hass_cfg.object_id,
+                            &mqtt_cfg.topic_prefix,
+                        );
+                        warn_if_err(
+                            announce(&mqtt, &hass_cfg, &hass_cfg.object_id, &sensor).await,
+                            "Failed to announce device to MQTT broker",
+                        )
+                    }
                 }
             }
             MessageType::Response => {

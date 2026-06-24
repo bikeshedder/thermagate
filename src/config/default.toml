@@ -1,5 +1,8 @@
 language = "de"
 
+[features]
+hass = true
+
 [log]
 level = "info"
 
