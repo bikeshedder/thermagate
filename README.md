@@ -51,6 +51,10 @@ If you want to keep the existing gateway software for future reference you can a
 
 ## Building from source
 
+> 💡 If you want to *develop* Thermagate (rather than just build a release), see
+> [CONTRIBUTING.md](./CONTRIBUTING.md). It covers the bundled Dev Container,
+> local toolchain setup, and how to wire up a (virtual) CAN interface.
+
 If you don't want to use the [binary release](https://github.com/bikeshedder/thermagate/releases) you can also build the code yourself:
 
 1. Clone this repository
