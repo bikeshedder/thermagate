@@ -89,11 +89,11 @@ README.
 
 ### Using `can0` from inside the Dev Container
 
-The dev container runs with `--network=host` (see
-[`.devcontainer/devcontainer.json`](./.devcontainer/devcontainer.json)), so it
-shares the host's network namespace and every host interface — including
-`can0` — is visible inside the container with no extra steps. Configure `can0`
-on the host as described above; nothing extra is needed in the container.
+The dev container's `app` service runs with `network_mode: host` (see
+[`.devcontainer/compose.yml`](./.devcontainer/compose.yml)), so it shares the
+host's network namespace and every host interface — including `can0` — is
+visible inside the container with no extra steps. Configure `can0` on the host
+as described above; nothing extra is needed in the container.
 
 Verify inside the container:
 
@@ -110,6 +110,37 @@ You should see the same `can0` that exists on the host.
 | `can0` not found (in container or locally) | The interface doesn't exist on the host. Create/connect it (see above). |
 | `can0` exists but is `DOWN` | Bring it up: `sudo ip link set can0 up`. |
 | Real CAN sees no traffic | Bitrate mismatch — the heat pump bus is `20000`; set it before bringing the interface up. |
+
+## MQTT broker
+
+Thermagate is most useful paired with an MQTT broker. The Dev Container brings
+up a [Mosquitto](https://mosquitto.org/) broker as a second compose service
+(`mosquitto`) so you don't have to run one yourself.
+
+Point Thermagate's `[mqtt]` config at it:
+
+```toml
+[mqtt]
+host = "mosquitto"   # or 172.30.0.2
+port = 1883
+```
+
+A few things worth knowing about how it's wired up:
+
+- The broker is **not published to the host** — there is no `ports:` mapping.
+  It listens only on a private bridge network and is reachable from the
+  `app` container (and, because the host routes to the bridge, from the host
+  itself), but not from the LAN.
+- Because the `app` service uses `network_mode: host`, it cannot also join the
+  bridge network, so Docker/Podman **service-name DNS does not work** from it.
+  The broker is therefore pinned to a static IP (`172.30.0.2`) in
+  [`compose.yml`](./.devcontainer/compose.yml), and the `app` service maps the
+  name `mosquitto` to that IP via `extra_hosts`. That's why both `mosquitto`
+  and `172.30.0.2` work as the host.
+- If `172.30.0.0/24` clashes with an existing network on your machine, change
+  the subnet and the static IP in `compose.yml` (and the `extra_hosts` entry).
+- The broker allows anonymous access and uses no TLS — **development only**,
+  configured in [`mosquitto.conf`](./.devcontainer/mosquitto.conf).
 
 ## Configuration
 

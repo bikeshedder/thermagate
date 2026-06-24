@@ -1,0 +1,47 @@
+# Dev Container services. See ../CONTRIBUTING.md for the rationale.
+#
+# `app` runs on the host network so the host's can0 CAN interface is visible
+# inside it. A container on the host network CANNOT also join another network,
+# so it cannot use Docker/Podman service-name DNS to find `mosquitto`. Instead
+# `mosquitto` is pinned to a static IP on a private bridge, and `app` maps that
+# IP to the name `mosquitto` via extra_hosts. The host routes to the bridge, so
+# the host-networked `app` can reach it; no port is published to the host.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Host network namespace -> host interfaces (incl. can0) are visible here.
+    network_mode: host
+    userns_mode: "keep-id:uid=1000,gid=1000"
+    volumes:
+      # Bind-mount the repository (devcontainer.json sets workspaceFolder to match).
+      - ..:/workspaces/thermagate:cached
+    # Resolve the broker's name to its pinned bridge IP (no service DNS on host net).
+    extra_hosts:
+      - "mosquitto:172.30.0.2"
+    # Keep the container alive; the Dev Container attaches to it.
+    command: sleep infinity
+    depends_on:
+      - mosquitto
+
+  mosquitto:
+    # Config is baked into the image (see mosquitto.Dockerfile) rather than
+    # bind-mounted, so it can't decay into an empty directory across rebuilds.
+    build:
+      context: .
+      dockerfile: mosquitto.Dockerfile
+    restart: unless-stopped
+    networks:
+      mqtt:
+        # Pinned so `app` (on the host network) can reach it at a known address.
+        ipv4_address: 172.30.0.2
+    # No `ports:` on purpose — the broker is not published to the host.
+
+networks:
+  mqtt:
+    ipam:
+      config:
+        # Must be declared to assign a static IP. Change if it clashes with an
+        # existing network on your host.
+        - subnet: 172.30.0.0/24

@@ -2,12 +2,11 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
 	"name": "Thermagate",
-	"build": {
-		// Sets the run context to one level up instead of the .devcontainer folder.
-		"context": ".",
-		// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
-		"dockerfile": "Dockerfile"
-	},
+	// Multi-service setup: the `app` dev container plus a `mosquitto` MQTT
+	// broker. See compose.yml and CONTRIBUTING.md.
+	"dockerComposeFile": "compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/thermagate",
 	"customizations": {
 		"vscode": {
 			"extensions": [
