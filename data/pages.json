@@ -327,7 +327,7 @@
         ]
     },
     {
-        "path": "confugration/hot-water",
+        "path": "configuration/hot-water",
         "params": [
             "hg1.max_hot_water_loading_time",
             "hg1.hot_water_blocking_time",

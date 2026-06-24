@@ -1,18 +1,15 @@
 import { io } from "socket.io-client";
 import {
 	AppBar,
-	Box,
 	Breadcrumbs,
-	Button,
+	Divider,
 	Drawer,
 	IconButton,
-	Link,
 	List,
 	ListItem,
 	ListItemButton,
 	ListItemIcon,
 	ListItemText,
-	Paper,
 	Toolbar,
 	Typography,
 } from "@suid/material";
@@ -24,8 +21,7 @@ import { Route, Router } from "@solidjs/router";
 import { CanMonitor } from "./routes/CanMonitor";
 import { Pages } from "./routes/Pages";
 import { createSignal, For } from "solid-js";
-import { Portal } from "solid-js/web";
-import { Monitor, TableView, Tune, Settings } from "@suid/icons-material";
+import { Monitor, Tune, Settings } from "@suid/icons-material";
 import { CONFIG } from "./config";
 import { CatalogProvider, useCatalog } from "./contexts/catalog";
 
@@ -63,18 +59,7 @@ export default function App() {
 						<Drawer open={showDrawer()} onClose={() => setShowDrawer(false)}>
 							<List>
 								<PagesMenu setShowDrawer={setShowDrawer} />
-								<ListItem disablePadding>
-									<ListItemButton<"a">
-										component="a"
-										href="/pages"
-										onClick={() => setShowDrawer(false)}
-									>
-										<ListItemIcon>
-											<Settings />
-										</ListItemIcon>
-										<ListItemText primary="Pages" />
-									</ListItemButton>
-								</ListItem>
+								<Divider />
 								<ListItem disablePadding>
 									<ListItemButton<"a">
 										component="a"
@@ -105,6 +90,7 @@ export default function App() {
 						<h1>&nbsp;</h1>
 						<Router>
 							<Route path="/pages" component={Pages} />
+							<Route path="/pages/*pagePath" component={Pages} />
 							<Route path="/can-monitor" component={CanMonitor} />
 							<Route path="/params" component={Params} />
 						</Router>
@@ -115,22 +101,53 @@ export default function App() {
 	);
 }
 
+function pageTitle(path: string) {
+	if (path === "") {
+		return "Overview";
+	}
+	const segment = path.split("/").at(-1) || path;
+	return segment
+		.split("-")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(" ");
+}
+
 function PagesMenu(props: { setShowDrawer: (showDrawer: boolean) => void }) {
 	const catalog = useCatalog();
-	return <For each={catalog.pages}>{(page) => (
-		page.path != "" &&
-		page.path.indexOf("/") == -1 &&
-		<ListItem disablePadding>
-			<ListItemButton<"a">
-				component="a"
-				href="/pages"
-				onClick={() => props.setShowDrawer(false)}
-			>
-				<ListItemIcon>
-					<Settings />
-				</ListItemIcon>
-				<ListItemText primary={page.path} />
-			</ListItemButton>
-		</ListItem>
-	)}</For>
+	return (
+		<>
+			<ListItem disablePadding>
+				<ListItemButton<"a">
+					component="a"
+					href="/pages"
+					onClick={() => props.setShowDrawer(false)}
+				>
+					<ListItemIcon>
+						<Settings />
+					</ListItemIcon>
+					<ListItemText primary="Pages" secondary="Overview" />
+				</ListItemButton>
+			</ListItem>
+			<For each={catalog.pages.filter((page) => page.path !== "")}>
+				{(page) => {
+					const depth = page.path.split("/").length;
+					return (
+						<ListItem disablePadding>
+							<ListItemButton<"a">
+								component="a"
+								href={`/pages/${page.path}`}
+								sx={{ pl: `${0.8 + depth * 1.3}rem` }}
+								onClick={() => props.setShowDrawer(false)}
+							>
+								<ListItemIcon sx={{ "min-width": "2rem" }}>
+									<Settings fontSize="small" />
+								</ListItemIcon>
+								<ListItemText primary={pageTitle(page.path)} secondary={page.path} />
+							</ListItemButton>
+						</ListItem>
+					);
+				}}
+			</For>
+		</>
+	);
 }
