@@ -2,12 +2,13 @@ use std::fmt;
 
 use internment::Intern;
 use rust_decimal::Decimal;
+use serde::Serialize;
 
 use crate::model::{
     r#enum::EnumVariant, string::MultilingualString, time::Time, time_range::TimeRange, unit::Unit,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Param {
     pub id: u16,
     pub name: Intern<String>,
@@ -34,7 +35,7 @@ impl fmt::Display for Param {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub enum ParamType {
     Bool(BoolParam),
     I8(I8Param),
@@ -46,12 +47,12 @@ pub enum ParamType {
     TimeRange(TimeRangeParam),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct BoolParam {
     pub default: Option<bool>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct I8Param {
     pub default: Option<i8>,
     pub unit: Option<Unit>,
@@ -59,7 +60,7 @@ pub struct I8Param {
     pub max: Option<i8>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct I16Param {
     pub default: Option<i16>,
     pub unit: Option<Unit>,
@@ -67,7 +68,7 @@ pub struct I16Param {
     pub max: Option<i16>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct DecParam {
     pub default: Option<Decimal>,
     pub unit: Option<Unit>,
@@ -76,18 +77,18 @@ pub struct DecParam {
     pub max: Option<Decimal>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct EnumParam<T: Clone> {
     pub default: Option<EnumVariant<T>>,
     pub variants: Vec<EnumVariant<T>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct TimeParam {
     pub default: Option<Time>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct TimeRangeParam {
     pub default: Option<TimeRange>,
 }

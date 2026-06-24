@@ -1,7 +1,7 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use strum::EnumMessage;
 
-#[derive(Debug, Copy, Clone, EnumMessage, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, EnumMessage, Deserialize, PartialEq, Eq, Serialize)]
 pub enum Unit {
     #[serde(rename = "C")]
     #[strum(message = "°C")]
