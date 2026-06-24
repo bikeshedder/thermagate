@@ -102,14 +102,14 @@ async fn static_handler(uri: Uri) -> impl IntoResponse {
 #[derive(Debug, Serialize)]
 pub struct Device {
     pub id: u16,
-    pub name: &'static str,
+    pub name: String,
 }
 
 impl From<can::device::Device> for Device {
     fn from(value: can::device::Device) -> Self {
         Self {
             id: value.id(),
-            name: value.name(),
+            name: value.name().to_lowercase(),
         }
     }
 }
@@ -121,12 +121,12 @@ pub struct CanParam {
 }
 
 #[derive(Debug, Serialize)]
-pub struct Param {
+pub struct ParamInfo {
     pub id: u16,
     pub name: Intern<String>,
 }
 
-impl From<&CatalogParam> for Param {
+impl From<&CatalogParam> for ParamInfo {
     fn from(value: &CatalogParam) -> Self {
         Self {
             id: value.id,
@@ -148,7 +148,7 @@ struct CanMessage<'a> {
 #[derive(Debug, Serialize)]
 pub struct ParamUpdate {
     pub device: Device,
-    pub param: Param,
+    pub param: ParamInfo,
     pub value: crate::commands::gateway::Param,
 }
 
@@ -194,28 +194,18 @@ async fn param_sender(mut rx: broadcast::Receiver<Arc<ParamUpdate>>, io: SocketI
 }
 
 #[derive(Debug, Serialize)]
-struct WebCatalog {
-    params: Vec<MasterDataParam>,
+struct WebCatalog<'a> {
+    params: &'a Vec<CatalogParam>,
     pages: Vec<Page>,
-}
-
-#[derive(Debug, Serialize)]
-struct MasterDataParam {
-    name: Intern<String>,
 }
 
 async fn get_catalog(state: State<AppState>) -> impl IntoResponse {
     // XXX add caching
     let config = WebCatalog {
-        params: state
-            .catalog
-            .params
-            .iter()
-            .map(|param| MasterDataParam { name: param.name })
-            .collect(),
+        params: &state.catalog.params,
         pages: state.catalog.pages.clone(),
     };
-    Json(config)
+    Json(config).into_response()
 }
 
 async fn params(state: State<AppState>) -> impl IntoResponse {
