@@ -15,13 +15,16 @@
 				"rust-lang.rust-analyzer",
 				"janisdd.vscode-edit-csv",
 				"biomejs.biome",
-				"Gruntfuggly.todo-tree"
+				"Gruntfuggly.todo-tree",
+				"Anthropic.claude-code"
 			]
 		}
 	},
-	// "mounts": [
-	// 	"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-	// ],
+	"mounts": [
+		"source=codex-config,target=/home/vscode/.codex,type=volume",
+		"source=claude-config,target=/home/vscode/.claude,type=volume",
+		"source=gh-config,target=/home/vscode/.config/gh,type=volume"
+	],
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
 			"version": "1.93.1",
