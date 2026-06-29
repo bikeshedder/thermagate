@@ -30,7 +30,7 @@
 		"ghcr.io/devcontainers/features/node:2": {
 			"version": "22.20.0"
 		},
-		"ghcr.io/devcontainers/features/docker-in-docker:3": {}
+		"ghcr.io/devcontainers/features/docker-in-docker:4": {}
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
