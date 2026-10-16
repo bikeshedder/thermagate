@@ -25,7 +25,7 @@ use crate::{
     },
     catalog::Catalog,
     config::{Config, ConfigError, QueryConfig},
-    hass::make_hass_sensor,
+    hass::{make_hass_gateway_sensor, make_hass_sensor},
     model::{unit::Unit, value::Value},
     utils::warn_if_err,
     web::{ParamUpdate, run_server},
@@ -65,6 +65,22 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
             }
         }
     });
+    // announce the gateway device itself, all CAN bus devices are linked to it
+    let gateway_sensor = make_hass_gateway_sensor(&config.hass, &config.mqtt.topic_prefix);
+    loop {
+        info!("Announcing gateway device");
+        match announce(&mqtt, &config.hass, &config.hass.object_id, &gateway_sensor).await {
+            Ok(_) => break,
+            Err(e) => {
+                error!("Failed to announce device to MQTT broker: {:?}", e);
+                sleep(Duration::from_secs(5)).await;
+            }
+        }
+    }
+    warn_if_err(
+        publish_state(&mqtt, &gateway_sensor, env!("CARGO_PKG_VERSION")).await,
+        "Failed to publish state to MQTT broker",
+    );
     // announce parameters to HA via MQTT
     info!(
         "Announcing {} parameters to HA via MQTT",
@@ -84,7 +100,7 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
         let sensor = make_hass_sensor(
             param.device,
             catalog_param,
-            &config.hass.object_id,
+            &config.hass,
             &config.mqtt.topic_prefix,
         );
         loop {
@@ -196,7 +212,7 @@ async fn recv_params(
                     let sensor = make_hass_sensor(
                         message.receiver,
                         param,
-                        &hass_cfg.object_id,
+                        &hass_cfg,
                         &mqtt_cfg.topic_prefix,
                     );
                     warn_if_err(
@@ -213,12 +229,8 @@ async fn recv_params(
                     .entry(message.sender.to_string())
                     .or_default()
                     .insert(param.name, Param::Value(value.clone()));
-                let sensor = make_hass_sensor(
-                    message.sender,
-                    param,
-                    &hass_cfg.object_id,
-                    &mqtt_cfg.topic_prefix,
-                );
+                let sensor =
+                    make_hass_sensor(message.sender, param, &hass_cfg, &mqtt_cfg.topic_prefix);
                 warn_if_err(
                     publish_state(&mqtt, &sensor, mqtt_value).await,
                     "Failed to publish state to MQTT broker",
