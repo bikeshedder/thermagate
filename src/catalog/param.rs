@@ -22,6 +22,7 @@ impl Param {
         match &self.r#type {
             ParamType::I8(p) => p.unit,
             ParamType::I16(p) => p.unit,
+            ParamType::U16(p) => p.unit,
             ParamType::Dec(p) => p.unit,
             _ => None,
         }
@@ -39,6 +40,7 @@ pub enum ParamType {
     Bool(BoolParam),
     I8(I8Param),
     I16(I16Param),
+    U16(U16Param),
     Dec(DecParam),
     Enum8(EnumParam<u8>),
     Enum16(EnumParam<u16>),
@@ -65,6 +67,14 @@ pub struct I16Param {
     pub unit: Option<Unit>,
     pub min: Option<i16>,
     pub max: Option<i16>,
+}
+
+#[derive(Debug)]
+pub struct U16Param {
+    pub default: Option<u16>,
+    pub unit: Option<Unit>,
+    pub min: Option<u16>,
+    pub max: Option<u16>,
 }
 
 #[derive(Debug)]

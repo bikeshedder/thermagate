@@ -51,6 +51,9 @@ export const Value = z.union([
         I16: z.number(),
     }),
     z.object({
+        U16: z.number(),
+    }),
+    z.object({
         I32: z.number(),
     }),
     z.object({
