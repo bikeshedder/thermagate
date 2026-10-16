@@ -169,6 +169,7 @@ async fn recv_params(
                 (Value::Bool(b), _) => json!(b),
                 (Value::I8(v), _) => json!(v),
                 (Value::I16(v), _) => json!(v),
+                (Value::U16(v), _) => json!(v),
                 (Value::Dec(v), Some(Unit::LitersPerHour)) => {
                     // Convert liters per hour to cubic meters per hour
                     json!(v.to_f64().map(|v| v / 1000f64))

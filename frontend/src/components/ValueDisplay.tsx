@@ -25,6 +25,9 @@ export function valueToString(value: Value) {
 	if ("I16" in value) {
 		return value.I16;
 	}
+	if ("U16" in value) {
+		return value.U16;
+	}
 	if ("I32" in value) {
 		return value.I32;
 	}

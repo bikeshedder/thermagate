@@ -11,6 +11,7 @@ pub enum Value {
     Bool(bool),
     I8(i8),
     I16(i16),
+    U16(u16),
     Dec(Decimal),
     Enum8(u8, Option<Intern<String>>),
     Enum16(u16, Option<Intern<String>>),
@@ -24,6 +25,7 @@ impl fmt::Display for Value {
             Value::Bool(v) => write!(f, "{}", v),
             Value::I8(v) => write!(f, "{}", v),
             Value::I16(v) => write!(f, "{}", v),
+            Value::U16(v) => write!(f, "{}", v),
             Value::Dec(v) => write!(f, "{}", v),
             Value::Enum8(v, n) => {
                 if let Some(n) = n {

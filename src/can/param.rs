@@ -5,7 +5,7 @@ use rust_decimal::Decimal;
 use crate::{
     catalog::param::{
         BoolParam, DecParam, EnumParam, I8Param, I16Param, Param, ParamType, TimeParam,
-        TimeRangeParam,
+        TimeRangeParam, U16Param,
     },
     model::{time::Time, time_range::TimeRange, value::Value},
 };
@@ -27,6 +27,7 @@ impl AsCanParam for Param {
             ParamType::Bool(x) => x,
             ParamType::I8(x) => x,
             ParamType::I16(x) => x,
+            ParamType::U16(x) => x,
             ParamType::Dec(x) => x,
             ParamType::Enum8(x) => x,
             ParamType::Enum16(x) => x,
@@ -60,6 +61,12 @@ impl CanParam for I8Param {
 impl CanParam for I16Param {
     fn decode(&self, data: [u8; 2]) -> Option<Value> {
         decode_i16(data).map(Value::I16)
+    }
+}
+
+impl CanParam for U16Param {
+    fn decode(&self, data: [u8; 2]) -> Option<Value> {
+        decode_opt_u16(data).map(Value::U16)
     }
 }
 
@@ -137,6 +144,13 @@ fn decode_i8(data: [u8; 2]) -> Option<i8> {
 fn decode_i16(data: [u8; 2]) -> Option<i16> {
     let v = ((data[0] as i16) << 8) + (data[1] as i16);
     if v == i16::MIN { None } else { Some(v) }
+}
+
+/// Unsigned counterpart of `decode_i16`: 0x8000 still marks a missing value,
+/// so a counter that is exactly at 32768 is reported as missing.
+fn decode_opt_u16(data: [u8; 2]) -> Option<u16> {
+    let v = decode_u16(data);
+    if v == 0x8000 { None } else { Some(v) }
 }
 
 fn decode_u8(data: [u8; 2]) -> u8 {

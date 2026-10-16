@@ -5,7 +5,7 @@ use num_traits::Num;
 use serde::{Deserialize, Deserializer, de};
 
 use crate::{
-    catalog::param::{EnumParam, I8Param, I16Param, TimeParam, TimeRangeParam},
+    catalog::param::{EnumParam, I8Param, I16Param, TimeParam, TimeRangeParam, U16Param},
     model::{r#enum::EnumVariant, string::MultilingualString, unit::Unit},
 };
 
@@ -21,6 +21,7 @@ enum TypeName {
     Bool,
     I8,
     I16,
+    U16,
     Dec,
     Enum8,
     Enum16,
@@ -130,6 +131,16 @@ fn type_from_parts(
             assert_eq!(scale, None);
             let (min, max) = parse_range(values);
             ParamType::I16(I16Param {
+                unit,
+                min,
+                max,
+                default: parse_opt_num(default),
+            })
+        }
+        TypeName::U16 => {
+            assert_eq!(scale, None);
+            let (min, max) = parse_range(values);
+            ParamType::U16(U16Param {
                 unit,
                 min,
                 max,
@@ -299,5 +310,16 @@ mod tests {
             Some(Value::Enum16(1, Some(String::from("Heating").into()))),
         );
         assert_eq!(param.decode([0, 99]), Some(Value::Enum16(99, None)),);
+    }
+
+    #[test]
+    fn test_u16_decode() {
+        let catalog = Catalog::load().unwrap();
+        let param = catalog.param_by_name("energy_hot_water").unwrap();
+        assert_eq!(param.decode([0x77, 0x09]), Some(Value::U16(30473)));
+        assert_eq!(param.decode([0x80, 0x01]), Some(Value::U16(32769)));
+        assert_eq!(param.decode([0xff, 0xff]), Some(Value::U16(65535)));
+        // 0x8000 is used by the heat pump to signal a missing value
+        assert_eq!(param.decode([0x80, 0x00]), None);
     }
 }
