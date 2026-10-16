@@ -8,7 +8,7 @@ use internment::Intern;
 use nrg_hass::{config::HomeAssistantConfig, discovery::announce, state::publish_state};
 use nrg_mqtt::config::MqttConfig;
 use num_traits::ToPrimitive;
-use rumqttc::AsyncClient;
+use rumqttc::{AsyncClient, QoS};
 use serde::Serialize;
 use serde_json::json;
 use tokio::{
@@ -180,8 +180,8 @@ async fn recv_params(
         if message.sender.is_other() {
             continue;
         }
-        let mqtt_value = if let Some(value) = &value {
-            match (&value, param.unit()) {
+        let mqtt_value = value.as_ref().map(|value| {
+            match (value, param.unit()) {
                 (Value::Bool(b), _) => json!(b),
                 (Value::I8(v), _) => json!(v),
                 (Value::I16(v), _) => json!(v),
@@ -195,9 +195,7 @@ async fn recv_params(
                 (Value::TimeRange(v), _) => json!(v.to_string()),
                 (Value::Time(v), _) => json!(v.to_string()),
             }
-        } else {
-            json!(null)
-        };
+        });
         match message.r#type {
             MessageType::Request => {
                 if let Entry::Vacant(e) = params
@@ -231,10 +229,17 @@ async fn recv_params(
                     .insert(param.name, Param::Value(value.clone()));
                 let sensor =
                     make_hass_sensor(message.sender, param, &hass_cfg, &mqtt_cfg.topic_prefix);
-                warn_if_err(
-                    publish_state(&mqtt, &sensor, mqtt_value).await,
-                    "Failed to publish state to MQTT broker",
-                );
+                let result = match mqtt_value {
+                    Some(mqtt_value) => publish_state(&mqtt, &sensor, mqtt_value).await,
+                    // Home Assistant treats the payload "None" as unknown
+                    // state. A JSON `null` is rejected by sensors with a unit
+                    // or device class and can even break discovery updates.
+                    None => {
+                        mqtt.publish(&sensor.state_topic, QoS::AtLeastOnce, true, "None")
+                            .await
+                    }
+                };
+                warn_if_err(result, "Failed to publish state to MQTT broker");
                 let _ = params.tx.send(Arc::new(ParamUpdate {
                     device: message.sender.into(),
                     param: param.into(),
