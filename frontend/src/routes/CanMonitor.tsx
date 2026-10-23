@@ -36,7 +36,7 @@ const MESSAGE_TYPE_COLORS: Record<
 
 function DeviceName(props: { device: Device }) {
 	return <Show
-		when={props.device.name != "Other"}
+		when={props.device.name != "other"}
 		fallback={<code>{props.device.id.toString(16).padStart(4, "0")}</code>}>
 		{props.device.name}
 	</Show>

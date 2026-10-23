@@ -76,7 +76,7 @@ pub async fn cmd(config: Config, catalog: Catalog) -> Result<(), Box<dyn std::er
                 .values
                 .lock()
                 .await
-                .entry(param.device.to_string())
+                .entry(param.device.key())
                 .or_default()
                 .insert(Intern::from_ref(&param.param), Param::Loading);
             let catalog_param = catalog
@@ -192,7 +192,7 @@ async fn recv_params(
                     .values
                     .lock()
                     .await
-                    .entry(message.receiver.to_string())
+                    .entry(message.receiver.key())
                     .or_default()
                     .entry(param.name)
                 {
@@ -216,7 +216,7 @@ async fn recv_params(
                     .values
                     .lock()
                     .await
-                    .entry(message.sender.to_string())
+                    .entry(message.sender.key())
                     .or_default()
                     .insert(param.name, Param::Value(value.clone()));
                 let sensor = make_hass_sensor(

@@ -99,6 +99,13 @@ impl Device {
     pub fn name(&self) -> &'static str {
         self.into()
     }
+    /// Canonical lower-case identifier of this device.
+    ///
+    /// This is the form used as a key in the params map, in the web API and in
+    /// `data/pages.json`. Keep those in sync by always going through here.
+    pub fn key(&self) -> String {
+        self.name().to_lowercase()
+    }
     pub fn is_other(&self) -> bool {
         matches!(self, Self::Other(_))
     }
@@ -117,4 +124,12 @@ impl fmt::Display for Device {
 #[test]
 fn test_device_name() {
     assert_eq!(Device::Other(42).name(), "Other");
+}
+
+#[test]
+fn test_device_key() {
+    // Keys must match the device names used in `data/pages.json`.
+    assert_eq!(Device::HC1.key(), "hc1");
+    assert_eq!(Device::HG1.key(), "hg1");
+    assert_eq!(Device::Outdoor.key(), "outdoor");
 }

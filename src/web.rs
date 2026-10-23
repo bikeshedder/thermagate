@@ -109,7 +109,7 @@ impl From<can::device::Device> for Device {
     fn from(value: can::device::Device) -> Self {
         Self {
             id: value.id(),
-            name: value.name().to_lowercase(),
+            name: value.key(),
         }
     }
 }

@@ -29,7 +29,8 @@ export function StateProvider(props: ParentProps) {
 			return;
 		}
 		const message = res.data;
-		if (message.device.name !== "Other") {
+		// The backend sends the canonical lower-case device key.
+		if (message.device.name !== "other") {
 			setParams("devices", message.device.name, (v) => v || {});
 			setParams(
 				"devices",
