@@ -63,8 +63,13 @@ export function ValueDisplay(params: { value: Value }) {
 }
 
 export function ParamDisplay(params: { value: ParamValue }) {
-	if (params.value === "Loading") {
-		return <HourglassEmpty color="disabled" style="vertical-align: bottom" />;
-	}
-	return <>{valueToString(params.value.Value)}</>;
+	return (
+		<>
+			{params.value === "Loading" ? (
+				<HourglassEmpty color="disabled" style="vertical-align: bottom" />
+			) : (
+				valueToString(params.value.Value)
+			)}
+		</>
+	);
 }

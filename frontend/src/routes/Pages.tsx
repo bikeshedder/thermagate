@@ -100,8 +100,14 @@ export function Pages() {
 												</Alert>
 											);
 										}
-										const value = state.devices[pageParam.device]?.[pageParam.param];
-										return <PageParamField catalogParam={catalogParam} value={value} />;
+										// Read the store inside the JSX prop so it compiles to a getter and
+										// stays reactive; this callback only runs once per param.
+										return (
+											<PageParamField
+												catalogParam={catalogParam}
+												value={state.devices[pageParam.device]?.[pageParam.param]}
+											/>
+										);
 									}}
 								</For>
 							</Box>

@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Chip, Typography } from "@suid/material";
 import { CheckBoxOutlineBlank, CheckBoxOutlined } from "@suid/icons-material";
-import type { JSX } from "solid-js";
+import { createMemo, Show, type JSX } from "solid-js";
 import type { CatalogParam, MultilingualString } from "../contexts/catalog";
 import type { ParamValue, Value } from "../schema";
 import { ParamDisplay, ValueDisplay } from "./ValueDisplay";
@@ -56,21 +56,29 @@ function plainValue(rawValue: ParamValue | undefined): Value | null {
 }
 
 function BoolParamField(props: PageParamFieldProps) {
-	const value = plainValue(props.value);
-	if (value && "Bool" in value && value.Bool !== null) {
-		return content(
-			props.catalogParam,
+	const boolValue = createMemo(() => {
+		const value = plainValue(props.value);
+		if (value && "Bool" in value && value.Bool !== null) {
+			return value.Bool;
+		}
+		return null;
+	});
+	return content(
+		props.catalogParam,
+		<Show
+			when={boolValue() !== null}
+			fallback={<ParamDisplay value={valueOrLoading(props.value)} />}
+		>
 			<Box sx={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-				{value.Bool ? (
+				{boolValue() ? (
 					<CheckBoxOutlined style="vertical-align: bottom" />
 				) : (
 					<CheckBoxOutlineBlank style="vertical-align: bottom" />
 				)}
-				<Typography>{value.Bool ? "Enabled" : "Disabled"}</Typography>
-			</Box>,
-		);
-	}
-	return content(props.catalogParam, <ParamDisplay value={valueOrLoading(props.value)} />);
+				<Typography>{boolValue() ? "Enabled" : "Disabled"}</Typography>
+			</Box>
+		</Show>,
+	);
 }
 
 function I8ParamField(props: PageParamFieldProps) {
