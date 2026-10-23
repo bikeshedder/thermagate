@@ -6,7 +6,7 @@
 	// broker. See compose.yml and CONTRIBUTING.md.
 	"dockerComposeFile": "compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspaces/thermagate",
+	"workspaceFolder": "/workspace",
 	"customizations": {
 		"vscode": {
 			"extensions": [

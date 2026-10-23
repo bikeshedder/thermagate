@@ -16,7 +16,7 @@ services:
     userns_mode: "keep-id:uid=1000,gid=1000"
     volumes:
       # Bind-mount the repository (devcontainer.json sets workspaceFolder to match).
-      - ..:/workspaces/thermagate:cached
+      - ..:/workspace:cached
     # Resolve the broker's name to its pinned bridge IP (no service DNS on host net).
     extra_hosts:
       - "mosquitto:172.30.0.2"
